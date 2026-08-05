@@ -1,49 +1,61 @@
-# EVNet Sentinel
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=250&section=header&text=EVNet%20Sentinel&fontSize=80&animation=fadeIn&fontAlignY=35&desc=Intrusion%20Detection%20for%20Electric%20Vehicle%20Charging%20Networks&descAlignY=60&descAlign=50" alt="EVNet Sentinel Banner" />
+  
+  <p align="center">
+    <b>A robust, real-time Intrusion Detection System (IDS) for Electric Vehicle Charging Station (EVCS) networks.</b>
+  </p>
 
-An Intrusion Detection System (IDS) for Electric Vehicle Charging Station (EVCS) networks, utilizing a combination of static Machine Learning classifiers and Online Learning (ARF + ADWIN) to detect anomalous network traffic in near real-time.
+  <p align="center">
+    <a href="https://github.com/Mukta01/EVNet_Sentinel/stargazers"><img src="https://img.shields.io/github/stars/Mukta01/EVNet_Sentinel?style=for-the-badge&color=yellow" alt="Stars" /></a>
+    <a href="https://github.com/Mukta01/EVNet_Sentinel/network/members"><img src="https://img.shields.io/github/forks/Mukta01/EVNet_Sentinel?style=for-the-badge&color=orange" alt="Forks" /></a>
+    <a href="https://github.com/Mukta01/EVNet_Sentinel/issues"><img src="https://img.shields.io/github/issues/Mukta01/EVNet_Sentinel?style=for-the-badge&color=red" alt="Issues" /></a>
+    <img src="https://img.shields.io/badge/Python-FastAPI-blue?style=for-the-badge&logo=python" alt="Python" />
+    <img src="https://img.shields.io/badge/Next.js-React-black?style=for-the-badge&logo=next.js" alt="Next.js" />
+  </p>
+</div>
 
-This project reproduces and benchmarks the methods from Makhmudov et al. (2025) using the CICEVSE2024 dataset, and introduces a modern, interactive Next.js dashboard as an engineering and HCI contribution.
+---
 
-## Architecture
-The system consists of two decoupled tiers:
-- **Backend (Python/FastAPI):** Handles data preprocessing, model inference, online learning, and serves predictions and metrics via REST and WebSocket.
-- **Frontend (Next.js/React):** A presentation layer displaying real-time alerts, animated metrics, and interactive confusion matrices.
+## ⚡ Overview
 
-## Setup Instructions
+EVNet Sentinel reproduces and benchmarks the methods from Makhmudov et al. (2025) using the CICEVSE2024 dataset. It utilizes a combination of static Machine Learning classifiers and Online Learning (ARF + ADWIN) to detect anomalous network traffic in near real-time. 
 
-### 1. Backend Setup
-```bash
-cd backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+Beyond the research, this project introduces a stunning, interactive Next.js dashboard as a modern engineering and HCI contribution!
+
+## 🚀 Features
+
+- 🧠 **Hybrid ML Pipeline**: Compare Static models (RF, SVM, LR, DT) with Adaptive Online models.
+- ⚡ **Real-Time Detection**: WebSocket integration for instant anomaly alerts.
+- 📊 **Interactive Dashboard**: Next.js-powered visualisations and live confusion matrices.
+- 🛡️ **Cybersecurity-First**: Designed specifically for EVCS infrastructure vulnerabilities.
+
+## 🏗️ Architecture
+
+```mermaid
+flowchart LR
+    A[CICEVSE2024 Dataset] -->|Simulated Stream| B(FastAPI Backend)
+    B -->|Pre-processing| C{ML Engine}
+    C -->|Static Models| D[RF, SVM, DT, LR]
+    C -->|Online Learning| E[ARF + ADWIN]
+    D --> F[Results API]
+    E --> F
+    F <-->|WebSockets & REST| G[Next.js Dashboard]
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style G fill:#bbf,stroke:#333,stroke-width:2px
 ```
-*Backend will be running at http://localhost:8000*
 
-### 2. Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
-*Frontend will be running at http://localhost:3000*
+## 📚 Documentation
 
-## Team
-- **Shardul Chogale** (@shard-c6) - Frontend Core & Design
-- **Mukta Varak** (@Mukta01) - ML Pipeline & Data
-- **Neha Chavhan** - Backend API & WebSocket
-- **Shruti Chaurasiya** - Data Viz & Testing
+Detailed documentation has been separated into the `docs/` directory for better maintainability:
 
-## Project Phases
-- Phase 0: Project Setup & Landing Page
-- Phase 1: Backend ML Pipeline
-- Phase 2: Backend API Layer
-- Phase 3: Frontend Dashboard
-- Phase 4: Integration & Testing
-- Phase 5: Documentation & Submission
+- 🏛️ [**Architecture Details**](./docs/ARCHITECTURE.md)
+- ⚙️ [**Setup & Installation**](./docs/SETUP.md)
+- 📝 [**Implementation Plan**](./docs/implementation_plan_phase0_landing_page.md)
+- 📄 [**Project SRS**](./docs/Project_SRS/WDL_SRS_EVNetSentinel.pdf)
 
-## Dataset Access & Security Rules
+## 🔐 Dataset Access & Security Rules
+
 The CICEVSE2024 dataset used for this project is heavy and access-restricted. Please follow these rules:
 1. **Never commit the dataset**: All dataset archives and CSV files (`*.tar.xz`, `*.zip`, `*.csv`) are strictly ignored in `.gitignore`. Do NOT bypass this rule.
 2. **Secure the URL**: The Google Drive URL for the dataset must never be hardcoded in the codebase or public documentation. 
@@ -52,5 +64,16 @@ The CICEVSE2024 dataset used for this project is heavy and access-restricted. Pl
    - Add the Google Drive URL (provided by the team admin) to your `.env` file under `CICEVSE2024_DATASET_URL`.
    - The `.env` file is also ignored by Git.
 
+## 👥 Meet The Team
+
+| Role | Name | GitHub |
+|------|------|--------|
+| **Frontend Core & Design** | Shardul Chogale | [@shard-c6](https://github.com/shard-c6) |
+| **ML Pipeline & Data** | Mukta Varak | [@Mukta01](https://github.com/Mukta01) |
+| **Backend API & WebSocket** | Neha Chavhan | [@nehachavhan2006](https://github.com/nehachavhan2006) |
+| **Data Viz & Testing** | Shruti Chaurasiya | [@shrutich-30](https://github.com/shrutich-30) |
+
 ---
-*Created for Software Engineering academic requirements.*
+<div align="center">
+  <i>Created for Software Engineering academic requirements.</i>
+</div>
