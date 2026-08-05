@@ -43,5 +43,14 @@ npm run dev
 - Phase 4: Integration & Testing
 - Phase 5: Documentation & Submission
 
+## Dataset Access & Security Rules
+The CICEVSE2024 dataset used for this project is heavy and access-restricted. Please follow these rules:
+1. **Never commit the dataset**: All dataset archives and CSV files (`*.tar.xz`, `*.zip`, `*.csv`) are strictly ignored in `.gitignore`. Do NOT bypass this rule.
+2. **Secure the URL**: The Google Drive URL for the dataset must never be hardcoded in the codebase or public documentation. 
+3. **Local Setup**: 
+   - Copy `.env.example` to `.env` in the root directory.
+   - Add the Google Drive URL (provided by the team admin) to your `.env` file under `CICEVSE2024_DATASET_URL`.
+   - The `.env` file is also ignored by Git.
+
 ---
 *Created for Software Engineering academic requirements.*
