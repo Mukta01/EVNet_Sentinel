@@ -1,0 +1,7 @@
+{"timestamp":"00:00:00.419","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:00.419","source":"Server","level":"LOG","message":"  We detected TypeScript in your project and reconfigured your tsconfig.json file for you."}
+{"timestamp":"00:00:00.419","source":"Server","level":"LOG","message":"  The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:\n"}
+{"timestamp":"00:00:00.419","source":"Server","level":"LOG","message":"  \t- include was updated to add '.next-figma-capture/types/**/*.ts'"}
+{"timestamp":"00:00:00.420","source":"Server","level":"LOG","message":"  \t- include was updated to add '.next-figma-capture/dev/types/**/*.ts'"}
+{"timestamp":"00:00:00.420","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:00.473","source":"Server","level":"LOG","message":""}
