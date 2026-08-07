@@ -66,12 +66,12 @@ The CICEVSE2024 dataset used for this project is heavy and access-restricted. Pl
 
 ## 👥 Meet The Team
 
-| Role | Name | GitHub |
-|------|------|--------|
-| **Frontend Core & Design** | Shardul Chogale | [@shard-c6](https://github.com/shard-c6) |
-| **ML Pipeline & Data** | Mukta Varak | [@Mukta01](https://github.com/Mukta01) |
-| **Backend API & WebSocket** | Neha Chavhan | [@nehachavhan2006](https://github.com/nehachavhan2006) |
-| **Data Viz & Testing** | Shruti Chaurasiya | [@shrutich-30](https://github.com/shrutich-30) |
+| Roll No. | Name | Official Role Title | GitHub |
+|----------|------|---------------------|--------|
+| **24102A0013** | Mukta Varak | Cloud Deployment & Backend API | [@Mukta01](https://github.com/Mukta01) |
+| **24102A0018** | Shruti Chaurasiya | Data Visualization & Testing QA | [@shrutich-30](https://github.com/shrutich-30) |
+| **24102A0021** | Shardul Chogale | ML Pipelining & Model Evaluation | [@shard-c6](https://github.com/shard-c6) |
+| **24102A0022** | Neha Chavhan | Frontend UI & Real-Time Integration | [@nehachavhan2006](https://github.com/nehachavhan2006) |
 
 ---
 <div align="center">
