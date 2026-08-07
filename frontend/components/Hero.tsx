@@ -12,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
+
   const subRef = useRef<HTMLParagraphElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
 
