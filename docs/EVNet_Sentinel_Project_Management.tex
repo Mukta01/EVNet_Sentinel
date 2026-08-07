@@ -1,0 +1,767 @@
+%% ============================================================================
+%% EVNet Sentinel — Project Management Document
+%% Working Phase: 05 August 2026 – 25 September 2026
+%% ============================================================================
+\documentclass[11pt, a4paper]{article}
+
+% ---- Packages ----
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{pifont}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{pgfgantt}
+\usepackage{pdflscape}
+\usepackage{bookmark}
+\usepackage{pdfcomment}
+\usepackage{footmisc}
+
+% ---- Colors ----
+\definecolor{primary}{HTML}{1E40AF}
+\definecolor{accent}{HTML}{10B981}
+\definecolor{warning}{HTML}{F59E0B}
+\definecolor{danger}{HTML}{EF4444}
+\definecolor{darkbg}{HTML}{1F2937}
+\definecolor{lightgray}{HTML}{F3F4F6}
+\definecolor{sectionblue}{HTML}{2563EB}
+
+% ---- Hyperref Setup (Interactive PDF) ----
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=sectionblue,
+    citecolor=accent,
+    pdftitle={EVNet Sentinel — Project Management Document},
+    pdfauthor={EVNet Sentinel Team},
+    pdfsubject={Software Engineering Project Management},
+    pdfkeywords={IDS, EVCS, Machine Learning, FastAPI, Next.js, DevOps, CICEVSE2024},
+    bookmarks=true,
+    bookmarksopen=true,
+    bookmarksnumbered=true,
+    bookmarksopenlevel=2,
+    pdfstartview=FitH,
+    pdfpagemode=UseOutlines,
+    pdfpagelayout=SinglePage,
+}
+
+% ---- Header/Footer ----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{primary}{\textbf{EVNet Sentinel}}}
+\fancyhead[R]{\textcolor{gray}{Project Management Document v2.0}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{primary}\leaders\hrule height \headrulewidth\hfill}}
+
+% ---- Section Styling ----
+\titleformat{\section}{\Large\bfseries\color{primary}}{\thesection}{1em}{}[\vspace{-0.5em}\textcolor{primary}{\rule{\textwidth}{0.5pt}}]
+\titleformat{\subsection}{\large\bfseries\color{sectionblue}}{\thesubsection}{1em}{}
+
+% ---- Custom Environments ----
+\newtcolorbox{infobox}[1][]{
+    colback=blue!5,
+    colframe=primary,
+    fonttitle=\bfseries,
+    title=#1,
+    rounded corners,
+    boxrule=0.5pt,
+    left=4pt, right=4pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{warnbox}[1][]{
+    colback=yellow!5,
+    colframe=warning,
+    fonttitle=\bfseries,
+    title=#1,
+    rounded corners,
+    boxrule=0.5pt,
+    left=4pt, right=4pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{toolbox}[1][]{
+    colback=green!5,
+    colframe=accent,
+    fonttitle=\bfseries,
+    title=#1,
+    rounded corners,
+    boxrule=0.5pt,
+    left=4pt, right=4pt, top=4pt, bottom=4pt
+}
+
+% ---- Checkmark/Cross Commands ----
+\newcommand{\cmark}{\textcolor{accent}{\ding{51}}}
+\newcommand{\xmark}{\textcolor{danger}{\ding{55}}}
+
+% ---- Tooltip Command (Interactive) ----
+\newcommand{\tip}[2]{\pdftooltip{\textcolor{sectionblue}{\underline{#1}}}{#2}}
+
+% ---- Quick-Nav Command (Interactive Cross-References) ----
+\newcommand{\goref}[2]{\hyperref[#1]{\textcolor{primary}{\textbf{#2}}}}
+
+% ============================================================================
+\begin{document}
+
+% ---- Title Page ----
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+
+{\Huge\bfseries\textcolor{primary}{EVNet Sentinel}\par}
+\vspace{0.4cm}
+{\Large\textcolor{sectionblue}{Intrusion Detection System for EV Charging Networks}\par}
+\vspace{1.5cm}
+
+{\LARGE\bfseries Project Management \& Task Assignment Document\par}
+\vspace{0.3cm}
+{\large Version 2.0 (Official Role Realignment)\par}
+\vspace{1.5cm}
+
+\begin{tcolorbox}[colback=lightgray, colframe=darkbg, width=0.82\textwidth, rounded corners]
+\centering
+\textbf{Working Phase:} 05 August 2026 — 25 September 2026\\[0.3em]
+\textbf{Total Duration:} 52 Days (7.5 Weeks)\\[0.3em]
+\textbf{Architecture:} Python/FastAPI Backend $\longleftrightarrow$ Next.js/React Frontend\\[0.3em]
+\textbf{Dataset:} CICEVSE2024 Network Traffic Dataset\\[0.3em]
+\textbf{Design Reference:} \url{https://justus-john.com/en/}\\[0.3em]
+\textbf{Repository:} \url{https://github.com/shard-c6/EVNet_Sentinel}
+\end{tcolorbox}
+
+\vspace{1.2cm}
+
+\begin{tcolorbox}[colback=blue!3, colframe=primary, width=0.82\textwidth, rounded corners, title={\textbf{Quick Navigation (Click to Jump)}}]
+\centering
+\begin{tabular}{ll}
+\hyperref[sec:overview]{\textcolor{primary}{$\triangleright$ Project Overview}} & \hyperref[sec:team]{\textcolor{primary}{$\triangleright$ Team Member Roles}} \\[0.3em]
+\hyperref[sec:timeline]{\textcolor{primary}{$\triangleright$ Timeline \& Gantt Chart}} & \hyperref[sec:tasks]{\textcolor{primary}{$\triangleright$ Phase-Wise Tasks}} \\[0.3em]
+\hyperref[sec:effort]{\textcolor{primary}{$\triangleright$ Effort Summary Table}} & \hyperref[sec:milestones]{\textcolor{primary}{$\triangleright$ Milestone Deadlines}} \\[0.3em]
+\hyperref[sec:techstack]{\textcolor{primary}{$\triangleright$ Tech Stack \& Tools}} & \hyperref[sec:refs]{\textcolor{primary}{$\triangleright$ References \& Links}} \\[0.3em]
+\hyperref[sec:workflow]{\textcolor{primary}{$\triangleright$ Team Workflow Rules}} & \hyperref[sec:risk]{\textcolor{primary}{$\triangleright$ Risk Mitigation}} \\
+\end{tabular}
+\end{tcolorbox}
+
+\vfill
+{\large\textbf{Prepared by:} Mukta Varak (Cloud Deployment DevOps Lead)}\par
+\vspace{0.2cm}
+{\large\textbf{Date:} August 05, 2026}\par
+{\small\textit{Created for Software Engineering Academic Requirements}}
+\end{titlepage}
+
+% ---- Table of Contents ----
+\tableofcontents
+\newpage
+
+% ============================================================================
+\section{Project Overview}
+\label{sec:overview}
+% ============================================================================
+
+\textbf{EVNet Sentinel} is an \tip{Intrusion Detection System (IDS)}{Monitors EVCS network traffic to detect cyberattacks such as DoS, MITM, and unauthorized commands.} for Electric Vehicle Charging Station (EVCS) networks. It combines static Machine Learning classifiers (\tip{RF}{Random Forest}, \tip{SVM}{Support Vector Machine}, \tip{LR}{Logistic Regression}, \tip{DT}{Decision Tree}) with an Online Learning engine (\tip{ARF + ADWIN}{Adaptive Random Forest with ADaptive WINdowing drift detector}) using the \textbf{CICEVSE2024} dataset.
+
+The project reproduces and benchmarks the methods from \textbf{Makhmudov et al. (2025)} while delivering a state-of-the-art Next.js interactive dashboard inspired by modern design standards (\url{https://justus-john.com/en/}).
+
+\begin{infobox}[System Architecture \& Ownership Tiers]
+\begin{itemize}[nosep]
+    \item \textbf{ML Engine \& Pipeline (Shardul Chogale):} Data cleaning, feature selection (RFE), static classifier training, ARF+ADWIN drift detection, model evaluation \& optimization.
+    \item \textbf{Frontend \& API Integration (Neha Chavhan):} Next.js 16 UI components, application routing, REST API integration, WebSocket client manager.
+    \item \textbf{Cloud Deployment \& DevOps (Mukta Varak):} Backend FastAPI server, Docker/cloud setup, CI/CD, CORS security, server environment configuration.
+    \item \textbf{Data Visualization \& Testing DevOps (Shruti Chaurasiya):} Recharts metrics panel, confusion matrix heatmap, live alert stream UI, cross-browser \& E2E testing.
+\end{itemize}
+\end{infobox}
+
+% ============================================================================
+\section{Team Members \& Official Roles}
+\label{sec:team}
+% ============================================================================
+
+The project team consists of 4 members operating in flexible ownership zones. Each member drives their primary zone while actively supporting their secondary zone.
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|c|p{0.22\textwidth}|p{0.20\textwidth}|X|X|}
+\hline
+\rowcolor{primary!10}
+\textbf{\#} & \textbf{Member Name} & \textbf{GitHub Handle} & \textbf{Official Role Title} & \textbf{Primary / Secondary} \\
+\hline
+1 & Shardul Chogale & \href{https://github.com/shard-c6}{\texttt{@shard-c6}} & \textbf{ML Pipelining \& Evaluation} & \textbf{Pri:} ML Training \newline \textbf{Sec:} Model Optimization \\
+\hline
+2 & Mukta Varak & \href{https://github.com/Mukta01}{\texttt{@Mukta01}} & \textbf{Cloud Deployment DevOps} & \textbf{Pri:} Cloud Deployment \newline \textbf{Sec:} DevOps \& Infrastructure \\
+\hline
+3 & Neha Chavhan & \href{https://github.com/nehachavhan2006}{\texttt{@nehachavhan2006}} & \textbf{Frontend \& API Integration} & \textbf{Pri:} Frontend UI \newline \textbf{Sec:} API Integration \\
+\hline
+4 & Shruti Chaurasiya & \href{https://github.com/shrutich-30}{\texttt{@shrutich-30}} & \textbf{Data Viz \& Testing DevOps} & \textbf{Pri:} Data Visualization \newline \textbf{Sec:} Frontend Testing \\
+\hline
+\end{tabularx}
+\caption{Official team roster and role definitions (aligned with system dashboard).}
+\end{table}
+
+\subsection{Cross-Zone Collaboration Matrix}
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\rowcolor{primary!10}
+\textbf{Team Member} & \textbf{ML Pipeline} & \textbf{Cloud \& DevOps} & \textbf{Frontend \& API} & \textbf{Data Viz \& QA} \\
+\hline
+Shardul Chogale  & \cellcolor{green!15}\textbf{Primary} & Assist & Assist & \cellcolor{yellow!15}Secondary \\
+\hline
+Mukta Varak      & Assist & \cellcolor{green!15}\textbf{Primary} & \cellcolor{yellow!15}Secondary & Assist \\
+\hline
+Neha Chavhan     & Assist & Assist & \cellcolor{green!15}\textbf{Primary} & \cellcolor{yellow!15}Secondary \\
+\hline
+Shruti Chaurasiya & Assist & \cellcolor{yellow!15}Secondary & Assist & \cellcolor{green!15}\textbf{Primary} \\
+\hline
+\end{tabular}
+\caption{Flexible role matrix — \colorbox{green!15}{Primary Lead}, \colorbox{yellow!15}{Secondary Support}, Assist (Open).}
+\end{table}
+
+% ============================================================================
+\section{Project Timeline \& Gantt Chart}
+\label{sec:timeline}
+% ============================================================================
+
+\clearpage
+\begin{landscape}
+\centering
+\subsubsection*{EVNet Sentinel — Master Schedule \& Gantt Chart (05 Aug – 25 Sep 2026)}
+
+\adjustbox{max width=\linewidth, max height=0.68\textheight}{%
+\begin{ganttchart}[
+    x unit=0.28cm,
+    y unit chart=0.45cm,
+    y unit title=0.55cm,
+    hgrid,
+    vgrid={*{6}{draw=none}, dotted},
+    title height=1,
+    bar height=0.5,
+    group peaks height=0.2,
+    bar/.style={fill=sectionblue!70},
+    group/.style={fill=primary!80},
+    milestone/.style={fill=danger},
+    title label font=\tiny\bfseries,
+    bar label font=\tiny,
+    group label font=\tiny\bfseries,
+    milestone label font=\tiny\bfseries\color{danger},
+    link/.style={->, thick, danger},
+]{1}{52}
+    \gantttitle{August 2026}{27}
+    \gantttitle{September 2026}{25} \\
+    \gantttitlelist{5,...,31}{1}
+    \gantttitlelist{1,...,25}{1} \\
+
+    % Phase 0
+    \ganttgroup{Phase 0: Setup \& Landing}{1}{4} \\
+    \ganttbar{Scaffold \& Environment}{1}{2} \\
+    \ganttbar{Landing page shell}{2}{4} \\
+
+    % Phase 1
+    \ganttgroup{Phase 1: ML Pipeline (Shardul)}{5}{18} \\
+    \ganttbar{Dataset \& EDA}{5}{8} \\
+    \ganttbar{Preprocessing \& RFE}{8}{12} \\
+    \ganttbar{Static Classifiers (RF/SVM/LR/DT)}{12}{16} \\
+    \ganttbar{ARF + ADWIN Online Learning}{14}{18} \\
+
+    % Phase 2
+    \ganttgroup{Phase 2: Cloud \& Backend API (Mukta \& Neha)}{12}{25} \\
+    \ganttbar{FastAPI REST Endpoints}{12}{18} \\
+    \ganttbar{WebSocket Server (/ws/alerts)}{18}{22} \\
+    \ganttbar{Cloud / Docker Infrastructure}{22}{25} \\
+
+    % Phase 3
+    \ganttgroup{Phase 3: Frontend \& Viz (Neha \& Shruti)}{12}{35} \\
+    \ganttbar{Dashboard Navigation Shell}{12}{16} \\
+    \ganttbar{Metrics Panel \& Recharts Viz}{16}{24} \\
+    \ganttbar{Live Alert Stream UI}{24}{30} \\
+    \ganttbar{Simulation Controls}{30}{35} \\
+
+    % Phase 4
+    \ganttgroup{Phase 4: Integration \& Testing}{36}{45} \\
+    \ganttbar{End-to-End Integration}{36}{40} \\
+    \ganttbar{Latency Benchmarks \& Testing}{40}{45} \\
+
+    % Phase 5
+    \ganttgroup{Phase 5: Docs \& Release}{45}{52} \\
+    \ganttbar{Documentation \& Paper Benchmarks}{45}{49} \\
+    \ganttbar{Demo Recording \& Release Tag}{49}{52} \\
+
+    % Milestones (inline=true to prevent label overlapping in left column)
+    \ganttmilestone[inline=true, milestone inline label node/.style={above=2pt, font=\tiny\bfseries\color{danger}}]{M1: Scaffold (Aug 8)}{4}
+    \ganttmilestone[inline=true, milestone inline label node/.style={above=2pt, font=\tiny\bfseries\color{danger}}]{M2: EDA (Aug 12)}{8}
+    \ganttmilestone[inline=true, milestone inline label node/.style={above=2pt, font=\tiny\bfseries\color{danger}}]{M3: Models (Aug 22)}{18}
+    \ganttmilestone[inline=true, milestone inline label node/.style={above=2pt, font=\tiny\bfseries\color{danger}}]{M4: API (Aug 29)}{25}
+    \ganttmilestone[inline=true, milestone inline label node/.style={above=2pt, font=\tiny\bfseries\color{danger}}]{M7: E2E (Sep 14)}{40}
+    \ganttmilestone[inline=true, milestone inline label node/.style={above=2pt, font=\tiny\bfseries\color{danger}}]{M10: Submit (Sep 25)}{52}
+
+    % Dependency links
+    \ganttlink{elem2}{elem4}
+    \ganttlink{elem5}{elem6}
+    \ganttlink{elem6}{elem7}
+    \ganttlink{elem10}{elem11}
+    \ganttlink{elem18}{elem19}
+\end{ganttchart}
+}
+
+\vspace{0.8em}
+\small
+\textbf{Legend:} \textcolor{primary!80}{$\blacksquare$}~Phase Group \quad \textcolor{sectionblue!70}{$\blacksquare$}~Task Bar \quad \textcolor{danger}{$\blacklozenge$}~Milestone \quad \textcolor{danger}{$\rightarrow$}~Dependency Link
+
+\textit{This timeline is fitted to a single landscape page. Red diamonds indicate key milestones with deadlines.}
+\end{landscape}
+\clearpage
+
+% ============================================================================
+\section{Phase-Wise Task Breakdown}
+\label{sec:tasks}
+% ============================================================================
+
+% ---- PHASE 0 ----
+\subsection{Phase 0: Project Setup \& Landing Page}
+\label{sec:phase0}
+\textbf{Duration:} Aug 05 — Aug 08 (4 days) \hfill \textbf{Status:} \cmark~Completed
+
+\noindent
+\small
+\begin{longtable}{|p{0.42\textwidth}|p{0.18\textwidth}|c|c|}
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endhead
+Next.js project setup in \texttt{frontend/} & Neha Chavhan & 2 & \cmark \\
+Hero section with animated text (GSAP/Framer) & Neha Chavhan & 4 & \cmark \\
+Features, Architecture \& TechStack cards & Neha Chavhan & 5 & \cmark \\
+Team cards (with official roles \& links) & Neha Chavhan & 3 & \cmark \\
+Navbar with route navigation & Neha Chavhan & 2 & \cmark \\
+FastAPI backend scaffold (\texttt{main.py}, \texttt{config.py}) & Mukta Varak & 2 & \cmark \\
+\texttt{requirements.txt} and \texttt{.env.example} setup & Mukta Varak & 1 & \cmark \\
+Project-level \texttt{README.md} \& \texttt{.gitignore} & Mukta Varak & 2 & \cmark \\
+Initial ML pipeline directory structure & Shardul Chogale & 2 & \cmark \\
+Placeholder routes (\texttt{/dashboard}, \texttt{/docs}) & Shruti Chaurasiya & 2 & \cmark \\
+\hline
+\rowcolor{lightgray}
+\multicolumn{2}{|r|}{\textbf{Phase 0 Total}} & \textbf{25} & \cmark \\
+\hline
+\end{longtable}
+\normalsize
+
+% ---- PHASE 1 ----
+\subsection{Phase 1: ML Pipeline \& Model Evaluation}
+\label{sec:phase1}
+\textbf{Duration:} Aug 09 — Aug 22 (14 days) \hfill \textbf{Lead:} \goref{sec:team}{Shardul Chogale} \textbar~\textbf{Support:} \goref{sec:team}{Mukta Varak}
+
+\noindent
+\small
+\begin{longtable}{|p{0.42\textwidth}|p{0.18\textwidth}|c|c|}
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endhead
+Download \& validate CICEVSE2024 dataset & Shardul Chogale & 3 & \xmark \\
+Exploratory Data Analysis (EDA) \& class balance check & Shardul Chogale & 6 & \xmark \\
+Data cleaning: nulls, duplicates, type casting & Shardul Chogale & 4 & \xmark \\
+PII Masking (anonymize IP/MAC addresses) & Shardul Chogale & 3 & \xmark \\
+Feature Selection via \tip{RFE}{Recursive Feature Elimination} & Shardul Chogale & 5 & \xmark \\
+Standard Scaling \& Normalization pipeline & Shardul Chogale & 2 & \xmark \\
+Train Random Forest (RF) classifier (\texttt{seed=42}) & Shardul Chogale & 5 & \xmark \\
+Train Support Vector Machine (SVM) classifier & Shardul Chogale & 4 & \xmark \\
+Train Logistic Regression (LR) classifier & Shardul Chogale & 3 & \xmark \\
+Train Decision Tree (DT) classifier & Shardul Chogale & 3 & \xmark \\
+Cross-validation \& hyperparameter optimization & Shardul Chogale & 7 & \xmark \\
+Implement \tip{ARF + ADWIN}{Adaptive Random Forest with ADWIN drift detection} via River & Shardul Chogale & 9 & \xmark \\
+Generate confusion matrices \& classification reports & Shardul Chogale & 4 & \xmark \\
+Model serialization with \texttt{joblib} & Shardul Chogale & 2 & \xmark \\
+Pytest unit tests for ML pipeline & Shardul Chogale & 5 & \xmark \\
+Cloud storage setup for serialized models & Mukta Varak & 3 & \xmark \\
+\hline
+\rowcolor{lightgray}
+\multicolumn{2}{|r|}{\textbf{Phase 1 Total}} & \textbf{68} & \\
+\hline
+\end{longtable}
+\normalsize
+
+\begin{toolbox}[Phase 1 — Tools \& Best Practices (ML Pipelining)]
+\small
+\begin{itemize}[nosep]
+    \item \textbf{Tools:} Python 3.12+, scikit-learn 1.5, River 0.21, pandas 2.2, numpy 1.26, joblib, Jupyter
+    \item \textbf{Best Practices:}
+    \begin{itemize}[nosep]
+        \item Set \texttt{random\_state=42} across all classifiers for strict reproducibility (REQ-10)
+        \item Build reusable \texttt{scikit-learn} Pipeline transformers for cleaning and scaling
+        \item Stratified 80/20 train/test splits to handle class imbalance in network attack logs
+        \item Save all metric evaluation reports as JSON/CSV for API consumption in Phase 2
+    \end{itemize}
+    \item \textbf{Reference Paper:} Makhmudov et al., ``Intrusion Detection for EV Charging Systems,'' 2025
+\end{itemize}
+\end{toolbox}
+
+% ---- PHASE 2 ----
+\subsection{Phase 2: Cloud Deployment \& Backend API Layer}
+\label{sec:phase2}
+\textbf{Duration:} Aug 16 — Aug 29 (14 days) \hfill \textbf{Lead:} \goref{sec:team}{Mukta Varak} \& \goref{sec:team}{Neha Chavhan}
+
+\noindent
+\small
+\begin{longtable}{|p{0.42\textwidth}|p{0.18\textwidth}|c|c|}
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endhead
+FastAPI application architecture \& routing & Mukta Varak & 3 & \xmark \\
+Cloud server environment \& CORS configuration (SEC-3) & Mukta Varak & 4 & \xmark \\
+Docker containerization (\texttt{Dockerfile}, compose) & Mukta Varak & 6 & \xmark \\
+CI/CD pipeline setup for automated deployment & Mukta Varak & 5 & \xmark \\
+\texttt{GET /api/models} — classifier listing endpoint & Neha Chavhan & 3 & \xmark \\
+\texttt{GET /api/models/\{id\}/metrics} — metric details & Neha Chavhan & 4 & \xmark \\
+\texttt{GET /api/models/\{id\}/confusion-matrix} endpoint & Neha Chavhan & 4 & \xmark \\
+\texttt{POST /api/simulation/start} — simulation control API & Neha Chavhan & 5 & \xmark \\
+\texttt{GET /api/alerts} — paginated alert history endpoint & Neha Chavhan & 4 & \xmark \\
+\texttt{GET /api/export/csv} — CSV report generator & Neha Chavhan & 3 & \xmark \\
+WebSocket \texttt{/ws/alerts} real-time streaming endpoint & Neha Chavhan & 7 & \xmark \\
+Synthetic traffic generator module (REQ-7) & Mukta Varak & 5 & \xmark \\
+Pydantic v2 request/response schema validation & Neha Chavhan & 3 & \xmark \\
+OpenAPI/Swagger docs auto-generation (REQ-14) & Mukta Varak & 2 & \xmark \\
+Async API contract testing with \texttt{httpx} / \texttt{pytest} & Mukta Varak & 4 & \xmark \\
+\hline
+\rowcolor{lightgray}
+\multicolumn{2}{|r|}{\textbf{Phase 2 Total}} & \textbf{62} & \\
+\hline
+\end{longtable}
+\normalsize
+
+\begin{toolbox}[Phase 2 — Tools \& Best Practices (Cloud Deployment \& API)]
+\small
+\begin{itemize}[nosep]
+    \item \textbf{Tools:} FastAPI 0.111+, Uvicorn, Pydantic v2, Docker, Docker Compose, httpx, pytest-asyncio
+    \item \textbf{Best Practices:}
+    \begin{itemize}[nosep]
+        \item Restrict CORS strictly to \texttt{http://localhost:3000} (SEC-3)
+        \item Use Pydantic \texttt{BaseModel} for strict type enforcement across all endpoints
+        \item Use native FastAPI WebSockets with async task broadcasting for streaming alerts
+        \item Containerize backend using lightweight Python multi-stage Docker builds
+    \end{itemize}
+\end{itemize}
+\end{toolbox}
+
+% ---- PHASE 3 ----
+\subsection{Phase 3: Frontend Dashboard \& Data Visualization}
+\label{sec:phase3}
+\textbf{Duration:} Aug 16 — Sep 08 (24 days) \hfill \textbf{Lead:} \goref{sec:team}{Neha Chavhan} \& \goref{sec:team}{Shruti Chaurasiya}
+
+\noindent
+\small
+\begin{longtable}{|p{0.42\textwidth}|p{0.18\textwidth}|c|c|}
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endhead
+Dashboard layout, sidebar navigation \& header & Neha Chavhan & 6 & \xmark \\
+API client custom hooks (\texttt{useFetch}, \texttt{useWebSocket}) & Neha Chavhan & 5 & \xmark \\
+UI-1: Main Dashboard overview (system status) & Neha Chavhan & 5 & \xmark \\
+UI-4: Live Alert Feed — WebSocket stream with risk tags & Neha Chavhan & 8 & \xmark \\
+Micro-animations \& glassmorphic styling & Neha Chavhan & 5 & \xmark \\
+Dark mode theme system \& responsive breakpoints & Neha Chavhan & 4 & \xmark \\
+UI-2: Metrics Panel with Recharts \& Framer Motion & Shruti Chaurasiya & 8 & \xmark \\
+UI-3: Interactive Confusion Matrix Heatmap & Shruti Chaurasiya & 10 & \xmark \\
+UI-5: Simulation Controls (dataset picker \& slider) & Shruti Chaurasiya & 6 & \xmark \\
+Embedded ML metric tooltips \& help overlays (REQ-15) & Shruti Chaurasiya & 4 & \xmark \\
+CSV report download trigger button & Shruti Chaurasiya & 2 & \xmark \\
+Data visualization performance optimization & Shruti Chaurasiya & 5 & \xmark \\
+\hline
+\rowcolor{lightgray}
+\multicolumn{2}{|r|}{\textbf{Phase 3 Total}} & \textbf{68} & \\
+\hline
+\end{longtable}
+\normalsize
+
+\begin{toolbox}[Phase 3 — Tools \& Best Practices (Frontend \& Data Viz)]
+\small
+\begin{itemize}[nosep]
+    \item \textbf{Tools:} Next.js 16, React 19, TypeScript 5, Tailwind CSS v4, Framer Motion, Recharts 3.10, Lucide React
+    \item \textbf{Design Inspiration:} \textbf{\url{https://justus-john.com/en/}} — Modern layout, typography, dynamic animations
+    \item \textbf{Best Practices:}
+    \begin{itemize}[nosep]
+        \item Keep client components isolated with \texttt{'use client'} directive
+        \item Target 60 FPS for metric transitions using Framer Motion GPU-accelerated transforms
+        \item Abstract real-time WebSocket state into custom hooks for clean component decoupling
+    \end{itemize}
+\end{itemize}
+\end{toolbox}
+
+% ---- PHASE 4 ----
+\subsection{Phase 4: Integration, Testing \& DevOps QA}
+\label{sec:phase4}
+\textbf{Duration:} Sep 09 — Sep 18 (10 days) \hfill \textbf{Lead:} \goref{sec:team}{Shruti Chaurasiya} \& \goref{sec:team}{Mukta Varak}
+
+\noindent
+\small
+\begin{longtable}{|p{0.42\textwidth}|p{0.18\textwidth}|c|c|}
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endhead
+End-to-End system integration testing & All Team Members & 10 & \xmark \\
+ML inference latency benchmarks ($<$ 5ms target) & Shardul Chogale & 4 & \xmark \\
+REST \& WebSocket latency testing ($<$ 300ms / $<$ 200ms) & Neha Chavhan & 4 & \xmark \\
+UI animation FPS profiling (30--60 FPS target) & Shruti Chaurasiya & 4 & \xmark \\
+Cross-browser compatibility testing & Shruti Chaurasiya & 5 & \xmark \\
+Security audit (SAF-1 no egress, SEC-3 CORS) & Mukta Varak & 4 & \xmark \\
+DevOps deployment stability testing & Mukta Varak & 4 & \xmark \\
+Bug triage and fix sprint & All Team Members & 8 & \xmark \\
+\hline
+\rowcolor{lightgray}
+\multicolumn{2}{|r|}{\textbf{Phase 4 Total}} & \textbf{43} & \\
+\hline
+\end{longtable}
+\normalsize
+
+% ---- PHASE 5 ----
+\subsection{Phase 5: Documentation \& Final Release}
+\label{sec:phase5}
+\textbf{Duration:} Sep 19 — Sep 25 (7 days) \hfill \textbf{Lead:} All Team Members
+
+\noindent
+\small
+\begin{longtable}{|p{0.42\textwidth}|p{0.18\textwidth}|c|c|}
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{primary!10}
+\textbf{Task Description} & \textbf{Assigned Member} & \textbf{Hours} & \textbf{Status} \\
+\hline
+\endhead
+Final deployment README \& user guide & Mukta Varak & 4 & \xmark \\
+API contract documentation & Neha Chavhan & 4 & \xmark \\
+Benchmark comparison table vs. Makhmudov et al. & Shardul Chogale & 5 & \xmark \\
+Code cleanup, PEP8 \& ESLint enforcement & All Team Members & 6 & \xmark \\
+Project demo video recording & Shruti Chaurasiya & 4 & \xmark \\
+Final presentation slides & Shruti Chaurasiya & 5 & \xmark \\
+GitHub release tagging & Mukta Varak & 2 & \xmark \\
+\hline
+\rowcolor{lightgray}
+\multicolumn{2}{|r|}{\textbf{Phase 5 Total}} & \textbf{30} & \\
+\hline
+\end{longtable}
+\normalsize
+
+% ============================================================================
+\section{Effort Summary Table}
+\label{sec:effort}
+% ============================================================================
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\textwidth}{|X|c|c|c|c|c|}
+\hline
+\rowcolor{primary!10}
+\textbf{Project Phase} & \textbf{Shardul} & \textbf{Mukta} & \textbf{Neha} & \textbf{Shruti} & \textbf{Total Hours} \\
+\hline
+\goref{sec:phase0}{Phase 0}: Setup \& Landing & 2 & 7 & 14 & 2 & 25 \\
+\hline
+\goref{sec:phase1}{Phase 1}: ML Pipeline & 65 & 3 & 0 & 0 & 68 \\
+\hline
+\goref{sec:phase2}{Phase 2}: Cloud \& Backend API & 0 & 29 & 33 & 0 & 62 \\
+\hline
+\goref{sec:phase3}{Phase 3}: Frontend Dashboard & 0 & 0 & 33 & 35 & 68 \\
+\hline
+\goref{sec:phase4}{Phase 4}: Integration \& QA & 6 & 8 & 6 & 23 & 43 \\
+\hline
+\goref{sec:phase5}{Phase 5}: Docs \& Release & 7 & 8 & 6 & 9 & 30 \\
+\hline
+\rowcolor{lightgray}
+\textbf{Total Person Hours} & \textbf{80} & \textbf{55} & \textbf{92} & \textbf{69} & \textbf{296} \\
+\hline
+\end{tabularx}
+\caption{Effort distribution by team member across all project phases (in hours).}
+\end{table}
+
+% ============================================================================
+\section{Milestone Deadlines}
+\label{sec:milestones}
+% ============================================================================
+
+\noindent
+\small
+\begin{longtable}{|c|p{0.25\textwidth}|l|p{0.28\textwidth}|}
+\hline
+\rowcolor{primary!10}
+\textbf{\#} & \textbf{Milestone} & \textbf{Deadline} & \textbf{Deliverable} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{primary!10}
+\textbf{\#} & \textbf{Milestone} & \textbf{Deadline} & \textbf{Deliverable} \\
+\hline
+\endhead
+M1 & Project scaffold \& landing page & Aug 08 & Next.js + FastAPI skeleton live \\
+M2 & Dataset loaded \& EDA complete & Aug 12 & Exploratory analysis notebook \\
+M3 & ML classifiers trained & Aug 22 & Serialized \texttt{.joblib} models \\
+M4 & Backend REST API functional & Aug 29 & Endpoints verified via Swagger \\
+M5 & Dashboard UI skeleton functional & Sep 01 & Next.js UI with mock data \\
+M6 & WebSocket live alert stream & Sep 05 & Real-time alert stream active \\
+M7 & Full E2E integration complete & Sep 14 & Frontend $\longleftrightarrow$ Backend connected \\
+M8 & Performance benchmarks passing & Sep 18 & Latency targets ($<$5ms) met \\
+M9 & Documentation complete & Sep 22 & README, API docs, slides \\
+\rowcolor{danger!8}
+M10 & \textbf{Final Project Submission} & \textbf{Sep 25} & Release tag + demo video \\
+\hline
+\end{longtable}
+\normalsize
+
+% ============================================================================
+\section{Technology Stack \& Tools}
+\label{sec:techstack}
+% ============================================================================
+
+\begin{table}[h!]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\rowcolor{accent!15}
+\textbf{Layer} & \textbf{Technology} & \textbf{Primary Ownership} \\
+\hline
+ML Engine & scikit-learn 1.5, River 0.21, pandas, joblib & Shardul Chogale \\
+\hline
+Backend API & FastAPI 0.111+, Uvicorn, Pydantic v2 & Neha Chavhan \& Mukta Varak \\
+\hline
+Cloud \& DevOps & Docker, Docker Compose, CI/CD & Mukta Varak \\
+\hline
+Frontend Core & Next.js 16, React 19, TypeScript 5 & Neha Chavhan \\
+\hline
+Data Viz \& UI & Recharts 3.10, Tailwind CSS, Framer Motion & Shruti Chaurasiya \& Neha Chavhan \\
+\hline
+Testing & pytest, httpx, Chrome DevTools & Shruti Chaurasiya \& Mukta Varak \\
+\hline
+\end{tabularx}
+\caption{Technology stack mapped to team leads.}
+\end{table}
+
+% ============================================================================
+\section{References \& Resources}
+\label{sec:refs}
+% ============================================================================
+
+\begin{enumerate}[label={[\arabic*]}]
+    \item \textbf{Makhmudov et al.} (2025). ``Intrusion Detection for Electric Vehicle Charging Systems.'' — \textit{Primary research paper benchmark.}
+
+    \item \textbf{CICEVSE2024 Dataset} — Canadian Institute for Cybersecurity.\\
+    \url{https://www.unb.ca/cic/datasets/evse2024.html}
+
+    \item \textbf{Frontend Design Reference} — Justus John Portfolio (UI/UX design inspiration).\\
+    \url{https://justus-john.com/en/}
+
+    \item \textbf{FastAPI Documentation} — \url{https://fastapi.tiangolo.com/}
+
+    \item \textbf{Next.js Documentation} — \url{https://nextjs.org/docs}
+
+    \item \textbf{scikit-learn Guide} — \url{https://scikit-learn.org/stable/}
+
+    \item \textbf{River ML (Online Learning)} — \url{https://riverml.xyz/}
+
+    \item \textbf{EVNet Sentinel Repository} — \url{https://github.com/shard-c6/EVNet_Sentinel}
+\end{enumerate}
+
+% ============================================================================
+\section{Communication \& Workflow Rules}
+\label{sec:workflow}
+% ============================================================================
+
+\begin{infobox}[Team Workflow Standards]
+\small
+\begin{enumerate}[nosep]
+    \item \textbf{Branching Strategy:} Use \texttt{feature/feature-name} branches. No direct pushes to \texttt{main}.
+    \item \textbf{Code Reviews:} At least 1 PR approval required before merging.
+    \item \textbf{Commit Style:} Conventional commits (\texttt{feat:}, \texttt{fix:}, \texttt{docs:}, \texttt{test:}).
+    \item \textbf{Async Standups:} Daily brief update in team chat regarding progress and blockers.
+    \item \textbf{Code Quality:} PEP8 for Python backend, ESLint for Next.js frontend.
+\end{enumerate}
+\end{infobox}
+
+% ============================================================================
+\section{Risk Mitigation}
+\label{sec:risk}
+% ============================================================================
+
+\small
+\begin{longtable}{|p{0.22\textwidth}|c|p{0.48\textwidth}|}
+\hline
+\rowcolor{danger!10}
+\textbf{Identified Risk} & \textbf{Severity} & \textbf{Mitigation Strategy} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{danger!10}
+\textbf{Identified Risk} & \textbf{Severity} & \textbf{Mitigation Strategy} \\
+\hline
+\endhead
+Dataset delay & High & Download CICEVSE2024 CSVs immediately (Aug 05) \\
+scikit-learn build on Windows & Medium & Use pre-compiled wheels in \texttt{requirements.txt} \\
+WebSocket dropouts & Medium & Auto-reconnect logic in frontend \texttt{useWebSocket} hook \\
+Scope expansion & Medium & Strict adherence to SRS v1.2 requirement scope \\
+Deployment issues & Medium & Containerize backend early in Phase 2 via Docker \\
+\hline
+\end{longtable}
+\normalsize
+
+\vfill
+\begin{center}
+\textcolor{primary}{\rule{0.5\textwidth}{1pt}}\\[0.5em]
+{\large\textbf{End of Document}}\\[0.3em]
+{\small EVNet Sentinel Project Management Document v2.0 — August 2026}
+\end{center}
+
+\end{document}

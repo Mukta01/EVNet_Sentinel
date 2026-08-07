@@ -1,0 +1,118 @@
+\documentclass[12pt, a4paper]{article}
+
+% ============================================================================
+% PACKAGES
+% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{microtype}
+
+% ============================================================================
+% COLOR DEFINITIONS
+% ============================================================================
+\definecolor{primary}{HTML}{1E40AF}     % Deep Royal Blue
+\definecolor{secondary}{HTML}{0D9488}   % Teal Accent
+\definecolor{darkgray}{HTML}{374151}    % Slate Body Text
+\definecolor{lightbg}{HTML}{F8FAFC}     % Off-white background box
+
+% ============================================================================
+% HYPERREF SETUP
+% ============================================================================
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=secondary,
+    pdftitle={EVNet Sentinel — AI Project Abstract},
+    pdfauthor={Group 1 — Vidyalankar Institute of Technology},
+    pdfsubject={Artificial Intelligence Group Assignment}
+}
+
+% ============================================================================
+% DOCUMENT START
+% ============================================================================
+\begin{document}
+
+% ============================================================================
+% COVER PAGE / FIRST PAGE
+% ============================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+
+    {\Huge \bfseries Project Abstract \& Assignment\par}
+    \vspace{0.4cm}
+    {\large for\par}
+    \vspace{0.6cm}
+
+    {\Huge \bfseries EVNet Sentinel: Anomaly Detection for EV Charging Infrastructure\par}
+    
+    \vspace{1.5cm}
+    {\Large Subject Name: \textbf{Artificial Intelligence}\par}
+    \vspace{0.3cm}
+    {\large Version 1.2\par}
+
+    \vspace{2cm}
+
+    {\Large \bfseries Prepared by:\par}
+    \vspace{0.5cm}
+    {\large \textit{Group 1}\par}
+    \vspace{0.3cm}
+    {\large
+    \begin{tabular}{c}
+        Mukta Varak \quad 24102A0013 \\
+        Shruti Chaurasiya \quad 24102A0018 \\
+        Shardul Chogale \quad 24102A0021 \\
+        Neha Chavhan \quad 24102A0022 \\
+    \end{tabular}
+    \par}
+
+    \vfill
+
+    {\Large \bfseries Vidyalankar Institute of Technology\par}
+    \vspace{0.2cm}
+    {\large August 2026\par}
+\end{titlepage}
+
+\newpage
+
+% ============================================================================
+% PAGE 2: PROJECT ABSTRACT
+% ============================================================================
+\pagestyle{plain}
+\vspace*{1cm}
+
+% ---- ABSTRACT SECTION ----
+\section*{\centering \Huge \textcolor{primary}{Project Abstract}}
+
+\vspace{1em}
+
+\noindent
+Modern Electric Vehicle Charging Station (EVCS) infrastructure relies heavily on interconnected communication networks, rendering it vulnerable to diverse cyber threats including Denial-of-Service (DoS), Man-in-the-Middle (MitM), and unauthorized command injection attacks. Traditional static Intrusion Detection Systems (IDS) often struggle with dynamic network traffic variations and concept drift. 
+
+\vspace{1em}
+
+\noindent
+This project presents \textbf{EVNet Sentinel}, a robust cyber-physical Intrusion Detection System engineered for EVCS networks. EVNet Sentinel combines static Machine Learning (ML) classifiers (\textit{Random Forest, Support Vector Machines, Logistic Regression, Decision Trees}) with continuous Online Stream Learning powered by an \textbf{Adaptive Random Forest (ARF)} algorithm coupled with an \textbf{ADaptive WINdowing (ADWIN)} drift detector. Using the benchmark \textbf{CICEVSE2024} network dataset, the system performs Recursive Feature Elimination (RFE) to isolate critical packet features, enabling sub-5ms real-time intrusion classification. 
+
+\vspace{1em}
+
+\noindent
+The architecture features a decoupled, high-performance \textbf{FastAPI (Python)} backend serving inference endpoints and streaming live threat alerts over WebSockets, connected to an interactive \textbf{Next.js (React/TypeScript)} dashboard. The visual dashboard offers real-time alert logs, interactive confusion matrix heatmaps, and metric telemetry. Benchmarking demonstrates that combining static classifiers with drift-aware online learning significantly improves anomaly detection accuracy and resilience against novel EVCS network exploit patterns.
+
+\vspace{2.5em}
+
+% ---- KEYWORDS ----
+\noindent
+\begin{tcolorbox}[colback=primary!5, colframe=secondary, arc=4pt, boxrule=0.8pt]
+\textbf{\textcolor{primary}{Keywords:}} Artificial Intelligence, Anomaly Detection, Intrusion Detection System (IDS), Electric Vehicle Charging Infrastructure, Adaptive Random Forest, Concept Drift (ADWIN), CICEVSE2024 Dataset, FastAPI, Next.js.
+\end{tcolorbox}
+
+\end{document}
