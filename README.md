@@ -51,6 +51,7 @@ Detailed documentation has been separated into the `docs/` directory for better 
 
 - 🏛️ [**Architecture Details**](./docs/ARCHITECTURE.md)
 - ⚙️ [**Setup & Installation**](./docs/SETUP.md)
+- 📚 [**Reference Papers Index**](./docs/papers.md)
 - 📝 [**Implementation Plan**](./docs/implementation_plan_phase0_landing_page.md)
 - 📄 [**Project SRS**](./docs/Project_SRS/WDL_SRS_EVNetSentinel.pdf)
 
