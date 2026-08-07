@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, Shield } from "lucide-react";
 import DotField from "./DotField";
+import ParticleText from "./ParticleText";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -95,17 +96,31 @@ export default function Hero() {
         </motion.div>
 
         {/* Headline */}
-        <motion.h1
-          ref={headlineRef}
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[0.95] mb-8"
+          className="relative w-full h-[120px] sm:h-[160px] md:h-[200px] lg:h-[250px] mb-8"
         >
-          <span className="text-white">Securing the</span>
-          <br />
-          <span className="gradient-text">Electric Grid</span>
-        </motion.h1>
+          <ParticleText
+            text="Securing the Grid"
+            particleSize={2}
+            density={4}
+            color="#ffffff"
+            highlightColor="#10b981"
+            scatter={180}
+            gatherDuration={1600}
+            stagger={420}
+            pointerRepel={40}
+            repelRadius={120}
+            idleDrift={0.7}
+            trigger="hover"
+            fontSize="clamp(3rem, 9vw, 8rem)"
+            fontWeight={900}
+            fontFamily="inherit"
+            glow
+          />
+        </motion.div>
 
         {/* Sub */}
         <motion.p
