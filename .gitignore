@@ -1,34 +1,35 @@
-# Environment Variables
+# Ignore virtual environments
 .env
-.env.local
-.env.development.local
-/datasets/
+.venv
+env/
+venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore serialized ML models (unless you explicitly want to commit them, which is not recommended for large models)
+# We will track the saved_models folder itself via a .gitkeep, but ignore its contents if needed
+# Actually, for a small academic project, you might want to commit small .pkl files so your teammates have access.
+# If you DO NOT want to commit models, uncomment the line below:
+# saved_models/*.pkl
+# Datasets and large files (Strictly ignored to prevent GitHub upload limits)
+datasets/
+data/raw/*
+!data/raw/.gitkeep
+*.csv
+*.tar
 *.tar.xz
 *.zip
-*.csv
-*.pdf
-.env.test.local
-.env.production.local
+*.gz
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-venv/
-env/
-.pytest_cache/
-
-# Node
-node_modules/
-
-# Next.js
-.next/
-out/
-build/
-
-# Mac
+# OS specific files
 .DS_Store
 
-# IDEs
+# Ignore IDE specific folders
 .vscode/
 .idea/
