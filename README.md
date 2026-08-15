@@ -45,6 +45,19 @@ flowchart LR
     style G fill:#bbf,stroke:#333,stroke-width:2px
 ```
 
+## 📁 Directory Structure
+
+- `data/raw/`: Stores the original, unmodified dataset files.
+- `data/processed/`: Contains the centralized, cleaned datasets (e.g., `X_train.csv`, `X_test.csv`). All models load data from here to prevent data leakage.
+- `src/data_prep/`: Centralized scripts for data cleaning and preprocessing.
+- `src/models/`: Dedicated subdirectories for each individual model (`svm`, `log_reg`, `random_forest`, `decision_tree`, `arfadwin`).
+- `src/evaluation/`: Unified scripts to evaluate model performance and metrics.
+- `src/api/`: Backend REST API endpoints for model serving.
+- `web/`: Dedicated web dashboard UI codebase.
+- `predictions/`: Shared folder where each model saves its prediction outputs as CSV files for standardized evaluation.
+- `saved_models/`: Shared folder for serialized model weights (`.pkl` / `.joblib`) to be consumed by the web UI and API.
+- `docs/`: Project documentation and specifications.
+
 ## 📚 Documentation
 
 Detailed documentation has been separated into the `docs/` directory for better maintainability:
