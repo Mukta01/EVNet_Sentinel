@@ -68,7 +68,7 @@ def load_network_traffic_data(base_dir: str = "data/raw") -> pd.DataFrame:
         logger.warning(f"Directory '{base_dir}' does not exist. Returning empty DataFrame.")
         return pd.DataFrame()
 
-    csv_files = glob.glob(os.path.join(base_dir, "**", "*.csv"), recursive=True)
+    csv_files = glob.glob(os.path.join(base_dir, "Network Traffic", "**", "*.csv"), recursive=True)
     
     if not csv_files:
         logger.warning(f"No CSV files found in '{base_dir}'. Returning empty DataFrame.")
@@ -128,26 +128,30 @@ def clean_and_reduce_features(df: pd.DataFrame) -> pd.DataFrame:
     return cleaned_df
 
 
-def engineer_features(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series]:
+def engineer_features(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Extracts and binary-encodes the target label ('Label'), then applies
-    StandardScaler to remaining numerical features.
+    Extracts binary and multiclass target labels ('Label').
+    Safely coerces remaining features to numeric to prevent data dropping.
+    (Note: Scaling is intentionally delayed until after data splitting to prevent data leakage).
     
     Args:
         df (pd.DataFrame): Cleaned DataFrame containing features and 'Label'.
         
     Returns:
-        Tuple[pd.DataFrame, pd.Series]: (X_scaled, y_encoded)
+        Tuple[pd.DataFrame, pd.DataFrame]: (X_numeric, y_combined)
     """
     if df.empty:
         logger.warning("Empty DataFrame passed to engineer_features.")
-        return pd.DataFrame(), pd.Series(dtype=int, name="Label")
+        return pd.DataFrame(), pd.DataFrame()
 
     if "Label" not in df.columns:
         raise KeyError("Input DataFrame is missing required target column 'Label'.")
 
     # Extract target label
     y_raw = df["Label"]
+    
+    # Multiclass encoding (keep string as is, fill NaNs with Benign)
+    y_multiclass = y_raw.fillna("Benign").astype(str)
     
     # Binary encoding: 'Benign' -> 0, all attacks -> 1
     def encode_label(val):
@@ -158,47 +162,48 @@ def engineer_features(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series]:
             return 0
         return 1
 
-    y = y_raw.apply(encode_label).astype(int)
-    y.name = "Label"
+    y_binary = y_raw.apply(encode_label).astype(int)
+
+    y_combined = pd.DataFrame({
+        "Label_Binary": y_binary,
+        "Label_Multiclass": y_multiclass
+    })
 
     # Separate feature matrix X
-    X_raw = df.drop(columns=["Label"], errors="ignore")
+    X_raw = df.drop(columns=["Label"], errors="ignore").copy()
 
-    # Keep numeric features only
-    X_numeric = X_raw.select_dtypes(include=[np.number]).copy()
+    # Safely coerce all remaining features to numeric (prevent dirty strings from dropping features)
+    for col in X_raw.columns:
+        X_raw[col] = pd.to_numeric(X_raw[col], errors='coerce')
+    
+    # Fill any NaNs introduced by coercion
+    X_raw.fillna(0, inplace=True)
+    X_numeric = X_raw
 
     if X_numeric.empty:
-        logger.warning("No numeric features available for scaling.")
-        return X_numeric, y
+        logger.warning("No numeric features available.")
+        return X_numeric, y_combined
 
-    # Fit and transform with StandardScaler
-    scaler = StandardScaler()
-    scaled_array = scaler.fit_transform(X_numeric)
-    
-    X_scaled = pd.DataFrame(
-        scaled_array,
-        columns=X_numeric.columns,
-        index=X_numeric.index
-    )
+    logger.info(f"Engineered features for {X_numeric.shape[0]} rows across {X_numeric.shape[1]} features.")
+    logger.info(f"Target distribution: Benign (0)={sum(y_binary == 0)}, Attack (1)={sum(y_binary == 1)}.")
 
-    logger.info(f"Engineered features for {X_scaled.shape[0]} rows across {X_scaled.shape[1]} features.")
-    logger.info(f"Target distribution: Benign (0)={sum(y == 0)}, Attack (1)={sum(y == 1)}.")
-
-    return X_scaled, y
+    return X_numeric, y_combined
 
 
 def split_and_export_data(
     X: pd.DataFrame,
-    y: pd.Series,
+    y: pd.DataFrame,
     output_dir: str = "data/processed"
 ) -> None:
     """
-    Splits the cleaned and scaled data into 70% Train, 15% Validation, and 15% Test.
+    Splits the cleaned data into 70% Train, 15% Validation, and 15% Test.
+    Applies StandardScaler fit ONLY on the training set to prevent data leakage,
+    then transforms all three sets.
     Exports resulting 6 CSV files to output_dir.
     
     Args:
-        X (pd.DataFrame): Scaled feature matrix.
-        y (pd.Series): Encoded binary target labels.
+        X (pd.DataFrame): Unscaled numerical feature matrix.
+        y (pd.DataFrame): Target labels (binary and multiclass).
         output_dir (str): Destination directory for processed CSV files.
     """
     if X.empty or y.empty:
@@ -207,13 +212,16 @@ def split_and_export_data(
 
     os.makedirs(output_dir, exist_ok=True)
 
+    # Use the multiclass label for stratification if possible to ensure rare attacks are split properly
+    stratify_target = y["Label_Multiclass"]
+    
     # Determine if stratification is possible for the first split
-    class_counts_first = y.value_counts()
+    class_counts_first = stratify_target.value_counts()
     can_stratify_first = len(class_counts_first) > 1 and all(count >= 2 for count in class_counts_first)
-    stratify_first = y if can_stratify_first else None
+    stratify_first = stratify_target if can_stratify_first else None
 
     # First split: 70% train, 30% temp
-    X_train, X_temp, y_train, y_temp = train_test_split(
+    X_train_raw, X_temp_raw, y_train, y_temp = train_test_split(
         X, y,
         test_size=0.30,
         random_state=42,
@@ -221,22 +229,45 @@ def split_and_export_data(
     )
 
     # Determine if stratification is possible for the second split on temp subset
-    class_counts_second = y_temp.value_counts()
+    stratify_temp_target = y_temp["Label_Multiclass"]
+    class_counts_second = stratify_temp_target.value_counts()
     can_stratify_second = len(class_counts_second) > 1 and all(count >= 2 for count in class_counts_second)
-    stratify_second = y_temp if can_stratify_second else None
+    stratify_second = stratify_temp_target if can_stratify_second else None
 
     # Second split: split 30% temp equally into 15% validation and 15% test
-    X_val, X_test, y_val, y_test = train_test_split(
-        X_temp, y_temp,
+    X_val_raw, X_test_raw, y_val, y_test = train_test_split(
+        X_temp_raw, y_temp,
         test_size=0.50,
         random_state=42,
         stratify=stratify_second
     )
 
     logger.info(
-        f"Data split ratios -> Train: {len(X_train)} ({len(X_train)/len(X):.1%}), "
-        f"Val: {len(X_val)} ({len(X_val)/len(X):.1%}), "
-        f"Test: {len(X_test)} ({len(X_test)/len(X):.1%})"
+        f"Data split ratios -> Train: {len(X_train_raw)} ({len(X_train_raw)/len(X):.1%}), "
+        f"Val: {len(X_val_raw)} ({len(X_val_raw)/len(X):.1%}), "
+        f"Test: {len(X_test_raw)} ({len(X_test_raw)/len(X):.1%})"
+    )
+
+    # Apply StandardScaler (Fit ONLY on training data!)
+    logger.info("Applying StandardScaler (fitted on training data only) to prevent data leakage...")
+    scaler = StandardScaler()
+    
+    X_train = pd.DataFrame(
+        scaler.fit_transform(X_train_raw),
+        columns=X_train_raw.columns,
+        index=X_train_raw.index
+    )
+    
+    X_val = pd.DataFrame(
+        scaler.transform(X_val_raw),
+        columns=X_val_raw.columns,
+        index=X_val_raw.index
+    )
+    
+    X_test = pd.DataFrame(
+        scaler.transform(X_test_raw),
+        columns=X_test_raw.columns,
+        index=X_test_raw.index
     )
 
     # Export CSVs
@@ -267,8 +298,8 @@ def main():
         return
 
     df_cleaned = clean_and_reduce_features(df)
-    X_scaled, y_encoded = engineer_features(df_cleaned)
-    split_and_export_data(X_scaled, y_encoded, output_dir=args.output_dir)
+    X_numeric, y_combined = engineer_features(df_cleaned)
+    split_and_export_data(X_numeric, y_combined, output_dir=args.output_dir)
     logger.info("--- Pipeline Completed Successfully ---")
 
 
