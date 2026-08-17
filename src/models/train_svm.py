@@ -14,6 +14,8 @@ def main():
 
     X_train = pd.read_csv(os.path.join(base_dir, "X_train.csv"))
     y_train = pd.read_csv(os.path.join(base_dir, "y_train.csv"))
+    X_val = pd.read_csv(os.path.join(base_dir, "X_val.csv"))
+    y_val = pd.read_csv(os.path.join(base_dir, "y_val.csv"))
     X_test = pd.read_csv(os.path.join(base_dir, "X_test.csv"))
 
     # Extract both target variables
@@ -39,13 +41,13 @@ def main():
     print("Generating predictions...")
     os.makedirs("predictions", exist_ok=True)
 
-    # Binary Predictions
-    preds_binary_df = pd.DataFrame({"Prediction_Binary": model_binary.predict(X_test)})
-    preds_binary_df.to_csv("predictions/svm_preds_binary.csv", index=False)
+    # Binary Validation & Test Predictions
+    pd.DataFrame({"Prediction_Binary": model_binary.predict(X_val)}).to_csv("predictions/svm_preds_binary_val.csv", index=False)
+    pd.DataFrame({"Prediction_Binary": model_binary.predict(X_test)}).to_csv("predictions/svm_preds_binary_test.csv", index=False)
 
-    # Multiclass Predictions
-    preds_multi_df = pd.DataFrame({"Prediction_Multiclass": model_multi.predict(X_test)})
-    preds_multi_df.to_csv("predictions/svm_preds_multiclass.csv", index=False)
+    # Multiclass Validation & Test Predictions
+    pd.DataFrame({"Prediction_Multiclass": model_multi.predict(X_val)}).to_csv("predictions/svm_preds_multiclass_val.csv", index=False)
+    pd.DataFrame({"Prediction_Multiclass": model_multi.predict(X_test)}).to_csv("predictions/svm_preds_multiclass_test.csv", index=False)
     print("Predictions saved to 'predictions/' directory.")
 
 if __name__ == "__main__":
