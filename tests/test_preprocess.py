@@ -7,7 +7,10 @@ import sys
 import tempfile
 import numpy as np
 import pandas as pd
-import pytest
+try:
+    import pytest
+except ImportError:
+    pytest = None
 
 # Ensure root workspace directory is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -44,9 +47,10 @@ def get_sample_raw_dataframe():
     return pd.DataFrame(data)
 
 
-@pytest.fixture
-def sample_raw_dataframe():
-    return get_sample_raw_dataframe()
+if pytest is not None:
+    @pytest.fixture
+    def sample_raw_dataframe():
+        return get_sample_raw_dataframe()
 
 
 def test_clean_and_reduce_features(sample_raw_dataframe=None):
@@ -73,39 +77,36 @@ def test_clean_and_reduce_features(sample_raw_dataframe=None):
 
 def test_engineer_features_target_encoding(sample_raw_dataframe=None):
     """
-    Verifies binary label encoding: Benign -> 0, Attack -> 1.
+    Verifies binary and multiclass label encoding: Benign -> 0, Attack -> 1.
     """
     if sample_raw_dataframe is None:
         sample_raw_dataframe = get_sample_raw_dataframe()
 
     cleaned_df = clean_and_reduce_features(sample_raw_dataframe)
-    X_scaled, y_encoded = engineer_features(cleaned_df)
+    X_numeric, y_encoded = engineer_features(cleaned_df)
 
-    assert isinstance(y_encoded, pd.Series)
-    assert y_encoded.name == "Label"
+    assert isinstance(y_encoded, pd.DataFrame)
+    assert "Label_Binary" in y_encoded.columns
+    assert "Label_Multiclass" in y_encoded.columns
     
-    expected_labels = [0, 0, 1, 1, 1, 1, 1, 0, 1, 0]
-    assert list(y_encoded.values) == expected_labels
+    expected_binary_labels = [0, 0, 1, 1, 1, 1, 1, 0, 1, 0]
+    assert list(y_encoded["Label_Binary"].values) == expected_binary_labels
 
 
-def test_engineer_features_scaling(sample_raw_dataframe=None):
+def test_engineer_features_extraction(sample_raw_dataframe=None):
     """
-    Verifies that features are standardized using StandardScaler (mean ~ 0, std ~ 1).
+    Verifies that numerical features are extracted into a DataFrame.
     """
     if sample_raw_dataframe is None:
         sample_raw_dataframe = get_sample_raw_dataframe()
 
     cleaned_df = clean_and_reduce_features(sample_raw_dataframe)
-    X_scaled, y_encoded = engineer_features(cleaned_df)
+    X_numeric, y_encoded = engineer_features(cleaned_df)
 
-    assert isinstance(X_scaled, pd.DataFrame)
-    assert not X_scaled.empty
-
-    for col in X_scaled.columns:
-        mean_val = X_scaled[col].mean()
-        std_val = X_scaled[col].std(ddof=0)
-        assert abs(mean_val) < 1e-5
-        assert abs(std_val - 1.0) < 1e-5
+    assert isinstance(X_numeric, pd.DataFrame)
+    assert not X_numeric.empty
+    assert "bidirectional_packets" in X_numeric.columns
+    assert "bidirectional_bytes" in X_numeric.columns
 
 
 def test_split_and_export_data(sample_raw_dataframe=None, tmp_path=None):
@@ -187,8 +188,8 @@ if __name__ == "__main__":
     test_engineer_features_target_encoding()
     print("PASSED")
 
-    print("Running test_engineer_features_scaling...")
-    test_engineer_features_scaling()
+    print("Running test_engineer_features_extraction...")
+    test_engineer_features_extraction()
     print("PASSED")
 
     print("Running test_split_and_export_data...")
