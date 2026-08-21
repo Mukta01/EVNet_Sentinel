@@ -12,3 +12,6 @@ fastapi
 uvicorn
 
 # Add more specific requirements (e.g., specific library versions or packages like xgboost) as you go.
+
+# Online Machine Learning
+river
