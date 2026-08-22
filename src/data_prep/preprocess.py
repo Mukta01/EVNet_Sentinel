@@ -150,15 +150,31 @@ def engineer_features(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     # Extract target label
     y_raw = df["Label"]
     
-    # Multiclass encoding (keep string as is, fill NaNs with Benign)
-    y_multiclass = y_raw.fillna("Benign").astype(str)
+    def standardize_multiclass(val):
+        if pd.isna(val):
+            return "benign"
+        v = str(val).lower().strip()
+        # Map common variations
+        mapping = {
+            "portscan": "port-scan",
+            "syn-stealth-scan": "syn-stealth",
+            "synonymous-ip-flood": "synonymous-ip",
+            "service-detection-scan": "service-detection",
+            "aggressive-scan": "aggressive-scan",
+            "slowloris-scan": "slowloris-scan",
+            "benign": "benign"
+        }
+        return mapping.get(v, v)
+        
+    # Multiclass encoding (standardize strings, fill NaNs with benign)
+    y_multiclass = y_raw.apply(standardize_multiclass)
     
-    # Binary encoding: 'Benign' -> 0, all attacks -> 1
+    # Binary encoding: 'benign' -> 0, all attacks -> 1
     def encode_label(val):
         if pd.isna(val):
             return 0
-        s_val = str(val).strip().lower()
-        if s_val in ["benign", "0", "false", "normal"]:
+        v = str(val).lower().strip()
+        if v in ["benign", "0", "false", "normal"]:
             return 0
         return 1
 
