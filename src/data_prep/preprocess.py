@@ -268,8 +268,20 @@ def split_and_export_data(
     logger.info("Applying StandardScaler (fitted on training data only) to prevent data leakage...")
     scaler = StandardScaler()
     
+    # Save the scaler to saved_models/
+    import pickle
+    model_dir = os.path.join(PROJECT_ROOT if 'PROJECT_ROOT' in locals() else os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "saved_models")
+    os.makedirs(model_dir, exist_ok=True)
+    scaler_path = os.path.join(model_dir, "StandardScaler.pkl")
+    
+    X_train_scaled = scaler.fit_transform(X_train_raw)
+    
+    with open(scaler_path, 'wb') as f:
+        pickle.dump(scaler, f)
+    logger.info(f"Saved StandardScaler to {scaler_path}")
+    
     X_train = pd.DataFrame(
-        scaler.fit_transform(X_train_raw),
+        X_train_scaled,
         columns=X_train_raw.columns,
         index=X_train_raw.index
     )
