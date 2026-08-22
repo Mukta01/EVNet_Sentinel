@@ -2,16 +2,17 @@
 
 This document outlines the detailed step-by-step implementation strategy for Epic 2 (Issue #13). Epic 2 requires all team members to build, train, and save baseline Machine Learning models. 
 
-**Revision Note**: Based on feedback, each collaborator will now train *two* versions of their assigned model: one for Binary classification (`Label_Binary`) and one for Multiclass classification (`Label_Multiclass`). 
+**Revision Note 1**: Based on feedback, each collaborator will train their assigned model focusing exclusively on the Multiclass classification task (`Label_Multiclass`). The Binary classification task has been dropped as the target variable is 99.99% 'Attack', making it redundant compared to identifying the specific attack types.
+**Revision Note 2 (OOM Mitigation)**: Due to massive memory consumption (50GB+ OOM errors) on 2.4 GB datasets with `LinearSVC`, the **SVM** and **Logistic Regression** models have been architecturally refactored to use **Out-of-Core Learning**. Instead of `LinearSVC` and `LogisticRegression`, both will use `SGDClassifier` (`loss='hinge'` for SVM, `loss='log_loss'` for Logistic Regression) coupled with `pd.read_csv(chunksize=X)` and `.partial_fit()` to strictly bound memory < 500MB.
 
 ## 1. Overview & Collaborator Assignments
 
 | Assignee | Model | Issue | Output Models (`saved_models/`) | Output Preds (`predictions/`) | Branch |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Shardul (@shard-c6)** | Support Vector Machine (SVM) | #2 | `svm_model_binary.pkl`<br>`svm_model_multiclass.pkl` | `svm_preds_binary.csv`<br>`svm_preds_multiclass.csv` | `feature/svm-model` |
-| **Mukta (@Mukta01)** | Logistic Regression | #3 | `logreg_model_binary.pkl`<br>`logreg_model_multiclass.pkl`| `logreg_preds_binary.csv`<br>`logreg_preds_multiclass.csv`| `feature/logreg-model` |
-| **Shruti (@shrutich-30)** | Random Forest | #4 | `rf_model_binary.pkl`<br>`rf_model_multiclass.pkl` | `rf_preds_binary.csv`<br>`rf_preds_multiclass.csv` | `feature/rf-model` |
-| **Neha (@nehachavhan2006)** | Decision Tree | #5 | `dt_model_binary.pkl`<br>`dt_model_multiclass.pkl` | `dt_preds_binary.csv`<br>`dt_preds_multiclass.csv` | `feature/dt-model` |
+| **Shardul (@shard-c6)** | Support Vector Machine (SVM) | #2 | `svm_model_multiclass.pkl` | `svm_preds_multiclass.csv` | `feature/svm-model` |
+| **Mukta (@Mukta01)** | Logistic Regression | #3 | `logreg_model_multiclass.pkl`| `logreg_preds_multiclass.csv`| `feature/logreg-model` |
+| **Shruti (@shrutich-30)** | Random Forest | #4 | `rf_model_multiclass.pkl` | `rf_preds_multiclass.csv` | `feature/rf-model` |
+| **Neha (@nehachavhan2006)** | Decision Tree | #5 | `dt_model_multiclass.pkl` | `dt_preds_multiclass.csv` | `feature/dt-model` |
 
 ---
 
