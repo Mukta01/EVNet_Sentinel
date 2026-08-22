@@ -94,6 +94,13 @@ The CICEVSE2024 dataset used for this project is heavy and access-restricted. Pl
      ```
    - *Note: `make data` will download the 2.4GB dataset, extract it to `data/raw/`, and process it into `data/processed/`. Ensure you have sufficient disk space.*
 
+## 🙏 Acknowledgements & Citations
+
+This project builds upon the foundational research and methodology open-sourced by the TATU-hacker team. We would like to acknowledge and cite their repository:
+- [TATU-hacker/Intrusion_Detection_on_Electric_Vehicle_Charging_Systems](https://github.com/TATU-hacker/Intrusion_Detection_on_Electric_Vehicle_Charging_Systems)
+
+Their work on online machine learning for EVCS intrusion detection heavily inspired our approach, particularly our implementation of the ARF-ADWIN model and the use of the CICEVSE2024 dataset.
+
 ## 👥 Meet The Team
 
 | Roll No. | Name | Official Role Title | GitHub |
