@@ -6,53 +6,60 @@ import os
 
 app = FastAPI(title="EVNet Sentinel ML API", version="1.0.0", description="API for predicting network attacks using Out-of-Core SVM Multiclass model")
 
-# Global variable to hold the model and scaler
-model = None
+# Global variables
+models = {}
 scaler = None
-# We will get the expected feature columns when the model is loaded
 expected_features = None
 
 # Model paths inside the docker container
-MODEL_PATH = os.getenv("MODEL_PATH", "saved_models/svm_model_multiclass.pkl")
+MODELS_DIR = os.getenv("MODELS_DIR", "saved_models")
 SCALER_PATH = os.getenv("SCALER_PATH", "saved_models/StandardScaler.pkl")
 
 @app.on_event("startup")
-def load_model():
-    global model
+def load_models():
+    global models
     global scaler
     global expected_features
     try:
-        print(f"[*] Loading model from {MODEL_PATH}")
-        model = joblib.load(MODEL_PATH)
-        print("[+] Model loaded successfully!")
-        
         print(f"[*] Loading scaler from {SCALER_PATH}")
         scaler = joblib.load(SCALER_PATH)
         print("[+] Scaler loaded successfully!")
-        
-        # If the model has feature names (scikit-learn >= 1.0), we can extract them for validation
-        if hasattr(model, "feature_names_in_"):
-            expected_features = list(model.feature_names_in_)
-            print(f"[*] Model expects {len(expected_features)} features.")
-        elif hasattr(scaler, "feature_names_in_"):
+        if hasattr(scaler, "feature_names_in_"):
             expected_features = list(scaler.feature_names_in_)
             print(f"[*] Scaler expects {len(expected_features)} features.")
+            
+        print(f"[*] Scanning {MODELS_DIR} for models...")
+        for filename in os.listdir(MODELS_DIR):
+            if filename.endswith(".pkl") and filename != "StandardScaler.pkl" and filename != "arf_adwin.pkl":
+                model_name = filename.replace(".pkl", "")
+                model_path = os.path.join(MODELS_DIR, filename)
+                print(f"[*] Loading model: {model_name} from {model_path}")
+                models[model_name] = joblib.load(model_path)
+                
+                # Try to extract expected features if scaler didn't have them
+                if not expected_features and hasattr(models[model_name], "feature_names_in_"):
+                    expected_features = list(models[model_name].feature_names_in_)
+                    print(f"[*] Model {model_name} expects {len(expected_features)} features.")
+                    
+        print(f"[+] Loaded {len(models)} models: {list(models.keys())}")
+        
     except Exception as e:
-        print(f"[!] Error loading model/scaler: {e}")
+        print(f"[!] Error loading models/scaler: {e}")
         # We don't raise here, so the server can start and we can debug via the /health endpoint
         
 class PredictionRequest(BaseModel):
     # A generic dictionary to hold the 39 features dynamically without hardcoding them in Pydantic
     features: dict
+    # Optional model name to allow the frontend to specify which model to predict with
+    model_name: str = "arfadwin_model"
 
 @app.get("/")
 def health_check():
     """ Health check endpoint to verify the API is running and the model is loaded. """
     return {
         "status": "healthy",
-        "model_loaded": model is not None,
+        "models_loaded": list(models.keys()),
         "scaler_loaded": scaler is not None,
-        "model_path": MODEL_PATH,
         "scaler_path": SCALER_PATH
     }
 
@@ -61,8 +68,13 @@ def predict_attack(request: PredictionRequest):
     """
     Accepts a JSON payload of preprocessed network traffic features and returns the predicted attack class.
     """
-    if model is None:
-        raise HTTPException(status_code=500, detail="Model is not loaded on the server.")
+    if not models:
+        raise HTTPException(status_code=500, detail="No models are loaded on the server.")
+    
+    if request.model_name not in models:
+        raise HTTPException(status_code=400, detail=f"Model '{request.model_name}' not found. Available models: {list(models.keys())}")
+        
+    model = models[request.model_name]
         
     try:
         # Convert dictionary to a 1-row Pandas DataFrame
