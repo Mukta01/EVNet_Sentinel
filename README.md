@@ -38,8 +38,9 @@ flowchart LR
     B -->|Pre-processing| C{ML Engine}
     C -->|Static Models| D[RF, SVM, DT, LR]
     C -->|Online Learning| E[ARF + ADWIN]
-    D --> F[Results API]
-    E --> F
+    D -->|Serialized .pkl| M[(Dynamic Model Registry)]
+    E -->|Serialized .pkl| M
+    M --> F[Results API]
     F <-->|WebSockets & REST| G[Next.js Dashboard]
     
     style A fill:#f9f,stroke:#333,stroke-width:2px

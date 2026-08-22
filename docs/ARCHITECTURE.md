@@ -13,23 +13,26 @@ flowchart TB
         Stream[Simulated Network Stream]
     end
 
-    subgraph Backend [Logic & ML Layer - FastAPI]
-        Preprocess[Data Preprocessing: StandardScaler]
-        
-        subgraph StaticML [Static Offline Models]
-            RF[Random Forest]
-            SVM[Support Vector Machine]
-            LR[Logistic Regression]
-            DT[Decision Trees]
+    subgraph Docker [Docker Container - Single Stage]
+        subgraph Backend [Logic & ML Layer - FastAPI]
+            Preprocess[Data Preprocessing: StandardScaler]
+            
+            subgraph StaticML [Static Offline Models]
+                RF[Random Forest]
+                SVM[Support Vector Machine]
+                LR[Logistic Regression]
+                DT[Decision Trees]
+            end
+            
+            subgraph OnlineML [Online Adaptive Models]
+                ARF[Adaptive Random Forest]
+                ADWIN[ADWIN Concept Drift Detection]
+                ARF --- ADWIN
+            end
+            
+            Registry[(Dynamic Model Registry)]
+            API[REST & WebSocket APIs]
         end
-        
-        subgraph OnlineML [Online Adaptive Models]
-            ARF[Adaptive Random Forest]
-            ADWIN[ADWIN Concept Drift Detection]
-            ARF --- ADWIN
-        end
-        
-        API[REST & WebSocket APIs]
     end
 
     subgraph Frontend [Presentation Layer - Next.js]
@@ -44,8 +47,9 @@ flowchart TB
     Preprocess --> StaticML
     Preprocess --> OnlineML
     
-    StaticML --> API
-    OnlineML --> API
+    StaticML --> Registry
+    OnlineML --> Registry
+    Registry --> API
     
     API <==>|HTTP / WebSockets| Frontend
 ```
