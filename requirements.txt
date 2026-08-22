@@ -5,3 +5,5 @@ scikit-learn
 joblib
 pydantic
 river
+gdown
+python-dotenv
