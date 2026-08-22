@@ -18,7 +18,7 @@ COPY saved_models /app/saved_models
 COPY src/api /app/src/api
 
 # Set environment variable so the API knows where the model is
-ENV MODEL_PATH=/app/saved_models/arfadwin_model.pkl
+ENV MODELS_DIR=/app/saved_models
 ENV SCALER_PATH=/app/saved_models/StandardScaler.pkl
 
 # Expose port 8000 for the FastAPI server
