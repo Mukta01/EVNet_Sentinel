@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 def train_and_predict_rf(X_train_path, y_train_path, X_test_path, predictions_dir, model_save_dir, plots_dir):
     """
-    Trains and saves Random Forest models (Binary and Multiclass).
+    Trains and saves Random Forest model (Multiclass only).
     Uses warm_start=True to incrementally build trees and show a progress bar.
     """
     # Create directories if they don't exist
@@ -23,18 +23,8 @@ def train_and_predict_rf(X_train_path, y_train_path, X_test_path, predictions_di
     X_train = pd.read_csv(X_train_path)
     y_train_full = pd.read_csv(y_train_path)
     
-    if "Label_Multiclass" not in y_train_full.columns or "Label_Binary" not in y_train_full.columns:
-        raise ValueError("y_train must contain 'Label_Binary' and 'Label_Multiclass' columns.")
-    
-    # Visualization and setup for Binary
-    classes_binary = np.array(sorted(y_train_full["Label_Binary"].unique()))
-    print(f"[*] Visualizing binary class distributions...")
-    plt.figure(figsize=(10, 5))
-    sns.countplot(x=y_train_full["Label_Binary"])
-    plt.title("Binary Distribution")
-    plt.tight_layout()
-    plt.savefig(os.path.join(plots_dir, "rf_training_binary_distribution.png"))
-    plt.close()
+    if "Label_Multiclass" not in y_train_full.columns:
+        raise ValueError("y_train must contain 'Label_Multiclass' column.")
     
     # Visualization and setup for Multiclass
     classes_multi = np.array(sorted(y_train_full["Label_Multiclass"].unique()))
@@ -47,26 +37,12 @@ def train_and_predict_rf(X_train_path, y_train_path, X_test_path, predictions_di
     plt.close()
     
     print(f"[*] Computing class weights for balanced training...")
-    weights_b = compute_class_weight('balanced', classes=classes_binary, y=y_train_full["Label_Binary"])
-    class_weight_binary = dict(zip(classes_binary, weights_b))
-    
     weights_m = compute_class_weight('balanced', classes=classes_multi, y=y_train_full["Label_Multiclass"])
     class_weight_multi = dict(zip(classes_multi, weights_m))
     
     n_estimators = 100
     step = 10
     
-    # --- Train Binary Model ---
-    print(f"[*] Initializing Random Forest (Binary)...")
-    model_binary = RandomForestClassifier(n_estimators=0, warm_start=True, max_depth=15, 
-                                          class_weight=class_weight_binary, random_state=42, n_jobs=-1)
-    
-    with tqdm(total=n_estimators, desc="Training RF Binary (Trees)") as pbar:
-        for i in range(step, n_estimators + step, step):
-            model_binary.set_params(n_estimators=i)
-            model_binary.fit(X_train, y_train_full["Label_Binary"])
-            pbar.update(step)
-            
     # --- Train Multiclass Model ---
     print(f"[*] Initializing Random Forest (Multiclass)...")
     model_multi = RandomForestClassifier(n_estimators=0, warm_start=True, max_depth=15, 
@@ -78,31 +54,24 @@ def train_and_predict_rf(X_train_path, y_train_path, X_test_path, predictions_di
             model_multi.fit(X_train, y_train_full["Label_Multiclass"])
             pbar.update(step)
             
-    # 3. Save Models
-    binary_model_path = os.path.join(model_save_dir, "rf_model_binary.pkl")
+    # 3. Save Model
     multi_model_path = os.path.join(model_save_dir, "rf_model_multiclass.pkl")
-    joblib.dump(model_binary, binary_model_path)
     joblib.dump(model_multi, multi_model_path)
-    print(f"[+] Saved models to {model_save_dir}")
+    print(f"[+] Saved model to {model_save_dir}")
     
     # 4. Generate Predictions
     print(f"[*] Generating Predictions for X_test...")
     X_test = pd.read_csv(X_test_path)
-    y_pred_binary = model_binary.predict(X_test)
     y_pred_multi = model_multi.predict(X_test)
     
-    preds_binary_df = pd.DataFrame({"Prediction_Binary": y_pred_binary})
     preds_multi_df = pd.DataFrame({"Prediction_Multiclass": y_pred_multi})
     
     y_test_path = X_test_path.replace('X_test', 'y_test')
     if os.path.exists(y_test_path):
         y_test = pd.read_csv(y_test_path)
-        preds_binary_df["y_true"] = y_test["Label_Binary"]
-        preds_binary_df["y_pred"] = y_pred_binary
         preds_multi_df["y_true"] = y_test["Label_Multiclass"]
         preds_multi_df["y_pred"] = y_pred_multi
         
-    preds_binary_df.to_csv(os.path.join(predictions_dir, "rf_preds_binary.csv"), index=False)
     preds_multi_df.to_csv(os.path.join(predictions_dir, "rf_preds_multiclass.csv"), index=False)
     
     print(f"[+] Saved predictions to {predictions_dir}")
