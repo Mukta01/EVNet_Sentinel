@@ -1,3 +1,4 @@
+# NO_OOC_REQUIRED
 import pandas as pd
 import os
 import joblib
