@@ -68,10 +68,16 @@ Detailed documentation has been separated into the `docs/` directory for better 
 - ⚙️ [**Setup & Installation**](./docs/SETUP.md)
 - 📚 [**Reference Papers Index**](./docs/papers.md)
 - 📊 [**Dataset Feature Engineering**](./docs/dataset_feature_engineering.md)
-- 📈 [**Random Forest Evaluation**](./evaluation_results/rf_evaluation_summary.md)
-- 📈 [**SVM Evaluation**](./evaluation_results/SVM_evaluation_summary.md)
 - 🎯 [**Use Case Diagrams**](./docs/evnet_sentinel_use_cases.md)
 - 📄 [**Project SRS**](./docs/Project_SRS/WDL_SRS_EVNetSentinel.pdf)
+
+## 📈 Model Performance & Notebooks
+
+We rigorously evaluate our models on the 14-class attack dataset. View our interactive training notebooks and detailed evaluation reports below:
+
+- 🌳 **Random Forest**: [Training Notebook](./src/models/random_forest/Random_Forest_Training.ipynb) | [Evaluation Report](./evaluation_results/rf_evaluation_summary.md)
+- 📉 **Support Vector Machine (SVM)**: [Training Notebook](./src/models/svm/svm_training.ipynb) | [Evaluation Report](./evaluation_results/SVM_evaluation_summary.md)
+- 🔄 **Adaptive Random Forest (ARF-ADWIN)**: [Implementation Script](./src/models/arfadwin/train_arfadwin.py) *(Online Learning Model)*
 
 ## 🔐 Dataset Access & Security Rules
 
