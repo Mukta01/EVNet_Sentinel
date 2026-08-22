@@ -34,12 +34,15 @@ def load_models():
                 model_name = filename.replace(".pkl", "")
                 model_path = os.path.join(MODELS_DIR, filename)
                 print(f"[*] Loading model: {model_name} from {model_path}")
-                models[model_name] = joblib.load(model_path)
-                
-                # Try to extract expected features if scaler didn't have them
-                if not expected_features and hasattr(models[model_name], "feature_names_in_"):
-                    expected_features = list(models[model_name].feature_names_in_)
-                    print(f"[*] Model {model_name} expects {len(expected_features)} features.")
+                try:
+                    models[model_name] = joblib.load(model_path)
+                    
+                    # Try to extract expected features if scaler didn't have them
+                    if not expected_features and hasattr(models[model_name], "feature_names_in_"):
+                        expected_features = list(models[model_name].feature_names_in_)
+                        print(f"[*] Model {model_name} expects {len(expected_features)} features.")
+                except Exception as e:
+                    print(f"[!] Failed to load model {model_name}: {e}")
                     
         print(f"[+] Loaded {len(models)} models: {list(models.keys())}")
         

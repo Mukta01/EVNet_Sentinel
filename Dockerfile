@@ -1,23 +1,26 @@
-# Use the official Python 3.10 slim image as a lightweight base
+# Use single stage to avoid losing dynamically linked system libraries
 FROM python:3.10-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies (if needed, typically none for pure python sklearn)
-# RUN apt-get update && apt-get install -y --no-install-recommends gcc && rm -rf /var/lib/apt/lists/*
-
-# Copy the requirements file and install dependencies
+# Install build dependencies, Rust, install python packages, and then clean up build deps
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+
+RUN apt-get update && apt-get install -y --no-install-recommends gcc g++ python3-dev curl && \
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+    export PATH="/root/.cargo/bin:${PATH}" && \
+    pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    rustup self uninstall -y && \
+    apt-get purge -y gcc g++ python3-dev curl && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy the trained models and the API source code
-# Note: In a real production environment, you might fetch the model from S3/cloud storage at runtime
-# to keep the docker image small, but for this project, packaging it inside is fine.
 COPY saved_models /app/saved_models
 COPY src/api /app/src/api
 
-# Set environment variable so the API knows where the model is
+# Set environment variables
 ENV MODELS_DIR=/app/saved_models
 ENV SCALER_PATH=/app/saved_models/StandardScaler.pkl
 
