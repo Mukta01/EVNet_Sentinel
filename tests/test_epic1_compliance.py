@@ -1,4 +1,5 @@
 import os
+import pytest
 import pandas as pd
 from pathlib import Path
 
@@ -7,6 +8,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 DATA_DIR = PROJECT_ROOT / "data" / "processed"
 MODELS_DIR = PROJECT_ROOT / "saved_models"
 
+@pytest.mark.skipif(os.environ.get("GITHUB_ACTIONS") == "true", reason="Processed data is gitignored")
 def test_processed_data_files_exist():
     """Rule: Epic 1 requires X_train.csv, y_train.csv, X_test.csv, y_test.csv."""
     assert (DATA_DIR / "X_train.csv").exists(), "X_train.csv is missing!"
@@ -14,6 +16,7 @@ def test_processed_data_files_exist():
     assert (DATA_DIR / "X_test.csv").exists(), "X_test.csv is missing!"
     assert (DATA_DIR / "y_test.csv").exists(), "y_test.csv is missing!"
 
+@pytest.mark.skipif(os.environ.get("GITHUB_ACTIONS") == "true", reason="Processed data is gitignored")
 def test_labels_are_only_multiclass():
     """Rule: Epic 1 drops binary labels. Only Label_Multiclass should exist."""
     y_train_path = DATA_DIR / "y_train.csv"
