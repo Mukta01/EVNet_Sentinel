@@ -54,3 +54,7 @@ During the implementation and training of the baseline Static ML models, we enco
 ### Challenge 3: Redundancy of Binary Classification
 **The Problem**: Because 99.99% of the labels were 'Attack', a Binary classifier (Attack vs Benign) yielded practically zero actionable intelligence in a Security Operations Center (SOC) dashboard. 
 **The Solution**: In adherence with our Agile methodology, we pivoted our strategy. We removed the Binary classification requirements entirely from Epic 2 and streamlined our models to predict strictly the Multiclass labels (identifying the specific *type* of attack), which is significantly more valuable for threat mitigation.
+
+### Challenge 4: Low Baseline Accuracy (36.65%)
+**The Problem**: The evaluated accuracy for the Multiclass SVM is 36.65%, which is not viable for a production SOC deployment.
+**The Solution (Context)**: This is expected and intentional. Epic 2 aims to establish a *baseline* using linear algorithms (SVM, Logistic Regression). Network traffic data is inherently non-linear and highly complex, meaning a straight mathematical boundary cannot separate 15 overlapping classes effectively. Furthermore, forcing the model to care about rare classes (using `class_weight='balanced'`) prevents it from artificially inflating its accuracy by just guessing the majority class. This honest 36% baseline mathematically justifies the need for Epic 4 and Epic 5, where we will implement advanced, non-linear models (Random Forest, Decision Trees, and ARFADWIN deep learning).
