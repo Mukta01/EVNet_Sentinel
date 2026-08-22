@@ -24,7 +24,8 @@ Beyond the research, this project introduces a stunning, interactive Next.js das
 
 ## 🚀 Features
 
-- 🧠 **Hybrid ML Pipeline**: Compare Static models (RF, SVM, LR, DT) with Adaptive Online models.
+- 🧠 **Hybrid ML Pipeline**: Compare Static models (RF, SVM, LR, DT) evaluated on **14-class multiclass** targets against Adaptive Online models.
+- 🐳 **Robust Deployment**: Single-stage Docker container featuring dynamic multi-model registry loading and fault tolerance.
 - ⚡ **Real-Time Detection**: WebSocket integration for instant anomaly alerts.
 - 📊 **Interactive Dashboard**: Next.js-powered visualisations and live confusion matrices.
 - 🛡️ **Cybersecurity-First**: Designed specifically for EVCS infrastructure vulnerabilities.
@@ -37,8 +38,9 @@ flowchart LR
     B -->|Pre-processing| C{ML Engine}
     C -->|Static Models| D[RF, SVM, DT, LR]
     C -->|Online Learning| E[ARF + ADWIN]
-    D --> F[Results API]
-    E --> F
+    D -->|Serialized .pkl| M[(Dynamic Model Registry)]
+    E -->|Serialized .pkl| M
+    M --> F[Results API]
     F <-->|WebSockets & REST| G[Next.js Dashboard]
     
     style A fill:#f9f,stroke:#333,stroke-width:2px
@@ -68,6 +70,14 @@ Detailed documentation has been separated into the `docs/` directory for better 
 - 📊 [**Dataset Feature Engineering**](./docs/dataset_feature_engineering.md)
 - 🎯 [**Use Case Diagrams**](./docs/evnet_sentinel_use_cases.md)
 - 📄 [**Project SRS**](./docs/Project_SRS/WDL_SRS_EVNetSentinel.pdf)
+
+## 📈 Model Performance & Notebooks
+
+We rigorously evaluate our models on the 14-class attack dataset. View our interactive training notebooks and detailed evaluation reports below:
+
+- 🌳 **Random Forest**: [Training Notebook](./src/models/random_forest/Random_Forest_Training.ipynb) | [Evaluation Report](./evaluation_results/rf_evaluation_summary.md)
+- 📉 **Support Vector Machine (SVM)**: [Training Notebook](./src/models/svm/svm_training.ipynb) | [Evaluation Report](./evaluation_results/SVM_evaluation_summary.md)
+- 🔄 **Adaptive Random Forest (ARF-ADWIN)**: [Implementation Script](./src/models/arfadwin/train_arfadwin.py) *(Online Learning Model)*
 
 ## 🔐 Dataset Access & Security Rules
 
