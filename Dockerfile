@@ -15,10 +15,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Note: In a real production environment, you might fetch the model from S3/cloud storage at runtime
 # to keep the docker image small, but for this project, packaging it inside is fine.
 COPY saved_models/svm_model_multiclass.pkl /app/saved_models/svm_model_multiclass.pkl
+COPY saved_models/arfadwin_model.pkl /app/saved_models/arfadwin_model.pkl
+COPY saved_models/StandardScaler.pkl /app/saved_models/StandardScaler.pkl
 COPY src/api /app/src/api
 
 # Set environment variable so the API knows where the model is
-ENV MODEL_PATH=/app/saved_models/svm_model_multiclass.pkl
+ENV MODEL_PATH=/app/saved_models/arfadwin_model.pkl
+ENV SCALER_PATH=/app/saved_models/StandardScaler.pkl
 
 # Expose port 8000 for the FastAPI server
 EXPOSE 8000
