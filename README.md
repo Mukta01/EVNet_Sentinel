@@ -74,10 +74,15 @@ Detailed documentation has been separated into the `docs/` directory for better 
 The CICEVSE2024 dataset used for this project is heavy and access-restricted. Please follow these rules:
 1. **Never commit the dataset**: All dataset archives and CSV files (`*.tar.xz`, `*.zip`, `*.csv`) are strictly ignored in `.gitignore`. Do NOT bypass this rule.
 2. **Secure the URL**: The Google Drive URL for the dataset must never be hardcoded in the codebase or public documentation. 
-3. **Local Setup**: 
+3. **Local Setup & Data Retrieval**: 
    - Copy `.env.example` to `.env` in the root directory.
    - Add the Google Drive URL (provided by the team admin) to your `.env` file under `CICEVSE2024_DATASET_URL`.
-   - The `.env` file is also ignored by Git.
+   - Run the automated setup and data pipeline:
+     ```bash
+     make setup
+     make data
+     ```
+   - *Note: `make data` will download the 2.4GB dataset, extract it to `data/raw/`, and process it into `data/processed/`. Ensure you have sufficient disk space.*
 
 ## 👥 Meet The Team
 
