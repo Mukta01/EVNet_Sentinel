@@ -16,7 +16,7 @@ __pycache__/
 # We will track the saved_models folder itself via a .gitkeep, but ignore its contents if needed
 # Actually, for a small academic project, you might want to commit small .pkl files so your teammates have access.
 # If you DO NOT want to commit models, uncomment the line below:
-# saved_models/*.pkl
+saved_models/*.pkl
 # Datasets and large files (Strictly ignored to prevent GitHub upload limits)
 datasets/
 data/raw/*
