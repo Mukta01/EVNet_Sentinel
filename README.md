@@ -24,7 +24,8 @@ Beyond the research, this project introduces a stunning, interactive Next.js das
 
 ## 🚀 Features
 
-- 🧠 **Hybrid ML Pipeline**: Compare Static models (RF, SVM, LR, DT) with Adaptive Online models.
+- 🧠 **Hybrid ML Pipeline**: Compare Static models (RF, SVM, LR, DT) evaluated on **14-class multiclass** targets against Adaptive Online models.
+- 🐳 **Robust Deployment**: Single-stage Docker container featuring dynamic multi-model registry loading and fault tolerance.
 - ⚡ **Real-Time Detection**: WebSocket integration for instant anomaly alerts.
 - 📊 **Interactive Dashboard**: Next.js-powered visualisations and live confusion matrices.
 - 🛡️ **Cybersecurity-First**: Designed specifically for EVCS infrastructure vulnerabilities.
@@ -66,6 +67,8 @@ Detailed documentation has been separated into the `docs/` directory for better 
 - ⚙️ [**Setup & Installation**](./docs/SETUP.md)
 - 📚 [**Reference Papers Index**](./docs/papers.md)
 - 📊 [**Dataset Feature Engineering**](./docs/dataset_feature_engineering.md)
+- 📈 [**Random Forest Evaluation**](./evaluation_results/rf_evaluation_summary.md)
+- 📈 [**SVM Evaluation**](./evaluation_results/SVM_evaluation_summary.md)
 - 🎯 [**Use Case Diagrams**](./docs/evnet_sentinel_use_cases.md)
 - 📄 [**Project SRS**](./docs/Project_SRS/WDL_SRS_EVNetSentinel.pdf)
 
