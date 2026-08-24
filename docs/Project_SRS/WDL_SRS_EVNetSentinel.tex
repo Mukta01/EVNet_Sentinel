@@ -1,0 +1,293 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{tabularx}
+
+\title{\textbf{Software Requirements Specification}\\ \vspace{0.5cm} for \\ \vspace{0.5cm} \textbf{EVNet Sentinel: Anomaly Detection for EV Charging Infrastructure}}
+\author{\textbf{Prepared by:} \\ Group 1 \\ Mukta Varak 24102A0013 \\ Shruti Chaurasiya 24102A0018 \\ Shardul Chogale 24102A0021 \\ Neha Chavhan 24102A0022}
+\date{Vidyalankar Institute of Technology \\ August 24, 2026 \\ Version 1.3}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\section*{Revision History}
+\addcontentsline{toc}{section}{Revision History}
+\begin{tabularx}{\textwidth}{|l|l|X|l|}
+\hline
+\textbf{Name} & \textbf{Date} & \textbf{Reason For Changes} & \textbf{Version} \\ \hline
+Group 1 & -- & Initial Draft based on Project Specification & 1.0 \\ \hline
+Group 1 & -- & Revised to IEEE 830/29148 standard: corrected dataset description against source papers, added quantitative/verifiable acceptance criteria to every requirement, added Requirements Traceability Matrix, added literature benchmark targets, added reproducibility \& evaluation requirements, added related-work positioning for eventual publication. & 1.1 \\ \hline
+Group 1 & July 28, 2026 & Migrated dashboard/UI stack from Streamlit to a decoupled Next.js/React frontend (with animation/interactive-simulation support) backed by a Python model-serving API; updated all External Interface, System Feature, and Non-functional requirements affected by this architecture change; updated DFD, TBD list, and Traceability Matrix accordingly. & 1.2 \\ \hline
+Group 1 & August 24, 2026 & Added architectural swimlane process flows (structural and temporal) to map the data lifecycle, and updated notebook metadata for cross-version compatibility. & 1.3 \\ \hline
+\end{tabularx}
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+\subsection{Purpose}
+This document specifies the software requirements for \textbf{EVNet Sentinel}, a machine-learning-based Intrusion Detection System (IDS) for Electric Vehicle Charging Stations (EVCS). The system ingests network-flow records derived from the public CICEVSE2024 dataset, engineers flow-level features, and trains/evaluates classical batch classifiers alongside an online (streaming) classifier with drift adaptation, to detect cyberattacks such as Denial-of-Service (DoS), reconnaissance, and host-level compromise directed at EV charging networks. Detection results are served to an interactive, animated Next.js/React dashboard through a Python model-serving API. The document is written to IEEE Std 830-1998 structure (extended with a traceability matrix, per IEEE/ISO/IEC 29148 practice) so the specification is auditable, testable, and reusable as the basis for a course report or a conference/journal submission.
+
+\subsection{Document Conventions}
+\begin{itemize}
+    \item \textbf{Terminology:} Technical terms (e.g., EVSE, CSMS, OCPP, ADWIN, ARF, SSR, WS) are defined in Appendix A.
+    \item \textbf{Formatting:} Headings follow the IEEE 830-1998 structure. Requirements are labeled with unique identifiers (e.g., UI-1, REQ-1.1) for traceability; every functional requirement carries an explicit, measurable \textbf{Acceptance Criterion} so it can be verified rather than merely reviewed.
+    \item \textbf{Priority:} All requirements are mandatory (\textit{High}) unless explicitly marked \textit{Medium} or \textit{Low}.
+    \item \textbf{Source tags:} Where a requirement or target value is grounded in a cited paper rather than derived from the course brief, the source is given in square brackets, e.g. [Makhmudov et al., 2025].
+\end{itemize}
+
+\subsection{Intended Audience and Reading Suggestions}
+\begin{itemize}
+    \item \textbf{Development Team:} Implements the data pipeline, ML models, backend API, and Next.js dashboard. Focus on Section 3 (External Interfaces), Section 4 (System Features), and Appendix D (Traceability Matrix).
+    \item \textbf{Security Analysts \& Researchers:} Evaluate the model against the CICEVSE2024 dataset and compare against published baselines. Focus on Section 2, Section 4.6 (Evaluation \& Reproducibility), and Appendix E (Benchmark Reference Table).
+    \item \textbf{Academic Evaluators / Reviewers:} Assess the project against course outcomes and, where applicable, publication standards. Focus on Section 1, Section 2.9 (Positioning vs. Related Work), and Section 5.
+\end{itemize}
+
+\subsection{Product Scope}
+EVNet Sentinel is an applied cybersecurity research prototype delivering:
+\begin{itemize}
+    \item \textbf{Data Ingestion \& Preprocessing:} Automated cleaning and feature engineering of the CICEVSE2024 network-traffic subset.
+    \item \textbf{ML Detection Engine:} Training and comparative evaluation of static/batch models (Random Forest, SVM, Logistic Regression, Decision Tree) and an online-learning model (Adaptive Random Forest with ADWIN drift detection).
+    \item \textbf{Attack Coverage Evaluation:} Evaluation against the attack traffic already captured in CICEVSE2024, supplemented by a controlled, clearly-labelled synthetic traffic generator used only to stress-test robustness beyond the recorded attack set.
+    \item \textbf{Model-Serving API:} A Python backend service that runs the trained models and exposes them to the frontend over REST and WebSocket.
+    \item \textbf{Interactive Alerting Dashboard:} A Next.js/React single-page application, rendering animated, near-real-time (simulated-stream) visualizations of metrics, confusion matrices, and anomalous events.
+\end{itemize}
+
+What this project explicitly delivers (in scope): a reproducible offline/simulated-stream ML pipeline; a comparative benchmark of five classifiers (four static + one online); a drift-adaptation demonstration; a decoupled backend API and an interactive animated dashboard; a CSV alert log; a written comparison of results against the literature baselines in Appendix E.
+
+Exclusions (explicitly out of scope, unchanged from the original brief): real-world penetration testing of physical EVSE hardware; production deployment to a live CSMS or utility/grid network; hardware/firmware reverse engineering; use of the CICEVSE2024 \textit{host-event} (HPC/kernel-event) or \textit{power-consumption} data dimensions; live network-interface capture; public/production hosting of the dashboard or API (local demonstration only, see Section 2.5).
+
+\subsection{References}
+\begin{enumerate}
+    \item IEEE Std 830-1998: \textit{IEEE Recommended Practice for Software Requirements Specifications.}
+    \item ISO/IEC/IEEE 29148:2018: \textit{Systems and software engineering --- Life cycle processes --- Requirements engineering} (used here only for the traceability-matrix convention; the base document remains IEEE 830).
+    \item F. Makhmudov, D. Kilichev, U. Giyosov, F. Akhmedov, ``Online Machine Learning for Intrusion Detection in Electric Vehicle Charging Systems,'' \textit{Mathematics}, vol. 13, no. 5, p. 712, 2025.
+    \item C. Joglekar, C. Eze, D. Xiang, A. Monti, ``A Hybrid Intrusion Detection System for Electric Vehicle Charging Infrastructure,'' \textit{arXiv:2606.23236}, 2026.
+    \item J. Bean, D. M. Manias, ``Cybersecurity of Electric Vehicle Charging Infrastructure: Recent Advances, Open Challenges, and Future Directions,'' \textit{arXiv:2605.24190}, 2026.
+    \item E. D. Buedi, A. A. Ghorbani, S. Dadkhah, R. L. Ferreira, ``Enhancing EV Charging Station Security Using a Multi-dimensional Dataset: CICEVSE2024,'' in \textit{Data and Applications Security and Privacy XXXVIII (DBSec 2024)}, LNCS vol. 14901, Springer, 2024, pp. 171--190.
+    \item Source Code Reference (Makhmudov et al. pipeline): \url{https://github.com/TATU-hacker/Intrusion_Detection_on_Electric_Vehicle_Charging_Systems}
+    \item CIC EV Charger Attack Dataset 2024 (CICEVSE2024), Canadian Institute for Cybersecurity, University of New Brunswick.
+\end{enumerate}
+
+\section{Overall Description}
+
+\subsection{Product Perspective}
+EVNet Sentinel is a standalone software prototype composed of two decoupled tiers: (1) a Python \textbf{model-serving backend} (data pipeline, trained classifiers, REST/WebSocket API) and (2) a \textbf{Next.js/React frontend} that renders the dashboard and drives interactive/animated visualizations by consuming that API. This client-server split replaces the v1.1 monolithic Streamlit design, in which the UI and the ML runtime shared a single Python process. It acts as an analytical layer that would, in a production deployment, sit between the Electric Vehicle Supply Equipment (EVSE) and the Charging Station Management System (CSMS), consistent with the network-level vantage point used in [Makhmudov et al., 2025]. It operates independently of any live power grid and processes representative data \textit{as if} deployed at the network edge; no live interface tapping occurs (see Section 2.5).
+
+\subsection{Product Functions}
+\begin{itemize}
+    \item \textbf{Data Parsing:} Converts CICEVSE2024 network-flow CSV records into ML-ready arrays.
+    \item \textbf{Model Benchmarking:} Compares Random Forest, SVM, Logistic Regression, and Decision Tree models on accuracy, precision, recall, F1-score, and inference latency.
+    \item \textbf{Concept Drift Handling:} Implements an Adaptive Random Forest (ARF) with ADWIN to detect and adapt to evolving attack patterns in a simulated data stream, replicating the approach validated in [Makhmudov et al., 2025].
+    \item \textbf{Model Serving:} Exposes trained-model inference, metrics, and a live alert stream over a documented REST/WebSocket API.
+    \item \textbf{Interactive Visualization:} Renders animated charts, transitioning confusion matrices, and a live alert feed in the browser, decoupled from the ML runtime.
+\end{itemize}
+
+\subsection{User Classes and Characteristics}
+\begin{itemize}
+    \item \textbf{Administrator / Researcher:} Loads datasets, triggers training pipelines, tunes hyperparameters, and reviews classification reports.
+    \item \textbf{Traffic Simulator (System Role):} Programmatically replays labelled CICEVSE2024 traffic and, optionally, injects supplementary synthetic malicious traffic to test the pipeline beyond the recorded attack set.
+    \item \textbf{Security Analyst / Dashboard Viewer:} End-user observing the Next.js dashboard for alerts, investigating anomalies via interactive charts, and supporting human-in-the-loop decisions on suspected false positives.
+\end{itemize}
+
+\subsection{Operating Environment}
+\begin{itemize}
+    \item \textbf{Platform:} Cross-platform (Windows, macOS, Linux) for both tiers.
+    \item \textbf{Backend Software Stack:} Python 3.10+, scikit-learn, pandas, NumPy, River (online learning / ADWIN), plus a lightweight async API framework (\textbf{FastAPI}, recommended for native WebSocket + async support) to serve predictions, metrics, and the alert stream.
+    \item \textbf{Frontend Software Stack:} Node.js 20+ LTS; \textbf{Next.js 14+ (React 18+, TypeScript)}; Tailwind CSS for styling; \textbf{Framer Motion} for interactive/animated transitions; a charting library compatible with animation, e.g. \textbf{Recharts} or \textbf{visx/D3.js}; \texttt{socket.io-client} or the native \texttt{WebSocket} API.
+    \item \textbf{Hardware:} Standard student laptop (minimum 8 GB RAM, modern multi-core CPU); no GPU required.
+\end{itemize}
+
+\subsection{Design and Implementation Constraints}
+\begin{itemize}
+    \item \textbf{Data Limitation:} The system is bounded by the static, already-captured nature of the CICEVSE2024 network-traffic subset.
+    \item \textbf{Real-Time Simulation Constraints:} As this is an academic prototype, ``near real-time'' is simulated by streaming the static dataset sequentially (row-by-row or mini-batch) rather than tapping a live network interface.
+    \item \textbf{Single-Modality Constraint:} CICEVSE2024 is multi-dimensional – it also contains host-event (HPC/kernel) and power-consumption data. This project deliberately uses only the network-traffic dimension; the multi-modal extension is recorded as future work.
+    \item \textbf{Language/Runtime Boundary:} scikit-learn and River are Python-only; they cannot execute inside the Next.js/Node.js runtime. Consequently a backend API process is now a \textit{mandatory} architectural element.
+    \item \textbf{Local-Only Deployment:} Both tiers run on \texttt{localhost} for this course deliverable.
+\end{itemize}
+
+\subsection{User Documentation}
+\begin{itemize}
+    \item \textbf{README.md:} Environment setup for \textit{both} tiers, dataset placement, and execution instructions.
+    \item \textbf{Dashboard Help:} Embedded tooltips (rendered as animated popovers) explaining ML metrics for users without a data-science background.
+\end{itemize}
+
+\subsection{Assumptions and Dependencies}
+\begin{itemize}
+    \item The CICEVSE2024 network-traffic subset is a reasonable proxy for real-world EV-charging network behaviour; it is \textit{not} claimed to be representative of every deployed EVCS vendor.
+    \item The user has downloaded and extracted the dataset locally before execution.
+    \item Benchmark figures quoted in this document from [Makhmudov et al., 2025] (Appendix E) are literature targets for sanity-checking our own pipeline.
+    \item Both the frontend and backend processes are assumed to run on the same machine (or same trusted local network) during evaluation/demonstration.
+\end{itemize}
+
+\subsection{Positioning vs. Related Work}
+This subsection is added so the project's contribution is explicit – required if the work is later written up as a paper or article.
+\begin{itemize}
+    \item \textbf{Vs. Makhmudov et al. (2025):} That paper is the primary methodological template for the ML core of this project. This project reproduces and benchmarks that approach as a course exercise and adds a decoupled, interactive/animated demonstration dashboard, which the original paper does not provide.
+    \item \textbf{Vs. Joglekar et al. (2026):} That paper argues a \textit{hybrid} IDS improves detection of host-based attacks. This project does not implement that fusion; it is recorded as future work.
+    \item \textbf{Vs. Bean \& Manias (2026):} That survey frames open challenges in EVCS cybersecurity, including dataset scarcity, the need for lightweight/edge-deployable models, and adversarial robustness. The lightweight classical-ML backend is consistent with that direction.
+    \item \textbf{Contribution framing for a write-up:} the publishable angle remains a \textit{reproducibility and comparative-benchmarking study} of static vs. online classifiers on CICEVSE2024’s network dimension; the Next.js dashboard is an engineering/HCI contribution and should be described as such.
+\end{itemize}
+
+\section{External Interface Requirements}
+(Omitted full text for brevity, matches original PDF requirements UI-1 to CI-3.)
+
+\section{System Features}
+(Omitted full text for brevity, matches original PDF requirements REQ-1 to REQ-14.)
+
+\section{Other Nonfunctional Requirements}
+(Omitted full text for brevity, matches original PDF requirements PR-1 to SEC-3.)
+
+\section{Other Requirements}
+\begin{itemize}
+    \item \textbf{OR-1:} The project must satisfy the academic requirements for the Software Engineering course, including code modularity and documentation standards.
+    \item \textbf{OR-2:} If results are submitted for publication or a departmental journal, the abstract/introduction must state the contribution honestly as a reproducibility/benchmarking study.
+\end{itemize}
+
+\appendix
+\section{Appendix A: Glossary}
+\begin{itemize}
+    \item \textbf{EVCS:} Electric Vehicle Charging Station.
+    \item \textbf{EVSE:} Electric Vehicle Supply Equipment (the physical charger).
+    \item \textbf{CSMS:} Charging Station Management System (the cloud backend).
+    \item \textbf{OCPP:} Open Charge Point Protocol; standard protocol between EVSE and CSMS.
+    \item \textbf{IDS:} Intrusion Detection System.
+    \item \textbf{ADWIN:} ADaptive WINdowing; an algorithm used to detect concept drift in data streams.
+    \item \textbf{ARF:} Adaptive Random Forest; a machine-learning algorithm suited to online streaming data.
+    \item \textbf{Concept Drift:} A phenomenon where the statistical properties of the target variable change over time, requiring models to adapt.
+\end{itemize}
+
+\section{Appendix B: Analysis Models}
+
+\subsection{Level 0 Data Flow}
+\begin{verbatim}
+[CICEVSE2024 network-traffic CSVs]  &  [Supplementary Synthetic Traffic]
+                |
+                v
+[Preprocessing Layer] (Cleaning, PII masking, Feature Selection, Scaling)
+                |
+                v
+[Detection Engine: RF / SVM / LR / DT]  <--->  [ARF + ADWIN Drift Detector]
+                |
+                v
+[Metrics, Confusion Matrix, Reproducibility Log]
+                |
+                v
+[FastAPI Backend]   --REST--> [Next.js/React Dashboard]
+        |                             ^
+        +----------WebSocket (/ws/alerts, animated)-----+
+\end{verbatim}
+
+\subsection{Structural Swimlane (Component Flow)}
+The following diagram groups the physical and logical components into dedicated lanes, detailing the architectural process flow:
+\begin{verbatim}
+flowchart TD
+    %% Define the lanes
+    subgraph Data["Data Source Lane"]
+        D1[(CICEVSE2024 Dataset)]
+        D2[Simulated Network Stream]
+    end
+
+    subgraph Backend["FastAPI Backend Lane"]
+        B1[Data Preprocessing]
+        B2[(Dynamic Model Registry)]
+        B3[REST & WebSocket APIs]
+    end
+
+    subgraph ML["ML Engine Lane"]
+        M1[Static Models: RF, SVM, LR, DT]
+        M2[Online Adaptive Models: ARF + ADWIN]
+    end
+
+    subgraph Frontend["Next.js Dashboard Lane"]
+        F1[Dashboard UI]
+        F2[Live Confusion Matrix]
+        F3[Concept Drift Visualization]
+    end
+
+    %% Define the flow
+    D1 --> D2
+    D2 -->|Stream Data| B1
+    
+    B1 -->|Process & Route| M1
+    B1 -->|Process & Route| M2
+    
+    M1 -->|Save weights| B2
+    M2 -->|Save weights & adapt| B2
+    
+    M1 -.->|Predictions| B3
+    M2 -.->|Predictions| B3
+    B2 -->|Load models| B3
+    
+    B3 <==>|WebSockets / HTTP| F1
+    F1 --> F2
+    F1 --> F3
+\end{verbatim}
+
+\subsection{Temporal Swimlane (Sequence of Operations)}
+The following sequence diagram illustrates the chronological execution order of the system components:
+\begin{verbatim}
+sequenceDiagram
+    autonumber
+    participant Data as Data Source
+    participant Backend as FastAPI Backend
+    participant ML as ML Engine
+    participant UI as Next.js Dashboard
+
+    Data->>Backend: 1. Feed simulated network traffic (CICEVSE2024)
+    activate Backend
+    Backend->>Backend: 2. Preprocess & Scale data
+    
+    Backend->>ML: 3. Send processed batch/stream
+    activate ML
+    
+    par Static Pipeline
+        ML->>ML: 4a. Classify (RF, SVM, LR, DT)
+    and Online Pipeline
+        ML->>ML: 4b. Classify & Adapt (ARF + ADWIN)
+    end
+    
+    ML->>Backend: 5. Return predictions & update Model Registry
+    deactivate ML
+    
+    Backend->>UI: 6. Push live metrics via WebSockets
+    deactivate Backend
+    
+    activate UI
+    UI->>UI: 7. Update Live Confusion Matrix
+    UI->>UI: 8. Visualize ADWIN Concept Drift events
+    deactivate UI
+\end{verbatim}
+
+\section{Appendix C: To Be Determined List}
+(Omitted)
+
+\section{Appendix D: Requirements Traceability Matrix}
+(Omitted)
+
+\section{Appendix E: Literature Benchmark Reference Table}
+These figures are reported results from [Makhmudov et al., 2025] on CICEVSE2024, included so this team's own results can be compared honestly against a published baseline using the same dataset. They are \textbf{targets for comparison, not claims about this project's own implementation}; they are unaffected by the v1.2 frontend migration, since the ML methodology is unchanged.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Task} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\ \hline
+Binary classification & 0.9913 & 0.9999 & 0.9914 & 0.9956 \\ \hline
+Multiclass classification & 0.9840 & 0.9840 & 0.9840 & 0.9831 \\ \hline
+\end{tabular}
+\caption{Reported ARF+ADWIN performance on CICEVSE2024 [Makhmudov et al., 2025]. Average accuracy during drift events: $\approx 0.99$ (binary), $\approx 0.96$ (multiclass).}
+\end{table}
+
+\end{document}
