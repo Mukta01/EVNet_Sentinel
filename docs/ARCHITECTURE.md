@@ -103,3 +103,98 @@ By monitoring flow-level statistics of these protocols, EVNet Sentinel is capabl
 2. **Reconnaissance**: Port scanning and vulnerability probing.
 3. **False Data Injection Attacks (FDIA)**: Manipulating energy pricing or charging state parameters.
 4. **V2X Exploits**: Malicious payloads traversing from the vehicle to the broader grid infrastructure.
+
+---
+
+## 4. Swimlane Process Flow
+
+To better understand the cross-functional communication and data lifecycle across the decoupled architecture, here are two swimlane diagrams mapping the journey from data ingestion to user visualization.
+
+### 4.1 Structural Swimlane (Component Flow)
+This flowchart groups the physical and logical components into dedicated lanes.
+
+```mermaid
+flowchart TD
+    %% Define the lanes
+    subgraph Data["Data Source Lane"]
+        D1[(CICEVSE2024 Dataset)]
+        D2[Simulated Network Stream]
+    end
+
+    subgraph Backend["FastAPI Backend Lane"]
+        B1[Data Preprocessing]
+        B2[(Dynamic Model Registry)]
+        B3[REST & WebSocket APIs]
+    end
+
+    subgraph ML["ML Engine Lane"]
+        M1[Static Models: RF, SVM, LR, DT]
+        M2[Online Adaptive Models: ARF + ADWIN]
+    end
+
+    subgraph Frontend["Next.js Dashboard Lane"]
+        F1[Dashboard UI]
+        F2[Live Confusion Matrix]
+        F3[Concept Drift Visualization]
+    end
+
+    %% Define the flow
+    D1 --> D2
+    D2 -->|Stream Data| B1
+    
+    B1 -->|Process & Route| M1
+    B1 -->|Process & Route| M2
+    
+    M1 -->|Save weights| B2
+    M2 -->|Save weights & adapt| B2
+    
+    M1 -.->|Predictions| B3
+    M2 -.->|Predictions| B3
+    B2 -->|Load models| B3
+    
+    B3 <==>|WebSockets / HTTP| F1
+    F1 --> F2
+    F1 --> F3
+    
+    %% Styling
+    style Data fill:#f9f2f4,stroke:#d0a0b0,stroke-width:2px
+    style Backend fill:#eaf4fc,stroke:#a0c0d0,stroke-width:2px
+    style ML fill:#f4fce8,stroke:#b0d0a0,stroke-width:2px
+    style Frontend fill:#fdf8e2,stroke:#d0c0a0,stroke-width:2px
+```
+
+### 4.2 Temporal Swimlane (Sequence of Operations)
+This sequence diagram illustrates the chronological execution order of the system.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Data as Data Source
+    participant Backend as FastAPI Backend
+    participant ML as ML Engine
+    participant UI as Next.js Dashboard
+
+    Data->>Backend: 1. Feed simulated network traffic (CICEVSE2024)
+    activate Backend
+    Backend->>Backend: 2. Preprocess & Scale data
+    
+    Backend->>ML: 3. Send processed batch/stream
+    activate ML
+    
+    par Static Pipeline
+        ML->>ML: 4a. Classify (RF, SVM, LR, DT)
+    and Online Pipeline
+        ML->>ML: 4b. Classify & Adapt (ARF + ADWIN)
+    end
+    
+    ML->>Backend: 5. Return predictions & update Model Registry
+    deactivate ML
+    
+    Backend->>UI: 6. Push live metrics via WebSockets
+    deactivate Backend
+    
+    activate UI
+    UI->>UI: 7. Update Live Confusion Matrix
+    UI->>UI: 8. Visualize ADWIN Concept Drift events
+    deactivate UI
+```
