@@ -68,6 +68,7 @@ Detailed documentation has been separated into the `docs/` directory for better 
 - ⚙️ [**Setup & Installation**](./docs/SETUP.md)
 - 📚 [**Reference Papers Index**](./docs/papers.md)
 - 📊 [**Dataset Feature Engineering**](./docs/dataset_feature_engineering.md)
+- ⚖️ [**Dataset Resampling Trade-offs**](./docs/Resampling_Tradeoffs.md)
 - 🎯 [**Use Case Diagrams**](./docs/evnet_sentinel_use_cases.md)
 - 📄 [**Project SRS**](./docs/Project_SRS/WDL_SRS_EVNetSentinel.pdf)
 
