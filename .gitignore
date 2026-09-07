@@ -33,3 +33,9 @@ data/raw/*
 # Ignore IDE specific folders
 .vscode/
 .idea/
+
+# Versioned preprocessing outputs (issue #50). CSVs are already covered by the
+# *.csv rule above; the fitted scaler is written alongside its own dataset so a
+# re-run cannot silently invalidate models trained on an earlier version.
+data/processed*/**/*.pkl
+data/reproduction/
