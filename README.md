@@ -68,16 +68,23 @@ Detailed documentation has been separated into the `docs/` directory for better 
 - ⚙️ [**Setup & Installation**](./docs/SETUP.md)
 - 📚 [**Reference Papers Index**](./docs/papers.md)
 - 📊 [**Dataset Feature Engineering**](./docs/dataset_feature_engineering.md)
+- 🔍 [**Leakage Audit — Results**](./docs/leakage_audit_results.md)
 - 🎯 [**Use Case Diagrams**](./docs/evnet_sentinel_use_cases.md)
 - 📄 [**Project SRS**](./docs/Project_SRS/WDL_SRS_EVNetSentinel.pdf)
 
 ## 📈 Model Performance & Notebooks
 
-We rigorously evaluate our models on the 14-class attack dataset. View our interactive training notebooks and detailed evaluation reports below:
+We evaluate our models on the **15-class** attack dataset. View our interactive training notebooks and detailed evaluation reports below:
+
+> [!WARNING]
+> The reports under `evaluation_results/` at the repository root were produced **before** the
+> capture-timestamp leak was found (#46) and are retained only for the before/after comparison.
+> Corrected results live in [`evaluation_results/leakfree/`](./evaluation_results/leakfree/COMPARISON.md)
+> and are discussed in [the leakage audit](./docs/leakage_audit_results.md).
 
 - 🌳 **Random Forest**: [Training Notebook](./src/models/random_forest/Random_Forest_Training.ipynb) | [Evaluation Report](./evaluation_results/rf_evaluation_summary.md)
 - 📉 **Support Vector Machine (SVM)**: [Training Notebook](./src/models/svm/svm_training.ipynb) | [Evaluation Report](./evaluation_results/SVM_evaluation_summary.md)
-- 🔄 **Adaptive Random Forest (ARF-ADWIN)**: [Implementation Script](./src/models/arfadwin/train_arfadwin.py) *(Online Learning Model)*
+- 🔄 **Adaptive Random Forest (ARF-ADWIN)**: [Implementation Script](./src/models/arfadwin/train_arfadwin.py) | [Model Notes](./src/models/arfadwin/README.md) *(Online Learning Model)*
 
 ## 🔐 Dataset Access & Security Rules
 

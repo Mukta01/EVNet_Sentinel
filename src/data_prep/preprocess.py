@@ -487,11 +487,19 @@ def split_and_export_data(
     strategy: str = "random",
     random_state: int = 42,
     scaler_path: str = None,
+    scale: str = "standard",
 ) -> None:
     """
     Split into 70/15/15, fit StandardScaler on the training partition only, and
     export X/y/meta for each partition.
+
+    `scale="none"` exports the raw feature values instead. The online ARF+ADWIN
+    pipeline needs this: the paper composes River's own streaming StandardScaler
+    ahead of the classifier, so it must receive unscaled input or the data would
+    be normalised twice (#52).
     """
+    if scale not in ("standard", "none"):
+        raise ValueError(f"scale must be 'standard' or 'none', got {scale!r}")
     if X.empty or y.empty:
         logger.warning("Empty features or target passed to split_and_export_data. Skipping export.")
         return
@@ -514,25 +522,34 @@ def split_and_export_data(
 
     partitions = {"train": train_idx, "val": val_idx, "test": test_idx}
 
-    logger.info("Fitting StandardScaler on the training partition only...")
-    scaler = StandardScaler()
-    scaler.fit(X.iloc[train_idx])
+    scaler = None
+    if scale == "standard":
+        logger.info("Fitting StandardScaler on the training partition only...")
+        scaler = StandardScaler()
+        scaler.fit(X.iloc[train_idx])
+    else:
+        logger.info("Scaling disabled -- exporting raw feature values for streaming models.")
 
-    # The scaler belongs with the dataset it was fitted on, so a versioned run
-    # cannot silently invalidate the models trained against an earlier one.
-    local_scaler = os.path.join(output_dir, "StandardScaler.pkl")
-    with open(local_scaler, "wb") as handle:
-        pickle.dump(scaler, handle)
-    logger.info("Saved StandardScaler to %s", local_scaler)
-
-    if scaler_path:
-        os.makedirs(os.path.dirname(scaler_path) or ".", exist_ok=True)
-        with open(scaler_path, "wb") as handle:
+    if scaler is not None:
+        # The scaler belongs with the dataset it was fitted on, so a versioned run
+        # cannot silently invalidate the models trained against an earlier one.
+        local_scaler = os.path.join(output_dir, "StandardScaler.pkl")
+        with open(local_scaler, "wb") as handle:
             pickle.dump(scaler, handle)
-        logger.info("Published StandardScaler to %s", scaler_path)
+        logger.info("Saved StandardScaler to %s", local_scaler)
+
+        if scaler_path:
+            os.makedirs(os.path.dirname(scaler_path) or ".", exist_ok=True)
+            with open(scaler_path, "wb") as handle:
+                pickle.dump(scaler, handle)
+            logger.info("Published StandardScaler to %s", scaler_path)
 
     for name, idx in partitions.items():
-        X_part = pd.DataFrame(scaler.transform(X.iloc[idx]), columns=X.columns)
+        raw = X.iloc[idx]
+        X_part = pd.DataFrame(
+            scaler.transform(raw) if scaler is not None else raw.to_numpy(),
+            columns=X.columns,
+        )
         X_part.to_csv(os.path.join(output_dir, f"X_{name}.csv"), index=False)
         y.iloc[idx].reset_index(drop=True).to_csv(os.path.join(output_dir, f"y_{name}.csv"), index=False)
         if not meta.empty:
@@ -555,6 +572,8 @@ def main():
                         help="'reference' matches the upstream notebook; 'extended' keeps ports (#51)")
     parser.add_argument("--split", choices=["random", "grouped", "temporal"], default="random",
                         help="Split strategy (#50). 'grouped' holds out whole captures.")
+    parser.add_argument("--scale", choices=["standard", "none"], default="standard",
+                        help="'none' exports raw values for streaming models that scale internally (#52).")
     parser.add_argument("--dedup", choices=["global", "per-capture", "none"], default="global",
                         help="Deduplication scope (#48). 'global' matches the reference but "
                              "destroys provenance; use 'per-capture' with --split grouped.")
@@ -585,7 +604,7 @@ def main():
     X, y, meta = engineer_features(df_cleaned)
     split_and_export_data(X, y, meta, output_dir=args.output_dir,
                           strategy=args.split, random_state=args.random_state,
-                          scaler_path=args.scaler_path)
+                          scaler_path=args.scaler_path, scale=args.scale)
     logger.info("--- Pipeline Completed Successfully ---")
 
 
