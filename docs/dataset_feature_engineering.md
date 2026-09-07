@@ -2,7 +2,7 @@
 
 ## 1. Background & Motivation
 
-EVNet Sentinel reproduces and extends the **Makhmudov et al. (2025)** pipeline ([paper_4_makhmudov_online_ml.md](file:///Users/shard/projects/EVNet_Sentinel/docs/papers/paper_4_makhmudov_online_ml.md)) which uses the **CICEVSE2024 dataset** from the Canadian Institute for Cybersecurity. The paper achieves **99.13% binary / 98.40% multiclass accuracy** using only the **Network Traffic** subset, processed through **NFStream** into 86 flow-level features. Our feature engineering must faithfully replicate this, while also documenting the two additional data domains (Host Events, Power Consumption) that the dataset provides for potential future extensions.
+EVNet Sentinel reproduces and extends the **Makhmudov et al. (2025)** pipeline ([paper_4_makhmudov_online_ml.md](file:///Users/shard/projects/EVNet_Sentinel/docs/papers/paper_4_makhmudov_online_ml.md)) which uses the **CICEVSE2024 dataset** from the Canadian Institute for Cybersecurity. The paper reports **99.13% binary / 98.40% multiclass accuracy** using only the **Network Traffic** subset, processed through **NFStream** into 86 flow-level features. Those figures should be read with the caveat in issue #47: the reference preprocessing retains six absolute capture-timestamp columns, and on its own feature set a decision tree using `bidirectional_first_seen_ms` alone reaches **0.9976** on the 15-class target. Our feature engineering replicates the reference pipeline **except for that leak**, which we drop; every remaining deviation is enumerated in §3.4. This document also covers the two additional data domains (Host Events, Power Consumption) that the dataset provides for potential future extensions.
 
 ---
 
@@ -158,33 +158,87 @@ After dropping the above, we retain **~66–68 numerical features** that capture
 | Feature Group | Why Useful |
 |---|---|
 | **IP Version** | Should always be 4 in testbed; anomaly if IPv6 appears |
-| **Directional Timing** (src2dst/dst2src first/last seen) | Temporal ordering helps detect asymmetric attacks |
 
-### 3.4 Final Feature Pipeline (Reproducing the Paper)
+> [!CAUTION]
+> **Corrected — absolute timestamps are excluded (issue #46).**
+> An earlier revision of this document listed *Directional Timing* (`src2dst`/`dst2src`
+> first/last seen) here, on the grounds that "temporal ordering helps detect asymmetric
+> attacks". That reasoning was wrong. Those columns hold **absolute epoch milliseconds**,
+> not relative ordering. Because each attack in CICEVSE2024 was captured in its own pcap
+> at its own wall-clock time, they act as a capture-session identifier: a
+> `DecisionTreeClassifier` trained on `bidirectional_first_seen_ms` **alone** scores
+> **1.0000** on the 15-class target. The six columns
+> (`bidirectional_first_seen_ms`, `bidirectional_last_seen_ms`, `src2dst_first_seen_ms`,
+> `src2dst_last_seen_ms`, `dst2src_first_seen_ms`, `dst2src_last_seen_ms`) are now dropped
+> in `clean_and_reduce_features()`, and `engineer_features()` raises if any of them
+> reaches the feature matrix.
+>
+> **Relative** timing is unaffected and remains Tier 1: `*_duration_ms` and all twelve
+> `*_piat_ms` inter-arrival features are genuine behavioural signals and are retained.
+> `bidirectional_first_seen_ms` is preserved once, as the metadata column
+> `capture_timestamp_ms`, purely so the temporal split can order the stream (issue #50).
+> It is never modelled.
 
-```python
-# Columns to DROP (per Makhmudov et al. preprocessing)
-DROP_COLUMNS = [
-    # Identifiers
-    'id', 'expiration_id',
-    # Network addresses (would overfit to testbed)
-    'src_ip', 'src_mac', 'src_oui',
-    'dst_ip', 'dst_mac', 'dst_oui',
-    # Near-zero variance
-    'vlan_id', 'tunnel_id',
-    # String metadata (sparse/empty)
-    'requested_server_name', 'client_fingerprint',
-    'server_fingerprint', 'user_agent', 'content_type',
-    # Application layer DPI (redundant with protocol)
-    'application_name', 'application_category_name',
-    'application_is_guessed', 'application_confidence',
-    # Label column (target, not a feature)
-    'Label',
-]
+### 3.4 Final Feature Pipeline — Explicit Diff Against the Reference
 
-# Resulting feature count: 86 - 20 dropped - 1 label = ~65 features
-# Preprocessing: StandardScaler (zero mean, unit variance)
-```
+> [!IMPORTANT]
+> This section previously claimed our preprocessing reproduced
+> [`Preprocessing_CICEVSE2024_NT.ipynb`](https://github.com/TATU-hacker/Intrusion_Detection_on_Electric_Vehicle_Charging_Systems/blob/main/Preprocessing_CICEVSE2024_NT.ipynb).
+> It did not. The differences are enumerated below rather than implied (issue #51).
+
+`src/data_prep/preprocess.py` exposes `--feature-set {reference,extended}`. Both drop the
+six leaking timestamp columns (#46); they differ in everything else:
+
+| Column group | Reference notebook | `--feature-set reference` | `--feature-set extended` |
+|---|---|---|---|
+| `id`, `expiration_id`, IPs, MACs, OUIs | dropped (cells 10, 19) | dropped | dropped |
+| `src_port`, `dst_port` | **dropped** (cell 19) | dropped | **kept** |
+| `requested_server_name`, `client_fingerprint`, `server_fingerprint`, `user_agent`, `content_type` | dropped (cell 17) | dropped | dropped |
+| `application_name`, `application_category_name` | dropped (cell 19) | dropped | dropped |
+| `application_is_guessed`, `application_confidence` | kept unless >80% zeros | per zero-rule | dropped |
+| >80%-zeros statistical rule | applied (cell 10) | applied | not applied |
+| `vlan_id`, `tunnel_id` | dropped via zero-rule | via zero-rule | dropped by name |
+| **Six absolute `*_seen_ms` columns** | **kept — this is the leak** | **dropped** | **dropped** |
+| Resulting feature count | 41 | ~35 | 61 |
+
+#### Why keep the ports in `extended`?
+
+Destination port is genuine attack signal — port scans sweep sequential `dst_port` values
+and service detection targets specific ones — so dropping it discards information the
+reference did not need to discard. The trade-off is that ports are near-unique per flow,
+which interacts with deduplication (see below).
+
+#### Deduplication ordering (issue #48)
+
+The reference deduplicates **after** the column drops (cells 19 → 21). Ours previously
+deduplicated **first**, while every row still carried a unique port and millisecond
+timestamp, so the step removed **29 rows out of 2,744,700** — a no-op that looked like a
+cleaning stage. Corrected ordering, measured on the full dataset:
+
+| Configuration | Rows after dedup | Removed |
+|---|---|---|
+| Reference notebook, replayed verbatim (timestamps kept) | 1,277,520 | 53.5% |
+| `--feature-set reference` (timestamps dropped) | **977,862** | 64.4% |
+| `--feature-set extended` (ports and timestamps handling differ) | 2,744,546 | 0.006% |
+
+The gap between the first two rows is itself a result. Replaying the reference verbatim
+leaves 1,277,520 rows, matching the paper's reported "~1.2M". Dropping only the six
+timestamp columns and changing nothing else collapses a further **299,658 rows** — nearly
+a quarter of the paper's dataset — into exact duplicates of rows already present. Those
+flows were never behaviourally distinct; they were distinct *only* by their wall-clock
+position in the capture.
+
+The paper's "~1.2M instances" is therefore not a different dataset — it is the same
+2.74M flows after ports and identifiers are removed, which lets the thousands of
+structurally identical single-packet flows a flood emits collapse into true duplicates.
+**Ordering alone does not shrink `extended`**: retaining ports keeps those flows distinct.
+Which behaviour is correct is a methodological choice, and both are now reproducible.
+
+#### Reproducing the reference exactly
+
+`src/reproduction/replay_reference_preprocessing.py` replays the upstream notebook
+cell-by-cell, including its leak, and `--audit` measures how much of the label a single
+timestamp column recovers. It exists so the leakage claim is independently checkable.
 
 ---
 
