@@ -39,3 +39,10 @@ data/raw/*
 # re-run cannot silently invalidate models trained on an earlier version.
 data/processed*/**/*.pkl
 data/reproduction/
+
+# Corrected-pipeline model artifacts (issues #46/#54). Regenerable via
+# `make data-process` + the per-model training scripts; the Random Forest alone
+# is 38 MB and the ARF pipelines up to 97 MB, so they are not version-controlled.
+saved_models/leakfree*/
+saved_models/arf_*_multiclass.pkl
+saved_models/arf_*_binary.pkl
