@@ -132,10 +132,29 @@ IDENTIFIER_COLUMNS = [
     "dst_ip", "dst_mac", "dst_oui",
 ]
 
-# #51: the reference additionally drops both ports (notebook cell 19). Our
-# 'extended' set keeps them -- destination port is genuine attack signal for
-# port scans and service detection -- but the deviation is now explicit.
-PORT_COLUMNS = ["src_port", "dst_port"]
+# Ports are treated separately because they are not equivalent (#58).
+#
+# `src_port` is an ephemeral port allocated near-sequentially by the OS, so
+# within a single capture it occupies a contiguous band -- a lower-resolution
+# version of the timestamp fingerprint from #46. Measured on leak-free data, a
+# DecisionTree(max_depth=25) using `src_port` alone reaches 0.4028 on the
+# 15-class target, and it ranks 3rd of 61 features in the corrected Random
+# Forest. It is dropped by every feature set except 'extended-both-ports'.
+#
+# `dst_port` is genuine attack signal: port scans sweep sequential destination
+# ports and service detection targets specific ones. It scores 0.2917 alone and
+# ranks far lower by importance. 'extended' keeps it.
+#
+# The reference notebook drops both (cell 19).
+EPHEMERAL_PORT_COLUMN = "src_port"
+DESTINATION_PORT_COLUMN = "dst_port"
+PORT_COLUMNS = [EPHEMERAL_PORT_COLUMN, DESTINATION_PORT_COLUMN]
+
+# 'extended'            -- dst_port only; the position the evidence supports.
+# 'reference'           -- matches the upstream notebook; no ports.
+# 'extended-both-ports' -- the previous 'extended' behaviour, retained so the
+#                          src_port comparison in #58 stays reproducible.
+FEATURE_SETS = ("reference", "extended", "extended-both-ports")
 
 # NFStream DPI output. The reference drops the first two by name and lets the
 # >80%-zeros rule catch the rest; 'extended' drops all four.
@@ -158,6 +177,7 @@ DROP_COLUMNS = (
     + SPARSE_METADATA_COLUMNS
     + APPLICATION_COLUMNS_EXTENDED
     + ABSOLUTE_TIMESTAMP_COLUMNS
+    + [EPHEMERAL_PORT_COLUMN]
 )
 
 
@@ -272,8 +292,8 @@ def clean_and_reduce_features(df: pd.DataFrame, feature_set: str = "extended",
         logger.warning("Empty DataFrame passed to clean_and_reduce_features.")
         return df.copy()
 
-    if feature_set not in ("reference", "extended"):
-        raise ValueError(f"feature_set must be 'reference' or 'extended', got {feature_set!r}")
+    if feature_set not in FEATURE_SETS:
+        raise ValueError(f"feature_set must be one of {FEATURE_SETS}, got {feature_set!r}")
     if dedup not in ("global", "per-capture", "none"):
         raise ValueError(f"dedup must be 'global', 'per-capture' or 'none', got {dedup!r}")
 
@@ -301,6 +321,9 @@ def clean_and_reduce_features(df: pd.DataFrame, feature_set: str = "extended",
     else:
         to_drop += APPLICATION_COLUMNS_EXTENDED
         to_drop += NEAR_ZERO_VARIANCE_COLUMNS
+        if feature_set == "extended":
+            # dst_port is kept; src_port is a residual capture fingerprint (#58).
+            to_drop.append(EPHEMERAL_PORT_COLUMN)
 
     existing = [c for c in dict.fromkeys(to_drop) if c in working.columns and c not in protected]
     working.drop(columns=existing, inplace=True)
@@ -567,9 +590,11 @@ def main():
                         help="Directory containing the extracted CICEVSE2024 archive")
     parser.add_argument("--output_dir", type=str, default="data/processed",
                         help="Destination for the processed CSVs")
-    parser.add_argument("--feature-set", dest="feature_set", choices=["reference", "extended"],
+    parser.add_argument("--feature-set", dest="feature_set", choices=list(FEATURE_SETS),
                         default="extended",
-                        help="'reference' matches the upstream notebook; 'extended' keeps ports (#51)")
+                        help="'reference' matches the upstream notebook (no ports); 'extended' keeps "
+                             "dst_port only (#51, #58); 'extended-both-ports' keeps src_port too, for "
+                             "reproducing the #58 comparison.")
     parser.add_argument("--split", choices=["random", "grouped", "temporal"], default="random",
                         help="Split strategy (#50). 'grouped' holds out whole captures.")
     parser.add_argument("--scale", choices=["standard", "none"], default="standard",
