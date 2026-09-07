@@ -46,3 +46,6 @@ data/reproduction/
 saved_models/leakfree*/
 saved_models/arf_*_multiclass.pkl
 saved_models/arf_*_binary.pkl
+
+# Long-running job logs (ARF full-stream runs)
+logs/*.log
