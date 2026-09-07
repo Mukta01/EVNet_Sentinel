@@ -1,0 +1,37 @@
+{
+  "stream_order": "file",
+  "instances": 25000,
+  "target": "multiclass",
+  "events": [
+    {
+      "instance": 3552,
+      "accuracy_at_drift": 0.9974662162162162,
+      "elapsed_seconds": 1.962,
+      "source_file": "EVSE-A-idle-os-fingerprinting.csv"
+    },
+    {
+      "instance": 12768,
+      "accuracy_at_drift": 0.9971021303258145,
+      "elapsed_seconds": 7.241,
+      "source_file": "EVSE-A-idle-service-detection.csv"
+    },
+    {
+      "instance": 15264,
+      "accuracy_at_drift": 0.9969863731656184,
+      "elapsed_seconds": 8.78,
+      "source_file": "EVSE-A-idle-vulnerability-scan.csv"
+    }
+  ],
+  "timing_seconds": {
+    "total": 14.879,
+    "metric_updates": 0.031,
+    "drift_detection": 0.005,
+    "mean_per_instance": 0.000595
+  },
+  "final_metrics": {
+    "accuracy": 0.9975999039961598,
+    "precision": 0.9974411648219311,
+    "recall": 0.9975999039961598,
+    "f1": 0.9975198722947078
+  }
+}
