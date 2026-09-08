@@ -56,3 +56,11 @@ logs/*.log
 # with `make data-process` plus the per-model training scripts.
 saved_models/*.pkl
 saved_models/_superseded/
+
+# Next.js build caches and capture scratch (churns on every dev run)
+frontend/.next/
+frontend/.next-figma-capture/
+
+# Multi-seed intermediate splits (regenerate with src/evaluation/run_experiments.py)
+data/multiseed/
+saved_models/arf-full/
