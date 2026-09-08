@@ -83,27 +83,51 @@ defensible configuration and the one our headline numbers use.
 
 ---
 
-## Finding 3 — Prequential accuracy is inflated by stream ordering
+## Finding 3 — The paper's "concept drift events" are capture-file boundaries
 
-Independent of the timestamp leak. Identical 25,000-instance slice, identical
-class distribution, leak-free features; only the ordering of the stream varies.
+**Confirmed at full scale.** ARF+ADWIN run prequentially over the entire
+1,921,182-instance stream in capture order, with the paper's exact
+hyperparameters, then each drift event's position compared against the points
+where the source capture changes (`src/reproduction/drift_boundary_alignment.py`).
 
-| `--stream-order` | Accuracy | Weighted-F1 | Drift events | On a capture boundary |
+| Drift events within N instances of a capture boundary | Count |
+|---|---|
+| within 100 | **42 / 43 (97.7%)** |
+| within 1,000 | 42 / 43 |
+| within 20,000 | 42 / 43 |
+| median distance | **22 instances** |
+
+Null model, 43 events placed uniformly at random over the stream, 2,000 draws:
+**2.2 ± 1.5** would fall within 1,000 instances of a boundary. Observed: 42.
+Empirical p < 0.0005.
+
+The detector is firing on the seams between concatenated capture files, not on
+evolution in EVCS traffic. CICEVSE2024 is 59 pcaps joined end to end; each join
+is an abrupt distribution change by construction.
+
+### Ordering also inflates the accuracy
+
+Same model, same 1.92M instances, only the stream order varies:
+
+| Order | Accuracy | Weighted-F1 | Drift events | Wall clock |
 |---|---|---|---|---|
-| `file` (capture order) | **0.9976** | 0.9975 | 3 | 3/3 |
-| `file-then-shuffle` (controlled) | **0.5508** | 0.5318 | 1 | 1/1 |
-| `shuffled` (whole stream) | 0.5029 | 0.4909 | 1 | 1/1 |
+| `file` (capture order) | **0.9997** | 0.9997 | 43 | 25.5 min |
+| `shuffled` (paper default) | **0.5585** | 0.5129 | 14 | 255.3 min |
 
-A **44-point** accuracy drop from reordering alone. In capture order consecutive
-instances share a label, so a prequential learner scores near-perfectly by
-predicting "the same as recently" — classic label autocorrelation. The
-`file-then-shuffle` row is the controlled comparison: same instances, same
-classes, same proportions, order alone.
+In capture order consecutive instances share a label, so a prequential learner
+scores near-perfectly by predicting "the same as recently" — label
+autocorrelation, a mechanism entirely separate from the timestamp leak of #46.
+A controlled 25,000-instance comparison holding the class distribution fixed
+(`--stream-order file-then-shuffle`) gives 0.9976 against 0.5508, confirming the
+gap is ordering rather than task difficulty.
 
-Every drift event fired inside a named capture file, consistent with the #53
-hypothesis that the paper's 11–12 "concept drift events" are seams between
-concatenated captures rather than evolution in EVCS traffic. Confirming this at
-full scale is still open.
+The shuffled run's **14** drift events is close to the paper's reported 11 for
+multiclass, which is consistent with the paper having shuffled its stream — but
+its 0.9840 accuracy is not reproducible without the timestamp leak. Our
+leak-free shuffled run reaches 0.5585.
+
+Throughput: 0.795 ms/instance in capture order, 7.972 ms/instance shuffled,
+against the paper's reported 3.7 ms.
 
 ---
 
@@ -239,7 +263,5 @@ EVCS intrusion detection.
 
 ## Still open
 
-- #53 at full scale: align every ADWIN drift event against capture boundaries over the whole stream
-- #58: drop `src_port` and re-measure
 - #55: pinned versions, multi-seed runs, hardware and runtime table
 - Grouped and temporal splits are implemented (#50) but not yet used for headline numbers
