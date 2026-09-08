@@ -49,3 +49,10 @@ saved_models/arf_*_binary.pkl
 
 # Long-running job logs (ARF full-stream runs)
 logs/*.log
+
+# Model artifacts are no longer version-controlled (issue #55). They are large and
+# environment-specific, and `src/api/main.py` loads every .pkl it finds in
+# saved_models/ -- so a stale committed model gets served silently. Regenerate
+# with `make data-process` plus the per-model training scripts.
+saved_models/*.pkl
+saved_models/_superseded/

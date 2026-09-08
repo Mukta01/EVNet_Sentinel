@@ -186,22 +186,40 @@ absolute timestamps (#46); they differ in how they treat ports (#51, #58).
 | `extended` *(default)* | `dst_port` only | 60 | 1,198,151 |
 | `extended-both-ports` | both | 61 | 2,744,546 |
 
-### Macro-F1
+### Macro-F1 — headline, mean ± std over seeds 42 / 1337 / 2024
 
-| Model | `extended-both-ports` | `extended` (default) | `reference` |
+Feature set `extended`, 1,198,151 rows, 60 features, 15 classes. Each seed
+re-runs the split *and* model initialisation
+(`src/evaluation/run_experiments.py`).
+
+| Model | Macro-F1 | Weighted-F1 | Accuracy |
 |---|---|---|---|
-| Random Forest | 0.5894 | **0.5488** | 0.7011 |
-| Decision Tree | 0.6692 | **0.5264** | 0.6784 |
-| Logistic Regression | 0.3308 | **0.3458** | 0.3047 |
-| SVM (SGD, hinge) | 0.3084 | **0.3364** | 0.3058 |
+| Random Forest | **0.5582 ± 0.0080** | 0.8654 ± 0.0006 | 0.8679 ± 0.0007 |
+| Decision Tree | **0.5568 ± 0.0095** | 0.8677 ± 0.0003 | 0.8681 ± 0.0003 |
+| Logistic Regression | **0.4355 ± 0.0172** | 0.8529 ± 0.0023 | 0.8626 ± 0.0019 |
+| SVM (SGD, hinge) | **0.4110 ± 0.0165** | 0.8489 ± 0.0033 | 0.8623 ± 0.0012 |
 
-> [!WARNING]
-> **These three columns are not directly comparable.** Each feature set produces a
-> different deduplicated dataset (2.74M / 1.20M / 0.98M rows) and therefore a
-> different test set with a different class balance. The `reference` column looks
-> strongest, but its reconnaissance classes hold only a few hundred rows each
-> (Finding 2), and high F1 on a small clean class is easy. Compare *within* a
-> column, not across.
+Random Forest and Decision Tree are **statistically indistinguishable** once
+`src_port` is gone (0.5582 ± 0.0080 vs 0.5568 ± 0.0095, overlapping at one
+standard deviation), which independently confirms Finding 4: the Decision Tree's
+earlier apparent advantage was `src_port` memorisation, not modelling.
+
+### The central result, per class
+
+| Group | Classes | F1 across all four models |
+|---|---|---|
+| **DoS floods** | `TCP_Flood`, `PSHACK_Flood`, `SYN_Flood`, `SynonymousIP_Flood`, `UDP_Flood` | **0.99 – 1.000 ± 0.000** |
+| **Reconnaissance** | `SYN_Stealth_Scan`, `Aggressive_Scan`, `Service_Version_Detection`, `OS_Fingerprinting`, `Vulnerability_Scan`, `TCP_Port_Scan` | **0.02 – 0.28** |
+
+Full per-class table with standard deviations:
+[`evaluation_results/multiseed/MULTISEED_RESULTS.md`](../evaluation_results/multiseed/MULTISEED_RESULTS.md).
+
+The flood classes reach F1 **1.000 with zero variance across seeds** — they are
+not merely learnable, they are trivially separable from packet sizes, flags and
+inter-arrival times. Every reconnaissance class sits below 0.28 for every model,
+linear and non-linear alike. **The gap is a property of the data, not of model
+capacity.** Six nmap modes emitting near-identical single-probe flows cannot be
+told apart at flow level, and no amount of model tuning changes that.
 
 ### Accuracy and weighted-F1, for context
 
@@ -243,6 +261,73 @@ literally `-sV -O -sC --traceroute`, a superset of two of the others — and at
 flow level they emit near-identical probes. **They should be confusable.** This
 is a finding, not a failure: it establishes a realistic ceiling for flow-based
 EVCS intrusion detection.
+
+---
+
+## Reproducibility
+
+Issue #55. Everything needed to regenerate the numbers above.
+
+### Dataset provenance
+
+CICEVSE2024 is access-restricted and carries no public version string, so the
+capture set is pinned by fingerprint instead. `docs/dataset_manifest.json` records
+every capture file's size, row count and SHA-256, regenerated with:
+
+```bash
+python3 src/reproduction/dataset_manifest.py --raw-dir data/raw
+```
+
+| | |
+|---|---|
+| Capture files | 59 |
+| Total rows | 2,744,700 |
+| Classes | 15 |
+| Aggregate SHA-256 | `be68ff18bbb86f217c7c0852c988f1fa4503b79bbda11c89960cf2700b63ea07` |
+
+If that aggregate hash differs, you have a different copy of the dataset and the
+row counts below will not match.
+
+### Pipeline stage counts (`--feature-set extended`)
+
+| Stage | Rows | Columns |
+|---|---|---|
+| 59 capture CSVs concatenated, labelled from filename | 2,744,700 | 86 + Label |
+| After identifier / sparse / timestamp / `src_port` drops | 2,744,700 | 65 |
+| After deduplication (`--dedup global`) | **1,198,151** | 65 |
+| Feature matrix (metadata and Label separated) | 1,198,151 | **60** |
+| Train / val / test (70/15/15) | 838,705 / 179,723 / 179,723 | 60 |
+
+Counts for the other two feature sets are in §3.4 of
+[dataset_feature_engineering.md](dataset_feature_engineering.md).
+
+### Seeds
+
+Every headline number is the mean ± standard deviation over **three seeds
+(42, 1337, 2024)**. The seed varies *both* the train/val/test split and model
+initialisation — varying model seeds alone would understate the spread, since
+with `Benign` at 82 flows and `ICMP_Fragmentation` at 28 the split itself is the
+dominant source of run-to-run noise.
+
+```bash
+python3 src/evaluation/run_experiments.py \
+  --raw-dir data/raw --feature-set extended --seeds 42 1337 2024
+```
+
+### Dependency pinning
+
+`requirements.txt` pins exact versions. River's API changed materially around
+0.21 and scikit-learn's `class_weight` and tree-splitting behaviour has shifted
+across minor releases, so unpinned versions make these numbers unreproducible.
+
+### Model artifacts
+
+Not version-controlled — see [`saved_models/README.md`](../saved_models/README.md).
+`src/api/main.py` loads *every* `.pkl` in `saved_models/` into its serving
+registry, so a stale committed model gets served silently. Until #55 the models
+committed there were trained on leaked features, meaning the API was serving the
+0.9994 timestamp lookup table as a detector. They now live in
+`saved_models/_superseded/` (gitignored) and are regenerated locally.
 
 ---
 
