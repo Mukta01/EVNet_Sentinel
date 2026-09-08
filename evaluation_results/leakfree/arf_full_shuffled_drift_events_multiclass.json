@@ -1,0 +1,103 @@
+{
+  "stream_order": "shuffled",
+  "instances": 1921182,
+  "target": "multiclass",
+  "events": [
+    {
+      "instance": 1824,
+      "accuracy_at_drift": 0.3717105263157895,
+      "elapsed_seconds": 22.067,
+      "source_file": "EVSE-B-idle-syn-stealth-scan.csv"
+    },
+    {
+      "instance": 37472,
+      "accuracy_at_drift": 0.5065382152006832,
+      "elapsed_seconds": 377.145,
+      "source_file": "EVSE-B-charging-vulnerability-scan.csv"
+    },
+    {
+      "instance": 47488,
+      "accuracy_at_drift": 0.5116871630727763,
+      "elapsed_seconds": 469.556,
+      "source_file": "EVSE-B-charging-aggressive-scan.csv"
+    },
+    {
+      "instance": 115328,
+      "accuracy_at_drift": 0.5321257630410655,
+      "elapsed_seconds": 1108.752,
+      "source_file": "EVSE-B-idle-vulnerability-scan.csv"
+    },
+    {
+      "instance": 277408,
+      "accuracy_at_drift": 0.5475689237512977,
+      "elapsed_seconds": 2375.007,
+      "source_file": "EVSE-B-MaliciousEV-aggressive-scan.csv"
+    },
+    {
+      "instance": 449440,
+      "accuracy_at_drift": 0.5533263616945532,
+      "elapsed_seconds": 3693.017,
+      "source_file": "EVSE-B-idle-aggressive-scan.csv"
+    },
+    {
+      "instance": 475808,
+      "accuracy_at_drift": 0.5530613188513014,
+      "elapsed_seconds": 3922.053,
+      "source_file": "EVSE-B-idle-synonymous-ip-flood.csv"
+    },
+    {
+      "instance": 478496,
+      "accuracy_at_drift": 0.5525375342740587,
+      "elapsed_seconds": 3950.579,
+      "source_file": "EVSE-B-MaliciousEV-syn-stealth-scan.csv"
+    },
+    {
+      "instance": 492672,
+      "accuracy_at_drift": 0.5515535691088594,
+      "elapsed_seconds": 4095.7,
+      "source_file": "EVSE-B-idle-port-scan.csv"
+    },
+    {
+      "instance": 569024,
+      "accuracy_at_drift": 0.5492879034979192,
+      "elapsed_seconds": 4786.589,
+      "source_file": "EVSE-A-charging-tcp-flood.csv"
+    },
+    {
+      "instance": 587680,
+      "accuracy_at_drift": 0.5490266811870406,
+      "elapsed_seconds": 4951.153,
+      "source_file": "EVSE-B-charging-port-scan.csv"
+    },
+    {
+      "instance": 792544,
+      "accuracy_at_drift": 0.5520236100456253,
+      "elapsed_seconds": 6557.696,
+      "source_file": "EVSE-B-idle-syn-flood.csv"
+    },
+    {
+      "instance": 1298240,
+      "accuracy_at_drift": 0.5569925437515405,
+      "elapsed_seconds": 10396.804,
+      "source_file": "EVSE-B-charging-syn-stealth.csv"
+    },
+    {
+      "instance": 1719520,
+      "accuracy_at_drift": 0.5582645156787941,
+      "elapsed_seconds": 13720.471,
+      "source_file": "EVSE-B-charging-aggressive-scan.csv"
+    }
+  ],
+  "timing_seconds": {
+    "total": 15315.134,
+    "metric_updates": 5.18,
+    "drift_detection": 0.795,
+    "mean_per_instance": 0.007972
+  },
+  "final_metrics": {
+    "accuracy": 0.5585163500992358,
+    "precision": 0.5320914458675136,
+    "recall": 0.5585163500992358,
+    "f1": 0.5129089907782423
+  }
+}
