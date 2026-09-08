@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
-import Architecture from "@/components/Architecture";
+import Storyline from "@/components/Storyline";
 import TechStack from "@/components/TechStack";
 import Team from "@/components/Team";
 import Roadmap from "@/components/Roadmap";
@@ -13,7 +13,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Features />
-      <Architecture />
+      <Storyline />
       <TechStack />
       <Team />
       <Roadmap />
