@@ -1,9 +1,35 @@
-fastapi
-uvicorn
-pandas
-scikit-learn
-joblib
-pydantic
-river
-gdown
-python-dotenv
+# Pinned for reproducibility (issue #55). Regenerate with `pip freeze` after any
+# deliberate upgrade, and record the change in docs/leakage_audit_results.md --
+# River's API changed materially around 0.21, and scikit-learn's class_weight
+# and tree-splitting behaviour has shifted across minor releases, so unpinned
+# versions make the reported numbers unreproducible.
+#
+# Verified on Python 3.13.12, macOS 26.5, arm64.
+
+# --- core numerics -------------------------------------------------------
+numpy==2.4.4
+pandas==3.0.2
+scipy==1.17.1
+scikit-learn==1.8.0
+joblib==1.5.3
+
+# --- streaming / online learning ----------------------------------------
+river==0.26.1
+
+# --- API layer -----------------------------------------------------------
+fastapi==0.135.3
+uvicorn==0.44.0
+pydantic==2.12.5
+
+# --- data retrieval ------------------------------------------------------
+gdown==6.1.0
+python-dotenv==1.2.2
+
+# --- visualisation and tooling -------------------------------------------
+matplotlib==3.10.8
+seaborn==0.13.2
+tqdm==4.67.3
+ipywidgets==8.1.9
+
+# --- testing -------------------------------------------------------------
+pytest==9.0.3
