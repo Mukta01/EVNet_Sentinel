@@ -154,13 +154,20 @@ def run(data_dir, split, target, limit, output_dir, model_save_dir, stream_order
     metric_seconds = 0.0
     drift_seconds = 0.0
 
-    feature_records = X.to_dict(orient="records")
+    # Build each instance dict lazily. `X.to_dict(orient="records")` materialises
+    # one dict per row up front, which is ~8 GB for the full 1.9M-row stream and
+    # will exhaust memory before the run starts. A single contiguous ndarray plus
+    # a dict built per iteration keeps the footprint flat.
+    columns = list(X.columns)
+    values = X.to_numpy(dtype=float)
     labels = y.tolist()
+    del X
 
     print("[*] Starting prequential (test-then-learn) run...")
     started = time.perf_counter()
 
-    for i, (x, label) in enumerate(zip(feature_records, labels)):
+    for i, (row, label) in enumerate(zip(values, labels)):
+        x = dict(zip(columns, row))
         # Step 1 -- predict before learning.
         prediction = model.predict_one(x)
         y_true.append(label)

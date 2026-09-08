@@ -17,6 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from src.data_prep.preprocess import (
     ABSOLUTE_TIMESTAMP_COLUMNS,
+    DESTINATION_PORT_COLUMN,
+    EPHEMERAL_PORT_COLUMN,
+    FEATURE_SETS,
     DROP_COLUMNS,
     EXPECTED_CLASSES,
     LABEL_MAPPING,
@@ -298,10 +301,15 @@ def test_deduplication_runs_after_column_drops():
         "bidirectional_bytes": [54, 54],
         "Label": ["SYN_Flood", "SYN_Flood"],
     })
-    # 'reference' also drops the ports, leaving the two rows identical.
+    # 'reference' drops both ports, leaving the two rows identical.
     assert len(clean_and_reduce_features(df, feature_set="reference")) == 1
-    # 'extended' keeps ports, so they remain genuinely distinct flows.
-    assert len(clean_and_reduce_features(df, feature_set="extended")) == 2
+    # 'extended' drops src_port too (#58), so these collapse as well: what looked
+    # like two distinct flows was one flow seen twice with different ephemeral
+    # ports. This is the same effect that shrinks the reconnaissance classes.
+    assert len(clean_and_reduce_features(df, feature_set="extended")) == 1
+    # 'extended-both-ports' keeps src_port, so they stay distinct -- the previous
+    # behaviour, retained for the #58 comparison.
+    assert len(clean_and_reduce_features(df, feature_set="extended-both-ports")) == 2
 
 
 def test_dedup_scope_controls_cross_capture_collapse():
@@ -449,18 +457,55 @@ def test_metadata_files_are_exported():
 # Issue #51 -- feature-set selection
 # ---------------------------------------------------------------------------
 
-def test_reference_feature_set_drops_ports():
-    """The reference notebook drops both ports (cell 19); 'extended' keeps them."""
+def _frame_with_ports():
     df = get_leaky_raw_dataframe()
-    df["src_port"] = range(len(df))
+    df["src_port"] = range(40000, 40000 + len(df))
     df["dst_port"] = [80] * len(df)
+    return df
 
-    reference = clean_and_reduce_features(df, feature_set="reference")
-    extended = clean_and_reduce_features(df, feature_set="extended")
 
-    assert "src_port" not in reference.columns
-    assert "dst_port" not in reference.columns
-    assert "dst_port" in extended.columns
+def test_reference_feature_set_drops_both_ports():
+    """The reference notebook drops both ports (cell 19)."""
+    reference = clean_and_reduce_features(_frame_with_ports(), feature_set="reference")
+    assert EPHEMERAL_PORT_COLUMN not in reference.columns
+    assert DESTINATION_PORT_COLUMN not in reference.columns
+
+
+def test_extended_drops_src_port_but_keeps_dst_port():
+    """
+    Issue #58: src_port is an ephemeral, near-sequentially allocated port, so it
+    bands per capture and acts as a lower-resolution version of the timestamp
+    fingerprint from #46 -- 0.4028 alone on the 15-class target. dst_port is
+    genuine attack signal and is retained.
+    """
+    extended = clean_and_reduce_features(_frame_with_ports(), feature_set="extended")
+    assert EPHEMERAL_PORT_COLUMN not in extended.columns, "src_port leaks capture identity (#58)"
+    assert DESTINATION_PORT_COLUMN in extended.columns, "dst_port is genuine attack signal"
+
+
+def test_extended_both_ports_reproduces_the_previous_behaviour():
+    """Retained so the #58 before/after comparison stays reproducible."""
+    both = clean_and_reduce_features(_frame_with_ports(), feature_set="extended-both-ports")
+    assert EPHEMERAL_PORT_COLUMN in both.columns
+    assert DESTINATION_PORT_COLUMN in both.columns
+
+
+def test_src_port_never_reaches_features_by_default():
+    """The default feature set must not expose src_port to any model."""
+    cleaned = clean_and_reduce_features(_frame_with_ports())
+    X, _y, _meta = engineer_features(cleaned)
+    assert EPHEMERAL_PORT_COLUMN not in X.columns
+
+
+def test_drop_columns_includes_src_port():
+    """The exported DROP_COLUMNS constant must cover the residual fingerprint."""
+    assert EPHEMERAL_PORT_COLUMN in DROP_COLUMNS
+
+
+def test_all_feature_sets_are_accepted():
+    df = _frame_with_ports()
+    for name in FEATURE_SETS:
+        assert not clean_and_reduce_features(df, feature_set=name).empty
 
 
 def test_invalid_feature_set_raises():
