@@ -1,0 +1,556 @@
+{
+  "source": "CICEVSE2024 \u2014 Canadian Institute for Cybersecurity, Network Traffic subset",
+  "capture_files": 59,
+  "total_rows": 2744700,
+  "classes": [
+    "Aggressive_Scan",
+    "Benign",
+    "ICMP_Flood",
+    "ICMP_Fragmentation",
+    "OS_Fingerprinting",
+    "PSHACK_Flood",
+    "SYN_Flood",
+    "SYN_Stealth_Scan",
+    "Service_Version_Detection",
+    "Slowloris_Scan",
+    "SynonymousIP_Flood",
+    "TCP_Flood",
+    "TCP_Port_Scan",
+    "UDP_Flood",
+    "Vulnerability_Scan"
+  ],
+  "aggregate_sha256": "be68ff18bbb86f217c7c0852c988f1fa4503b79bbda11c89960cf2700b63ea07",
+  "files": [
+    {
+      "file": "EVSE-A-Charging-Benign.csv",
+      "label": "Benign",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 14,
+      "bytes": 9566,
+      "sha256": "f9b462f837e6142904cf2317e46daac15321cd75b02187f918bda3dc7704fc74"
+    },
+    {
+      "file": "EVSE-A-charging-Aggressive-scan.csv",
+      "label": "Aggressive_Scan",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 9999,
+      "bytes": 3808211,
+      "sha256": "4be175e99c62c08ce42c0c3aa1eded93802b637ecaee5616cf1fc35da6cdbf31"
+    },
+    {
+      "file": "EVSE-A-charging-icmp-flood.csv",
+      "label": "ICMP_Flood",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 2,
+      "bytes": 2700,
+      "sha256": "273cff1a1daadd61e6371ca5236192e8b19dc2395df327b7ed142b4fac252a94"
+    },
+    {
+      "file": "EVSE-A-charging-icmp-fragmentation.csv",
+      "label": "ICMP_Fragmentation",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 11,
+      "bytes": 6613,
+      "sha256": "ba805132813fd4fcab83879a9f6aa087bff22ca5d8f3947bf0e2accd211dfb00"
+    },
+    {
+      "file": "EVSE-A-charging-os-fingerprinting.csv",
+      "label": "OS_Fingerprinting",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 4764,
+      "bytes": 1760336,
+      "sha256": "3e9a9bd2b1dadf129ae17c1af415d2322714df61e047e4f7d78430ff0103b9b2"
+    },
+    {
+      "file": "EVSE-A-charging-portscan.csv",
+      "label": "TCP_Port_Scan",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 8117,
+      "bytes": 2980843,
+      "sha256": "3848d42d216f4afee5a467c2c7cdab2394245b7adcac8c7af94dfe302aa64689"
+    },
+    {
+      "file": "EVSE-A-charging-push-ack-flood.csv",
+      "label": "PSHACK_Flood",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 65536,
+      "bytes": 28861125,
+      "sha256": "41e5feb14c1f0a51fac855196af90937118ef03945f6ddacb4a4d6cba186be7a"
+    },
+    {
+      "file": "EVSE-A-charging-service-detection.csv",
+      "label": "Service_Version_Detection",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 3629,
+      "bytes": 1336628,
+      "sha256": "6560357e3dd9cb13651547eb9c1faa012e6ddaf1dd3dd2d0677cb169763fa787"
+    },
+    {
+      "file": "EVSE-A-charging-slowLoris-scan.csv",
+      "label": "Slowloris_Scan",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 1966,
+      "bytes": 776618,
+      "sha256": "6b1c14f204e0ca55eed2fdeaf879dac093dcac5248b6c9bb1ef89c912ccee803"
+    },
+    {
+      "file": "EVSE-A-charging-syn-flood.csv",
+      "label": "SYN_Flood",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 65558,
+      "bytes": 27888725,
+      "sha256": "1d456d9856998c0ea47d2731d43aff6ac96cacba5f08ea5356cac2985eb10550"
+    },
+    {
+      "file": "EVSE-A-charging-syn-stealth.csv",
+      "label": "SYN_Stealth_Scan",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 8032,
+      "bytes": 2971387,
+      "sha256": "1dfcaec50c713c54c502717576bbc53c50321bc28bf44a06f1437e79c6223265"
+    },
+    {
+      "file": "EVSE-A-charging-synonymous-ip.csv",
+      "label": "SynonymousIP_Flood",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 65548,
+      "bytes": 27595814,
+      "sha256": "a37e004babf28eb650b5a50556201d9de6d98c9ca2e901f46c104ac21bb6df6c"
+    },
+    {
+      "file": "EVSE-A-charging-tcp-flood.csv",
+      "label": "TCP_Flood",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 65547,
+      "bytes": 27540329,
+      "sha256": "e54887776ad195171ba8a123be4a4780786120050672991ab65a7f1950ff7677"
+    },
+    {
+      "file": "EVSE-A-charging-udp-flood.csv",
+      "label": "UDP_Flood",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 7885,
+      "bytes": 3241287,
+      "sha256": "237cefcd3f3f259d61c78887aa8d7774639d0ce4ba3514dff200d6d6310f235d"
+    },
+    {
+      "file": "EVSE-A-charging-vulnerability-scan.csv",
+      "label": "Vulnerability_Scan",
+      "evse": "EVSE-A",
+      "state": "charging",
+      "rows": 9115,
+      "bytes": 3402801,
+      "sha256": "0c0d37b3b3df4572dbfe872a9cf4d2c509b3d88af0439a3512e9cd30e19d656d"
+    },
+    {
+      "file": "EVSE-A-idle-aggressive-scan.csv",
+      "label": "Aggressive_Scan",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 2333,
+      "bytes": 817635,
+      "sha256": "9fcb0beb71b43de7ff2d52b1c2c27a80605e4c6ad3b0f6ad97155448ef2aa530"
+    },
+    {
+      "file": "EVSE-A-idle-benign.csv",
+      "label": "Benign",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 68,
+      "bytes": 41289,
+      "sha256": "83f66f8fd6591dc9eea0ccd7f3eae5112d829200bbd3dbc191b8a1f67019671a"
+    },
+    {
+      "file": "EVSE-A-idle-icmp-fragmentation.csv",
+      "label": "ICMP_Fragmentation",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 5,
+      "bytes": 3840,
+      "sha256": "a0c55109e6310d625d49d40d3e92b22f9b374ae222206f3d44c0a7a2c436c273"
+    },
+    {
+      "file": "EVSE-A-idle-os-fingerprinting.csv",
+      "label": "OS_Fingerprinting",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 3617,
+      "bytes": 1348249,
+      "sha256": "be1c19acf206a37e851cfdda25acb07dfd93f6724fdcf8387d75e49ece25df69"
+    },
+    {
+      "file": "EVSE-A-idle-portscan.csv",
+      "label": "TCP_Port_Scan",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 4975,
+      "bytes": 1825579,
+      "sha256": "a98fe15f37b67f2d228a122fcbf3965e78b212a5986738e74a4a031c9b931a9a"
+    },
+    {
+      "file": "EVSE-A-idle-service-detection.csv",
+      "label": "Service_Version_Detection",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 3512,
+      "bytes": 1215122,
+      "sha256": "f9d40dcb0a27951ea729f1bf0fac332443f7bbf3dbd71a87cd72ac7213e7be48"
+    },
+    {
+      "file": "EVSE-A-idle-slowloris-scan.csv",
+      "label": "Slowloris_Scan",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 2235,
+      "bytes": 861355,
+      "sha256": "b2858e222cff4c186e1d532842b7fac5d374a4ab9d0be0b32ab738ca914eda40"
+    },
+    {
+      "file": "EVSE-A-idle-syn-flood.csv",
+      "label": "SYN_Flood",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 65549,
+      "bytes": 27813570,
+      "sha256": "48a06d114bfff64022d67cd8c55b405aed5459bb703c9f20fed6c0c71ecbef4c"
+    },
+    {
+      "file": "EVSE-A-idle-syn-stealth-scan.csv",
+      "label": "SYN_Stealth_Scan",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 7215,
+      "bytes": 2487331,
+      "sha256": "80c50dc545a1cb60ea256528172da64831b5ad767812662946617cd69c2e9f88"
+    },
+    {
+      "file": "EVSE-A-idle-synonymous-ip.csv",
+      "label": "SynonymousIP_Flood",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 65545,
+      "bytes": 27605569,
+      "sha256": "26b7d0ecc75fd6a5aec54d9aad71165430cbcba928a87f7dbc4299a2219e6d6b"
+    },
+    {
+      "file": "EVSE-A-idle-tcp-flood.csv",
+      "label": "TCP_Flood",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 65540,
+      "bytes": 27681867,
+      "sha256": "a6a29ae2a06b3f00de43d69869e9fe33d3132f97a3ef6ea347bece2bc9712a79"
+    },
+    {
+      "file": "EVSE-A-idle-udp-flood.csv",
+      "label": "UDP_Flood",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 8071,
+      "bytes": 3324122,
+      "sha256": "7d0393148ff974bb3184f167c297657a7a489c71ba8d02a1a25b4b53ce08309c"
+    },
+    {
+      "file": "EVSE-A-idle-vulnerability-scan.csv",
+      "label": "Vulnerability_Scan",
+      "evse": "EVSE-A",
+      "state": "idle",
+      "rows": 3466,
+      "bytes": 1199252,
+      "sha256": "fee2214462a6a1adf7bd7d66f1f1a72d35ad3e5630a45edbbd2bd6dad2f8c7c2"
+    },
+    {
+      "file": "EVSE-B-MaliciousEV-aggressive-scan.csv",
+      "label": "Aggressive_Scan",
+      "evse": "EVSE-B",
+      "state": "maliciousev",
+      "rows": 16361,
+      "bytes": 6105303,
+      "sha256": "75ccec9143c19903edd90c009592294df6d0dadf0b77203955b37be7f69831cb"
+    },
+    {
+      "file": "EVSE-B-MaliciousEV-os-fingerprinting.csv",
+      "label": "OS_Fingerprinting",
+      "evse": "EVSE-B",
+      "state": "maliciousev",
+      "rows": 18259,
+      "bytes": 6786268,
+      "sha256": "7baf73859bba256827ae6dd9523285f30bcefd004122a524fa41e735d4e5334d"
+    },
+    {
+      "file": "EVSE-B-MaliciousEV-port-scan.csv",
+      "label": "TCP_Port_Scan",
+      "evse": "EVSE-B",
+      "state": "maliciousev",
+      "rows": 158013,
+      "bytes": 58620302,
+      "sha256": "42673907617ee67482ab26260aa4bdfca80e6f7a4b545e491e23339e962f302b"
+    },
+    {
+      "file": "EVSE-B-MaliciousEV-service-detection.csv",
+      "label": "Service_Version_Detection",
+      "evse": "EVSE-B",
+      "state": "maliciousev",
+      "rows": 87089,
+      "bytes": 32358839,
+      "sha256": "f639aab1411364b4f9bedbd7cf879853684bbd7778eba7e9ca969217f71c9a7b"
+    },
+    {
+      "file": "EVSE-B-MaliciousEV-syn-stealth-scan.csv",
+      "label": "SYN_Stealth_Scan",
+      "evse": "EVSE-B",
+      "state": "maliciousev",
+      "rows": 228001,
+      "bytes": 84629944,
+      "sha256": "c4c40d02ef03c4c2740cb8e28c63a3eac8fa75e6033416a37678e791e9a25a3f"
+    },
+    {
+      "file": "EVSE-B-MaliciousEV-vulnerability-scan.csv",
+      "label": "Vulnerability_Scan",
+      "evse": "EVSE-B",
+      "state": "maliciousev",
+      "rows": 57058,
+      "bytes": 21147730,
+      "sha256": "a16cb1cb1df6d9ca79b1f816df6cb9e6d503a68fe1067681d8eaf7332bbc194b"
+    },
+    {
+      "file": "EVSE-B-charging-aggressive-scan.csv",
+      "label": "Aggressive_Scan",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 37872,
+      "bytes": 14339375,
+      "sha256": "23004e1c9096523aeac7ce74c99a0f8d299be578680d007a4c4661bf68d2cb48"
+    },
+    {
+      "file": "EVSE-B-charging-icmp-flood.csv",
+      "label": "ICMP_Flood",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 30,
+      "bytes": 13212,
+      "sha256": "3054f8a08fce036e58844b9c25177a7667865a3b840d3154ce51635c93d749fc"
+    },
+    {
+      "file": "EVSE-B-charging-os-fingerprinting.csv",
+      "label": "OS_Fingerprinting",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 67971,
+      "bytes": 25631618,
+      "sha256": "4248350c3622daea1f4e2bae19d7bdbda63d385cb33e0bca654fc1534aff4983"
+    },
+    {
+      "file": "EVSE-B-charging-port-scan.csv",
+      "label": "TCP_Port_Scan",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 177409,
+      "bytes": 66963838,
+      "sha256": "fd2f281c2ebfb4ef2cc494402359b16abf9e571ca32c82ebad7dabb72d354def"
+    },
+    {
+      "file": "EVSE-B-charging-push-ack-flood.csv",
+      "label": "PSHACK_Flood",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 65559,
+      "bytes": 32721505,
+      "sha256": "1ce2f1b20927e8a5bd05066727ca3c92dc467151d53b12ca603b7bb3b5ea94db"
+    },
+    {
+      "file": "EVSE-B-charging-service-detection-scan.csv",
+      "label": "Service_Version_Detection",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 165171,
+      "bytes": 62326329,
+      "sha256": "1cdc488007a5f6e3e3cd4e97d7fe3b14115d1478188e817ce04b946b7a6930fb"
+    },
+    {
+      "file": "EVSE-B-charging-syn-flood.csv",
+      "label": "SYN_Flood",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 65548,
+      "bytes": 31861435,
+      "sha256": "0a90f0b0742dff27f1a8791725ff8a368b815aa9a53f2d9c01667a620f973b55"
+    },
+    {
+      "file": "EVSE-B-charging-syn-stealth.csv",
+      "label": "SYN_Stealth_Scan",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 214065,
+      "bytes": 80840837,
+      "sha256": "bdd6f9a6b0df6b9a2ee2aed2d311ac53ef37385961f59c449a929cf8beaab42c"
+    },
+    {
+      "file": "EVSE-B-charging-synonymous-ip-flood.csv",
+      "label": "SynonymousIP_Flood",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 65546,
+      "bytes": 28519754,
+      "sha256": "c3b435dc10ee1d67591b4bddbae1ceb1388af9b7259d7fd8cef65199a5908c07"
+    },
+    {
+      "file": "EVSE-B-charging-tcp-flood.csv",
+      "label": "TCP_Flood",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 65543,
+      "bytes": 28172969,
+      "sha256": "23d265759f50cae069602e921a8c6ad6755e8bd52b35f9e5f136e3ca0af8d28c"
+    },
+    {
+      "file": "EVSE-B-charging-udp-flood.csv",
+      "label": "UDP_Flood",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 8490,
+      "bytes": 3498306,
+      "sha256": "5917945640b42e9bb64b5cc7273328285a4e727851480ae22e6b87ff201bd352"
+    },
+    {
+      "file": "EVSE-B-charging-vulnerability-scan.csv",
+      "label": "Vulnerability_Scan",
+      "evse": "EVSE-B",
+      "state": "charging",
+      "rows": 110121,
+      "bytes": 41659756,
+      "sha256": "e97f14c825a5a3f097bf7a1f74ad52eed822c293e628ba3e1c6d0c3aaa38fb26"
+    },
+    {
+      "file": "EVSE-B-idle-aggressive-scan.csv",
+      "label": "Aggressive_Scan",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 35957,
+      "bytes": 13620727,
+      "sha256": "c53e3f5cd3d6e1bbe790cc07e0c741223359b29782ed6bc71967b0d05834372b"
+    },
+    {
+      "file": "EVSE-B-idle-icmp-flood.csv",
+      "label": "ICMP_Flood",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 30,
+      "bytes": 13212,
+      "sha256": "3054f8a08fce036e58844b9c25177a7667865a3b840d3154ce51635c93d749fc"
+    },
+    {
+      "file": "EVSE-B-idle-icmp-fragmentation.csv",
+      "label": "ICMP_Fragmentation",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 12,
+      "bytes": 7493,
+      "sha256": "1403b2203b6cecb9586f6bacdebb05c358a6cc99578c300cd057283ec0270a4c"
+    },
+    {
+      "file": "EVSE-B-idle-os-fingerprinting.csv",
+      "label": "OS_Fingerprinting",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 45662,
+      "bytes": 17249192,
+      "sha256": "727975a7ae651617f2fef5b331a613c80dde233c68a5bd0851efda7833f30c7e"
+    },
+    {
+      "file": "EVSE-B-idle-port-scan.csv",
+      "label": "TCP_Port_Scan",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 78145,
+      "bytes": 29468136,
+      "sha256": "3b7edb11c10138f97b2ace0b085c6c5660bc6a58f14b3c65820d549340dd432f"
+    },
+    {
+      "file": "EVSE-B-idle-push-ack-flood.csv",
+      "label": "PSHACK_Flood",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 65559,
+      "bytes": 32424375,
+      "sha256": "9d5bfbdafded4d529c72f818c9f4162b8b1484845610af6f0c9b866c91ba3f35"
+    },
+    {
+      "file": "EVSE-B-idle-service-detection.csv",
+      "label": "Service_Version_Detection",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 33455,
+      "bytes": 12552914,
+      "sha256": "4fba5263ff0128767298f3e02546032dbb70d8ad4ecd14c586ba6737a1d44771"
+    },
+    {
+      "file": "EVSE-B-idle-syn-flood.csv",
+      "label": "SYN_Flood",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 65541,
+      "bytes": 31354404,
+      "sha256": "a07d87802e26c61ad6c4386f23e516055c3e934fc9324553c4dfce543d9af2dc"
+    },
+    {
+      "file": "EVSE-B-idle-syn-stealth-scan.csv",
+      "label": "SYN_Stealth_Scan",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 73633,
+      "bytes": 27701832,
+      "sha256": "5164ecce7e5a63ff3a9244643a5aab8f08f696f90ad54a503b3917299e4a1e2b"
+    },
+    {
+      "file": "EVSE-B-idle-synonymous-ip-flood.csv",
+      "label": "SynonymousIP_Flood",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 65546,
+      "bytes": 28266236,
+      "sha256": "41b7b0a0b26c6f4f413cefd4fd4b88f6311efc0d4cff30eaf5eddeb00e952cd1"
+    },
+    {
+      "file": "EVSE-B-idle-tcp-flood.csv",
+      "label": "TCP_Flood",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 65564,
+      "bytes": 28278673,
+      "sha256": "ff89867363d432ba6975f768f769656e0d8ac3a8d40b84e701f6e01256ed50de"
+    },
+    {
+      "file": "EVSE-B-idle-udp-flood.csv",
+      "label": "UDP_Flood",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 8029,
+      "bytes": 3308648,
+      "sha256": "a2b8268b0d96d981f7a641ec794c753d46cf0756ad425325674531d70c90041d"
+    },
+    {
+      "file": "EVSE-B-idle-vulnerability-scan.csv",
+      "label": "Vulnerability_Scan",
+      "evse": "EVSE-B",
+      "state": "idle",
+      "rows": 51607,
+      "bytes": 19429170,
+      "sha256": "c934c0ed1fc36bbb5345ce6b80edec0c5beda013e5b5c0a94e2b458b1acce9ac"
+    }
+  ]
+}

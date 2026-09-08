@@ -49,3 +49,18 @@ saved_models/arf_*_binary.pkl
 
 # Long-running job logs (ARF full-stream runs)
 logs/*.log
+
+# Model artifacts are no longer version-controlled (issue #55). They are large and
+# environment-specific, and `src/api/main.py` loads every .pkl it finds in
+# saved_models/ -- so a stale committed model gets served silently. Regenerate
+# with `make data-process` plus the per-model training scripts.
+saved_models/*.pkl
+saved_models/_superseded/
+
+# Next.js build caches and capture scratch (churns on every dev run)
+frontend/.next/
+frontend/.next-figma-capture/
+
+# Multi-seed intermediate splits (regenerate with src/evaluation/run_experiments.py)
+data/multiseed/
+saved_models/arf-full/

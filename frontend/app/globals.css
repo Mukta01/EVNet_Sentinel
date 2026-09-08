@@ -112,3 +112,56 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Dashboard surface ───────────────────────────────────────────────────────
+   Scoped to the dashboard route so the landing page is untouched. These are the
+   surfaces the browser draws for you and that otherwise ship with defaults
+   belonging to no design system. */
+.dashboard-surface {
+  --dash-accent: #22C55E;
+}
+
+.dashboard-surface ::selection {
+  background: rgba(34, 197, 94, 0.28);
+  color: #F8FAFC;
+}
+
+.dashboard-surface {
+  caret-color: var(--dash-accent);
+  scrollbar-color: #1e293b transparent;
+}
+
+/* Numerals in every data position line up column to column. */
+.dashboard-surface .tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.dashboard-surface :focus-visible {
+  outline: 2px solid var(--dash-accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Keyboard users get the ring; pointer users do not. */
+.dashboard-surface :focus:not(:focus-visible) {
+  outline: none;
+}
+
+.dashboard-surface ::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+.dashboard-surface ::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dashboard-surface ::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.18);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+}
+.dashboard-surface ::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.34);
+  background-clip: content-box;
+}
