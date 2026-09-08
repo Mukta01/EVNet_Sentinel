@@ -1,26 +1,37 @@
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import Link from 'next/link';
-import { FileText } from 'lucide-react';
+import type { Metadata } from "next";
+import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Architecture from "@/components/Architecture";
 
-export default function DocsPlaceholder() {
+export const metadata: Metadata = {
+  title: "Architecture — EVNet Sentinel",
+  description:
+    "The full system architecture for EVNet Sentinel: data layer, ML engine, serving API and dashboard.",
+};
+
+/**
+ * The detailed architecture diagram lives here.
+ *
+ * The landing page tells the same story as a narrative (components/Storyline.tsx),
+ * which is more persuasive but deliberately less complete. This page keeps the
+ * component-level detail for anyone who wants it.
+ */
+export default function DocsPage() {
   return (
-    <main className="min-h-screen bg-gray-950 text-gray-100 flex flex-col">
+    <main className="dashboard-surface min-h-screen bg-[#020617]">
       <Navbar />
-      <div className="flex-grow pt-24 pb-12 flex items-center justify-center">
-        <div className="text-center p-8 bg-gray-900 border border-gray-800 rounded-xl max-w-lg w-full">
-          <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-            <FileText className="w-8 h-8 text-green-500" />
-          </div>
-          <h1 className="text-2xl font-bold text-white mb-4">Documentation</h1>
-          <p className="text-gray-400 mb-8">
-            Project documentation, API contracts, and reproduction logs will be available here in Phase 5.
-          </p>
-          <Link href="/" className="px-6 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors">
-            Return Home
-          </Link>
-        </div>
+      <div className="mx-auto max-w-6xl px-6 pt-28">
+        <h1 className="text-3xl font-semibold tracking-tight text-white text-balance sm:text-4xl">
+          System architecture
+        </h1>
+        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-slate-400">
+          Component-level detail behind the pipeline. For the narrative version — where the system
+          sits and why — see the <Link href="/#architecture" className="text-emerald-400 underline decoration-emerald-400/40 underline-offset-4 hover:decoration-emerald-400">storyline on the home page</Link>.
+          For measured results, see the <Link href="/dashboard" className="text-emerald-400 underline decoration-emerald-400/40 underline-offset-4 hover:decoration-emerald-400">findings dashboard</Link>.
+        </p>
       </div>
+      <Architecture />
       <Footer />
     </main>
   );
