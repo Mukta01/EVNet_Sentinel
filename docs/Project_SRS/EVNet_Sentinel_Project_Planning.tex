@@ -1,0 +1,213 @@
+\documentclass[11pt, a4paper, landscape]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=0.5in, landscape}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows.meta, positioning, calc, matrix}
+\usepackage{pgfgantt}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+\title{\textbf{EVNet Sentinel: Project Planning}\\ \vspace{0.5cm} Network Diagram, Critical Path, and Gantt Chart}
+\author{Group 1}
+\date{\today}
+
+\newcommand{\pert}[7]{
+  \begin{tabular}{|@{}c@{}|@{}c@{}|@{}c@{}|}
+  \hline
+  \makebox[0.8cm]{\scriptsize #1} & \makebox[0.9cm]{\scriptsize\textbf{#2}} & \makebox[0.8cm]{\scriptsize #3} \\ \hline
+  \multicolumn{3}{|c|}{\parbox{2.5cm}{\vspace{0.15cm}\centering\scriptsize #4\vspace{0.15cm}}} \\ \hline
+  \makebox[0.8cm]{\scriptsize #5} & \makebox[0.9cm]{\scriptsize #6} & \makebox[0.8cm]{\scriptsize #7} \\ \hline
+  \end{tabular}
+}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\section*{1. Project Task Details}
+To establish the critical path and network diagrams efficiently, task durations have been logically estimated based on the EVNet Sentinel SRS and DFD.
+
+\vspace{0.5cm}
+\begin{center}
+\begin{tabular}{|c|l|c|c|}
+\hline
+\textbf{ID} & \textbf{Task Name} & \textbf{Duration (Days)} & \textbf{Predecessors} \\ \hline
+A & Load Datasets & 1 & - \\ \hline
+B & Parse \& Scale & 2 & A \\ \hline
+C & Mask PII \& Feature Eng & 3 & B \\ \hline
+D & Static Models & 5 & C \\ \hline
+E & Online Adaptive Model & 7 & C \\ \hline
+F & Train \& Tune & 4 & D, E \\ \hline
+G & Classification Reports & 2 & F \\ \hline
+H & Traffic Simulator & 4 & C \\ \hline
+I & Synthetic Injector & 3 & H \\ \hline
+J & FastAPI Backend & 5 & G, I \\ \hline
+K & Dashboard UI \& Metrics & 5 & J \\ \hline
+L & Live Alerts \& Matrices & 4 & K \\ \hline
+M & Simulation Controls & 3 & K \\ \hline
+N & Anomaly Investigation & 3 & K \\ \hline
+O & E2E Integration & 5 & L, M, N \\ \hline
+P & Final Evaluation & 3 & O \\ \hline
+\end{tabular}
+\end{center}
+
+\newpage
+\section*{2. Network Diagram and Critical Path}
+The highlighted red path indicates the Critical Path: \textbf{A $\rightarrow$ B $\rightarrow$ C $\rightarrow$ E $\rightarrow$ F $\rightarrow$ G $\rightarrow$ J $\rightarrow$ K $\rightarrow$ L $\rightarrow$ O $\rightarrow$ P} (Total: 41 Days).\\
+Each node follows the standard PERT format:
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Early Start (ES) & Task ID & Early Finish (EF) \\ \hline
+\multicolumn{3}{|c|}{Task Name} \\ \hline
+Latest Start (LS) & Duration & Latest Finish (LF) \\ \hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+\begin{center}
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}[
+    task/.style = {rectangle, draw=black, thick, fill=blue!5, inner sep=0pt, rounded corners=3pt},
+    critical/.style = {rectangle, draw=red, thick, fill=red!10, inner sep=0pt, rounded corners=3pt},
+    arrow/.style = {->, >=Stealth, thick},
+    carrow/.style = {->, >=Stealth, ultra thick, red}
+]
+
+\matrix [column sep=0.8cm, row sep=0.8cm, ampersand replacement=\&] {
+% Row 1
+\& \& \& \node[task] (D) {\pert{6}{D}{11}{Static Models}{8}{5}{13}}; \& \& \& \& \& \node[task] (M) {\pert{29}{M}{32}{Sim Controls}{30}{3}{33}}; \& \& \\
+% Row 2
+\node[critical] (A) {\pert{0}{A}{1}{Load Datasets}{0}{1}{1}}; \& 
+\node[critical] (B) {\pert{1}{B}{3}{Parse and Scale}{1}{2}{3}}; \& 
+\node[critical] (C) {\pert{3}{C}{6}{Mask PII and FE}{3}{3}{6}}; \& 
+\node[critical] (E) {\pert{6}{E}{13}{Online Adaptive}{6}{7}{13}}; \& 
+\node[critical] (F) {\pert{13}{F}{17}{Train and Tune}{13}{4}{17}}; \& 
+\node[critical] (G) {\pert{17}{G}{19}{Classif. Reports}{17}{2}{19}}; \& 
+\node[critical] (J) {\pert{19}{J}{24}{FastAPI Backend}{19}{5}{24}}; \& 
+\node[critical] (K) {\pert{24}{K}{29}{Dashboard UI}{24}{5}{29}}; \& 
+\node[critical] (L) {\pert{29}{L}{33}{Live Alerts}{29}{4}{33}}; \& 
+\node[critical] (O) {\pert{33}{O}{38}{E2E Integration}{33}{5}{38}}; \& 
+\node[critical] (P) {\pert{38}{P}{41}{Final Eval}{38}{3}{41}}; \\
+% Row 3
+\& \& \& \node[task] (H) {\pert{6}{H}{10}{Traffic Simulator}{12}{4}{16}}; \& 
+\node[task] (I) {\pert{10}{I}{13}{Synthetic Injector}{16}{3}{19}}; \& \& \& \& 
+\node[task] (N) {\pert{29}{N}{32}{Anomaly Inv.}{30}{3}{33}}; \& \& \\
+};
+
+% Edges
+\draw[carrow] (A) -- (B);
+\draw[carrow] (B) -- (C);
+
+\draw[arrow] (C) -- (D);
+\draw[carrow] (C) -- (E);
+\draw[arrow] (C) -- (H);
+
+\draw[arrow] (D) -- (F);
+\draw[carrow] (E) -- (F);
+\draw[arrow] (H) -- (I);
+
+\draw[carrow] (F) -- (G);
+
+\draw[carrow] (G) -- (J);
+\draw[arrow] (I) -- (J);
+
+\draw[carrow] (J) -- (K);
+
+\draw[arrow] (K) -- (M);
+\draw[carrow] (K) -- (L);
+\draw[arrow] (K) -- (N);
+
+\draw[arrow] (M) -- (O);
+\draw[carrow] (L) -- (O);
+\draw[arrow] (N) -- (O);
+
+\draw[carrow] (O) -- (P);
+
+\end{tikzpicture}
+}
+\end{center}
+
+\newpage
+\section*{3. Gantt Chart}
+
+\begin{center}
+\begin{ganttchart}[
+    vgrid,
+    hgrid,
+    x unit=0.55cm,
+    y unit title=0.6cm,
+    y unit chart=0.6cm,
+    bar/.style={fill=blue!50},
+    bar label font=\footnotesize,
+    group label font=\bfseries\footnotesize,
+    title label font=\footnotesize,
+    milestone label font=\itshape\footnotesize
+]{1}{41}
+\gantttitle{EVNet Sentinel Project Schedule (Days)}{41} \\
+\gantttitlelist{1,...,41}{1} \\
+
+% Phase 1 (Indices 1 to 3)
+\ganttgroup{Phase 1: Data}{1}{6} \\
+\ganttbar{A: Load Datasets}{1}{1} \\
+\ganttbar{B: Parse \& Scale}{2}{3} \\
+\ganttbar{C: Mask PII \& FE}{4}{6} \\
+
+% Phase 2 (Indices 4 to 8)
+\ganttgroup{Phase 2: ML Engine}{7}{19} \\
+\ganttbar{D: Static Models}{7}{11} \\
+\ganttbar[bar/.style={fill=red!60}]{E: Online Adaptive Model}{7}{13} \\
+\ganttbar{F: Train \& Tune}{14}{17} \\
+\ganttbar{G: Classification Reports}{18}{19} \\
+
+% Phase 3 (Indices 9 to 12)
+\ganttgroup{Phase 3: Sim \& API}{7}{24} \\
+\ganttbar{H: Traffic Simulator}{7}{10} \\
+\ganttbar{I: Synthetic Injector}{11}{13} \\
+\ganttbar{J: FastAPI Backend}{20}{24} \\
+
+% Phase 4 (Indices 13 to 17)
+\ganttgroup{Phase 4: Dashboard}{25}{33} \\
+\ganttbar{K: Dashboard UI}{25}{29} \\
+\ganttbar[bar/.style={fill=red!60}]{L: Live Alerts}{30}{33} \\
+\ganttbar{M: Sim Controls}{30}{32} \\
+\ganttbar{N: Anomaly Inv.}{30}{32} \\
+
+% Phase 5 (Indices 18 to 20)
+\ganttgroup{Phase 5: Integration}{34}{41} \\
+\ganttbar{O: E2E Integration}{34}{38} \\
+\ganttbar{P: Final Eval}{39}{41}
+
+% Links
+\ganttlink{elem1}{elem2}
+\ganttlink{elem2}{elem3}
+
+\ganttlink{elem3}{elem5}
+\ganttlink{elem3}{elem6}
+\ganttlink{elem5}{elem7}
+\ganttlink{elem6}{elem7}
+\ganttlink{elem7}{elem8}
+
+\ganttlink{elem3}{elem10}
+\ganttlink{elem10}{elem11}
+
+\ganttlink{elem8}{elem12}
+\ganttlink{elem11}{elem12}
+
+\ganttlink{elem12}{elem14}
+\ganttlink{elem14}{elem15}
+\ganttlink{elem14}{elem16}
+\ganttlink{elem14}{elem17}
+
+\ganttlink{elem15}{elem19}
+\ganttlink{elem16}{elem19}
+\ganttlink{elem17}{elem19}
+
+\ganttlink{elem19}{elem20}
+
+\end{ganttchart}
+\end{center}
+
+\end{document}
