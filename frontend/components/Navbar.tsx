@@ -16,10 +16,10 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: "Threat Landscape", href: "#threat" },
-    { label: "Architecture", href: "#architecture" },
-    { label: "Team", href: "#team" },
-    { label: "Roadmap", href: "#roadmap" },
+    { label: "Threat Landscape", href: "/#threat" },
+    { label: "How it works", href: "/#architecture" },
+    { label: "Simulation", href: "/simulation" },
+    { label: "Results", href: "/dashboard" },
   ];
 
   return (

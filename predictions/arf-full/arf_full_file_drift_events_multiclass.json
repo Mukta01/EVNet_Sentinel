@@ -1,0 +1,277 @@
+{
+  "stream_order": "file",
+  "instances": 1921182,
+  "target": "multiclass",
+  "events": [
+    {
+      "instance": 3552,
+      "accuracy_at_drift": 0.9974662162162162,
+      "elapsed_seconds": 2.796,
+      "source_file": "EVSE-A-idle-os-fingerprinting.csv"
+    },
+    {
+      "instance": 12768,
+      "accuracy_at_drift": 0.9971021303258145,
+      "elapsed_seconds": 10.753,
+      "source_file": "EVSE-A-idle-service-detection.csv"
+    },
+    {
+      "instance": 15264,
+      "accuracy_at_drift": 0.9969863731656184,
+      "elapsed_seconds": 13.44,
+      "source_file": "EVSE-A-idle-vulnerability-scan.csv"
+    },
+    {
+      "instance": 42592,
+      "accuracy_at_drift": 0.9985912847483095,
+      "elapsed_seconds": 38.118,
+      "source_file": "EVSE-A-idle-tcp-flood.csv"
+    },
+    {
+      "instance": 65184,
+      "accuracy_at_drift": 0.998926116838488,
+      "elapsed_seconds": 61.021,
+      "source_file": "EVSE-A-idle-syn-flood.csv"
+    },
+    {
+      "instance": 165632,
+      "accuracy_at_drift": 0.9994747391808346,
+      "elapsed_seconds": 190.617,
+      "source_file": "EVSE-B-idle-os-fingerprinting.csv"
+    },
+    {
+      "instance": 197760,
+      "accuracy_at_drift": 0.9995196197411004,
+      "elapsed_seconds": 214.478,
+      "source_file": "EVSE-B-idle-syn-stealth-scan.csv"
+    },
+    {
+      "instance": 249504,
+      "accuracy_at_drift": 0.999579165063486,
+      "elapsed_seconds": 253.662,
+      "source_file": "EVSE-B-idle-aggressive-scan.csv"
+    },
+    {
+      "instance": 274624,
+      "accuracy_at_drift": 0.9995703216033559,
+      "elapsed_seconds": 272.237,
+      "source_file": "EVSE-B-idle-service-detection.csv"
+    },
+    {
+      "instance": 298080,
+      "accuracy_at_drift": 0.999567230273752,
+      "elapsed_seconds": 289.588,
+      "source_file": "EVSE-B-idle-vulnerability-scan.csv"
+    },
+    {
+      "instance": 334336,
+      "accuracy_at_drift": 0.9995812595712098,
+      "elapsed_seconds": 315.435,
+      "source_file": "EVSE-B-idle-push-ack-flood.csv"
+    },
+    {
+      "instance": 380288,
+      "accuracy_at_drift": 0.999592414170313,
+      "elapsed_seconds": 348.486,
+      "source_file": "EVSE-B-idle-tcp-flood.csv"
+    },
+    {
+      "instance": 426144,
+      "accuracy_at_drift": 0.99961750018773,
+      "elapsed_seconds": 387.005,
+      "source_file": "EVSE-B-idle-syn-flood.csv"
+    },
+    {
+      "instance": 471968,
+      "accuracy_at_drift": 0.9996249745745475,
+      "elapsed_seconds": 420.796,
+      "source_file": "EVSE-B-idle-synonymous-ip-flood.csv"
+    },
+    {
+      "instance": 628480,
+      "accuracy_at_drift": 0.9996929098778005,
+      "elapsed_seconds": 534.878,
+      "source_file": "EVSE-B-MaliciousEV-os-fingerprinting.csv"
+    },
+    {
+      "instance": 641248,
+      "accuracy_at_drift": 0.9996834298118669,
+      "elapsed_seconds": 544.282,
+      "source_file": "EVSE-B-MaliciousEV-syn-stealth-scan.csv"
+    },
+    {
+      "instance": 801024,
+      "accuracy_at_drift": 0.9997340903643337,
+      "elapsed_seconds": 657.245,
+      "source_file": "EVSE-B-MaliciousEV-aggressive-scan.csv"
+    },
+    {
+      "instance": 812352,
+      "accuracy_at_drift": 0.9997242574647444,
+      "elapsed_seconds": 665.333,
+      "source_file": "EVSE-B-MaliciousEV-service-detection.csv"
+    },
+    {
+      "instance": 913152,
+      "accuracy_at_drift": 0.9997393643117466,
+      "elapsed_seconds": 738.957,
+      "source_file": "EVSE-B-idle-udp-flood.csv"
+    },
+    {
+      "instance": 930432,
+      "accuracy_at_drift": 0.9997345319163571,
+      "elapsed_seconds": 751.633,
+      "source_file": "EVSE-A-idle-synonymous-ip.csv"
+    },
+    {
+      "instance": 976416,
+      "accuracy_at_drift": 0.9997367925146659,
+      "elapsed_seconds": 785.385,
+      "source_file": "EVSE-B-charging-port-scan.csv"
+    },
+    {
+      "instance": 1100672,
+      "accuracy_at_drift": 0.9997592379927899,
+      "elapsed_seconds": 873.713,
+      "source_file": "EVSE-B-charging-os-fingerprinting.csv"
+    },
+    {
+      "instance": 1148096,
+      "accuracy_at_drift": 0.999756117955293,
+      "elapsed_seconds": 925.486,
+      "source_file": "EVSE-B-charging-syn-stealth.csv"
+    },
+    {
+      "instance": 1297600,
+      "accuracy_at_drift": 0.9997780517879161,
+      "elapsed_seconds": 1056.01,
+      "source_file": "EVSE-B-charging-aggressive-scan.csv"
+    },
+    {
+      "instance": 1324384,
+      "accuracy_at_drift": 0.9997704593229758,
+      "elapsed_seconds": 1075.311,
+      "source_file": "EVSE-B-charging-service-detection-scan.csv"
+    },
+    {
+      "instance": 1439968,
+      "accuracy_at_drift": 0.9997812451387809,
+      "elapsed_seconds": 1156.625,
+      "source_file": "EVSE-B-charging-vulnerability-scan.csv"
+    },
+    {
+      "instance": 1516960,
+      "accuracy_at_drift": 0.9997877333614598,
+      "elapsed_seconds": 1213.235,
+      "source_file": "EVSE-B-charging-icmp-flood.csv"
+    },
+    {
+      "instance": 1562976,
+      "accuracy_at_drift": 0.9997837458796552,
+      "elapsed_seconds": 1254.187,
+      "source_file": "EVSE-B-charging-tcp-flood.csv"
+    },
+    {
+      "instance": 1608864,
+      "accuracy_at_drift": 0.9997830767547785,
+      "elapsed_seconds": 1287.422,
+      "source_file": "EVSE-B-charging-syn-flood.csv"
+    },
+    {
+      "instance": 1654656,
+      "accuracy_at_drift": 0.9997824321188211,
+      "elapsed_seconds": 1319.546,
+      "source_file": "EVSE-B-charging-synonymous-ip-flood.csv"
+    },
+    {
+      "instance": 1700256,
+      "accuracy_at_drift": 0.9997829738580544,
+      "elapsed_seconds": 1353.14,
+      "source_file": "EVSE-A-charging-portscan.csv"
+    },
+    {
+      "instance": 1705920,
+      "accuracy_at_drift": 0.9997760739073345,
+      "elapsed_seconds": 1357.687,
+      "source_file": "EVSE-A-charging-os-fingerprinting.csv"
+    },
+    {
+      "instance": 1709248,
+      "accuracy_at_drift": 0.9997712444302992,
+      "elapsed_seconds": 1360.197,
+      "source_file": "EVSE-A-charging-syn-stealth.csv"
+    },
+    {
+      "instance": 1714784,
+      "accuracy_at_drift": 0.999766734469181,
+      "elapsed_seconds": 1364.191,
+      "source_file": "EVSE-A-charging-Aggressive-scan.csv"
+    },
+    {
+      "instance": 1721728,
+      "accuracy_at_drift": 0.9997612863355885,
+      "elapsed_seconds": 1369.197,
+      "source_file": "EVSE-A-charging-service-detection.csv"
+    },
+    {
+      "instance": 1724288,
+      "accuracy_at_drift": 0.9997523615544504,
+      "elapsed_seconds": 1371.138,
+      "source_file": "EVSE-A-charging-vulnerability-scan.csv"
+    },
+    {
+      "instance": 1730656,
+      "accuracy_at_drift": 0.9997486502228057,
+      "elapsed_seconds": 1375.684,
+      "source_file": "EVSE-A-charging-slowLoris-scan.csv"
+    },
+    {
+      "instance": 1732032,
+      "accuracy_at_drift": 0.9997413442707755,
+      "elapsed_seconds": 1376.765,
+      "source_file": "EVSE-A-charging-push-ack-flood.csv"
+    },
+    {
+      "instance": 1777792,
+      "accuracy_at_drift": 0.9997412520699834,
+      "elapsed_seconds": 1420.243,
+      "source_file": "EVSE-A-charging-tcp-flood.csv"
+    },
+    {
+      "instance": 1823616,
+      "accuracy_at_drift": 0.9997395284972275,
+      "elapsed_seconds": 1453.555,
+      "source_file": "EVSE-A-charging-syn-flood.csv"
+    },
+    {
+      "instance": 1869632,
+      "accuracy_at_drift": 0.9997416603909218,
+      "elapsed_seconds": 1488.679,
+      "source_file": "EVSE-A-charging-synonymous-ip.csv"
+    },
+    {
+      "instance": 1915712,
+      "accuracy_at_drift": 0.9997410884308289,
+      "elapsed_seconds": 1523.132,
+      "source_file": "EVSE-A-charging-udp-flood.csv"
+    },
+    {
+      "instance": 1921152,
+      "accuracy_at_drift": 0.9997345342794324,
+      "elapsed_seconds": 1527.128,
+      "source_file": "EVSE-A-idle-benign.csv"
+    }
+  ],
+  "timing_seconds": {
+    "total": 1527.168,
+    "metric_updates": 3.029,
+    "drift_detection": 0.52,
+    "mean_per_instance": 0.000795
+  },
+  "final_metrics": {
+    "accuracy": 0.9997340177734425,
+    "precision": 0.999734023197059,
+    "recall": 0.9997340177734425,
+    "f1": 0.9997277823494061
+  }
+}
