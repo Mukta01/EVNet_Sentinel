@@ -1,0 +1,25 @@
+{
+  "stream_order": "shuffled",
+  "instances": 25000,
+  "target": "multiclass",
+  "events": [
+    {
+      "instance": 1824,
+      "accuracy_at_drift": 0.3717105263157895,
+      "elapsed_seconds": 14.234,
+      "source_file": "EVSE-B-idle-syn-stealth-scan.csv"
+    }
+  ],
+  "timing_seconds": {
+    "total": 168.894,
+    "metric_updates": 0.059,
+    "drift_detection": 0.01,
+    "mean_per_instance": 0.006756
+  },
+  "final_metrics": {
+    "accuracy": 0.5029401176047041,
+    "precision": 0.50120679320308,
+    "recall": 0.5029401176047041,
+    "f1": 0.49094596828551396
+  }
+}

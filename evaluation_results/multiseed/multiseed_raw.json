@@ -1,0 +1,348 @@
+{
+  "feature_set": "extended",
+  "seeds": [
+    42,
+    1337,
+    2024
+  ],
+  "environment": {
+    "cpu": "Apple M5",
+    "logical_cores": 10,
+    "ram_gb": 16,
+    "os": "Darwin 25.5.0",
+    "machine": "arm64",
+    "versions": {
+      "python": "3.13.12",
+      "numpy": "2.4.4",
+      "pandas": "3.0.2",
+      "scikit-learn": "1.8.0",
+      "river": "0.26.1"
+    }
+  },
+  "per_seed": [
+    {
+      "dataset": {
+        "rows_after_dedup": 1198151,
+        "n_features": 60,
+        "preprocess_seconds": 44.9,
+        "train_rows": 838705,
+        "test_rows": 179723,
+        "n_classes": 15
+      },
+      "models": {
+        "RandomForest": {
+          "macro_f1": 0.5487636632460802,
+          "weighted_f1": 0.8658307722209689,
+          "accuracy": 0.8678577588845056,
+          "fit_seconds": 8.53,
+          "predict_seconds": 0.15,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.15009546188867676,
+            "Benign": 0.9565217391304348,
+            "ICMP_Flood": 0.7692307692307693,
+            "ICMP_Fragmentation": 0.2,
+            "OS_Fingerprinting": 0.2213392391870766,
+            "PSHACK_Flood": 0.9999149413946209,
+            "SYN_Flood": 0.9998329928957748,
+            "SYN_Stealth_Scan": 0.10915492957746478,
+            "Service_Version_Detection": 0.15602129075182966,
+            "Slowloris_Scan": 0.19503849443969204,
+            "SynonymousIP_Flood": 0.999844184174306,
+            "TCP_Flood": 0.9998569440651295,
+            "TCP_Port_Scan": 0.2575338131772522,
+            "UDP_Flood": 0.9994804115140808,
+            "Vulnerability_Scan": 0.21758973726409275
+          }
+        },
+        "DecisionTree": {
+          "macro_f1": 0.5519058516223956,
+          "weighted_f1": 0.8676432831979756,
+          "accuracy": 0.867880015356966,
+          "fit_seconds": 3.35,
+          "predict_seconds": 0.01,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.18795243019648397,
+            "Benign": 0.9565217391304348,
+            "ICMP_Flood": 0.7692307692307693,
+            "ICMP_Fragmentation": 0.2,
+            "OS_Fingerprinting": 0.22355507088331517,
+            "PSHACK_Flood": 0.9999319542732716,
+            "SYN_Flood": 0.9998715280454277,
+            "SYN_Stealth_Scan": 0.18602657522503216,
+            "Service_Version_Detection": 0.16564039408866996,
+            "Slowloris_Scan": 0.16983304548071387,
+            "SynonymousIP_Flood": 0.999844184174306,
+            "TCP_Flood": 0.9998699440759526,
+            "TCP_Port_Scan": 0.19037199124726478,
+            "UDP_Flood": 0.9991689175150633,
+            "Vulnerability_Scan": 0.23076923076923078
+          }
+        },
+        "SVM": {
+          "macro_f1": 0.4245922335797874,
+          "weighted_f1": 0.8510499620813627,
+          "accuracy": 0.8637124908887566,
+          "fit_seconds": 38.04,
+          "predict_seconds": 0.04,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.06258565555047967,
+            "Benign": 0.3157894736842105,
+            "ICMP_Flood": 0.029411764705882353,
+            "ICMP_Fragmentation": 0.2222222222222222,
+            "OS_Fingerprinting": 0.021440223724073643,
+            "PSHACK_Flood": 0.9998979244641034,
+            "SYN_Flood": 0.9919200290050241,
+            "SYN_Stealth_Scan": 0.0022753128555176336,
+            "Service_Version_Detection": 0.0197509660798626,
+            "Slowloris_Scan": 0.17350069735006973,
+            "SynonymousIP_Flood": 0.9919608348363824,
+            "TCP_Flood": 0.9999219603558608,
+            "TCP_Port_Scan": 0.3014794685990338,
+            "UDP_Flood": 0.9995841131212311,
+            "Vulnerability_Scan": 0.23714285714285716
+          }
+        },
+        "LogisticRegression": {
+          "macro_f1": 0.44970947428371666,
+          "weighted_f1": 0.8554038202513634,
+          "accuracy": 0.8642355179915759,
+          "fit_seconds": 80.93,
+          "predict_seconds": 0.05,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.059108750865850844,
+            "Benign": 0.3157894736842105,
+            "ICMP_Flood": 0.03125,
+            "ICMP_Fragmentation": 0.25,
+            "OS_Fingerprinting": 0.09023592216290684,
+            "PSHACK_Flood": 0.9998979244641034,
+            "SYN_Flood": 0.9908347269215313,
+            "SYN_Stealth_Scan": 0.12596825396825398,
+            "Service_Version_Detection": 0.09000414765657404,
+            "Slowloris_Scan": 0.33863781031190326,
+            "SynonymousIP_Flood": 0.9908629964224127,
+            "TCP_Flood": 0.999869940692956,
+            "TCP_Port_Scan": 0.2941065285600877,
+            "UDP_Flood": 0.9995841131212311,
+            "Vulnerability_Scan": 0.1694915254237288
+          }
+        }
+      }
+    },
+    {
+      "dataset": {
+        "rows_after_dedup": 1198151,
+        "n_features": 60,
+        "preprocess_seconds": 47.0,
+        "train_rows": 838705,
+        "test_rows": 179723,
+        "n_classes": 15
+      },
+      "models": {
+        "RandomForest": {
+          "macro_f1": 0.5683168629850572,
+          "weighted_f1": 0.8658971115139525,
+          "accuracy": 0.8687368895466913,
+          "fit_seconds": 8.69,
+          "predict_seconds": 0.13,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.14702768113749812,
+            "Benign": 1.0,
+            "ICMP_Flood": 0.6666666666666666,
+            "ICMP_Fragmentation": 0.5454545454545454,
+            "OS_Fingerprinting": 0.22807581111468037,
+            "PSHACK_Flood": 0.9999319565883034,
+            "SYN_Flood": 0.9999229227686142,
+            "SYN_Stealth_Scan": 0.10366426558095834,
+            "Service_Version_Detection": 0.17399497487437185,
+            "Slowloris_Scan": 0.19473843362564258,
+            "SynonymousIP_Flood": 0.9999091156957194,
+            "TCP_Flood": 0.9999219603558608,
+            "TCP_Port_Scan": 0.27880957708659654,
+            "UDP_Flood": 0.9994805194805195,
+            "Vulnerability_Scan": 0.18715451434588048
+          }
+        },
+        "DecisionTree": {
+          "macro_f1": 0.5701302880617366,
+          "weighted_f1": 0.8681125496112547,
+          "accuracy": 0.8684197348141306,
+          "fit_seconds": 3.4,
+          "predict_seconds": 0.01,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.17688386830141892,
+            "Benign": 0.9090909090909091,
+            "ICMP_Flood": 0.6,
+            "ICMP_Fragmentation": 0.6666666666666666,
+            "OS_Fingerprinting": 0.2271047227926078,
+            "PSHACK_Flood": 0.9999319565883034,
+            "SYN_Flood": 0.9999614608892258,
+            "SYN_Stealth_Scan": 0.1831111111111111,
+            "Service_Version_Detection": 0.18152820066695666,
+            "Slowloris_Scan": 0.1784037558685446,
+            "SynonymousIP_Flood": 0.9998701703365185,
+            "TCP_Flood": 0.9998699339264346,
+            "TCP_Port_Scan": 0.1957366376141972,
+            "UDP_Flood": 0.9990649350649351,
+            "Vulnerability_Scan": 0.23472999200822012
+          }
+        },
+        "SVM": {
+          "macro_f1": 0.38776529736151333,
+          "weighted_f1": 0.8441373281990029,
+          "accuracy": 0.8608080212326747,
+          "fit_seconds": 35.53,
+          "predict_seconds": 0.04,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.05108323831242873,
+            "Benign": 0.018867924528301886,
+            "ICMP_Flood": 0.1875,
+            "ICMP_Fragmentation": 0.04081632653061224,
+            "OS_Fingerprinting": 0.033617315219894084,
+            "PSHACK_Flood": 0.9998638946544626,
+            "SYN_Flood": 0.9918939217362028,
+            "SYN_Stealth_Scan": 0.30606320511974666,
+            "Service_Version_Detection": 0.0004392708104546453,
+            "Slowloris_Scan": 0.15249695493300852,
+            "SynonymousIP_Flood": 0.9920647189158551,
+            "TCP_Flood": 0.9998699271592092,
+            "TCP_Port_Scan": 0.0,
+            "UDP_Flood": 0.9996881172679073,
+            "Vulnerability_Scan": 0.04221464523461601
+          }
+        },
+        "LogisticRegression": {
+          "macro_f1": 0.41127936411835236,
+          "weighted_f1": 0.8533226882100694,
+          "accuracy": 0.8599622752791797,
+          "fit_seconds": 63.1,
+          "predict_seconds": 0.01,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.16365989190835045,
+            "Benign": 0.0,
+            "ICMP_Flood": 0.1875,
+            "ICMP_Fragmentation": 0.014084507042253521,
+            "OS_Fingerprinting": 0.01773215118992067,
+            "PSHACK_Flood": 0.9998638946544626,
+            "SYN_Flood": 0.9909923921355159,
+            "SYN_Stealth_Scan": 0.0,
+            "Service_Version_Detection": 0.07266009852216748,
+            "Slowloris_Scan": 0.23002754820936638,
+            "SynonymousIP_Flood": 0.9911837007863882,
+            "TCP_Flood": 0.9998699271592092,
+            "TCP_Port_Scan": 0.23604960141718334,
+            "UDP_Flood": 0.9996881172679073,
+            "Vulnerability_Scan": 0.2658786314825606
+          }
+        }
+      }
+    },
+    {
+      "dataset": {
+        "rows_after_dedup": 1198151,
+        "n_features": 60,
+        "preprocess_seconds": 46.4,
+        "train_rows": 838705,
+        "test_rows": 179723,
+        "n_classes": 15
+      },
+      "models": {
+        "RandomForest": {
+          "macro_f1": 0.5576628903803632,
+          "weighted_f1": 0.8646128986356906,
+          "accuracy": 0.8670620899940464,
+          "fit_seconds": 8.53,
+          "predict_seconds": 0.15,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.13863702837086866,
+            "Benign": 1.0,
+            "ICMP_Flood": 0.5454545454545454,
+            "ICMP_Fragmentation": 0.5714285714285714,
+            "OS_Fingerprinting": 0.21870150025866528,
+            "PSHACK_Flood": 0.9999319542732716,
+            "SYN_Flood": 0.9998586862964247,
+            "SYN_Stealth_Scan": 0.10293888975276007,
+            "Service_Version_Detection": 0.13835616438356163,
+            "Slowloris_Scan": 0.1827027027027027,
+            "SynonymousIP_Flood": 0.9998701669652826,
+            "TCP_Flood": 0.99984392477174,
+            "TCP_Port_Scan": 0.25984553032040986,
+            "UDP_Flood": 0.9992724249038561,
+            "Vulnerability_Scan": 0.20810126582278482
+          }
+        },
+        "DecisionTree": {
+          "macro_f1": 0.5484482836080179,
+          "weighted_f1": 0.8673502631921635,
+          "accuracy": 0.8678521947663905,
+          "fit_seconds": 3.76,
+          "predict_seconds": 0.01,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.17120280948200176,
+            "Benign": 0.9565217391304348,
+            "ICMP_Flood": 0.5454545454545454,
+            "ICMP_Fragmentation": 0.4,
+            "OS_Fingerprinting": 0.23109804969275982,
+            "PSHACK_Flood": 0.9998639178063551,
+            "SYN_Flood": 0.9998586826655018,
+            "SYN_Stealth_Scan": 0.15467212066981975,
+            "Service_Version_Detection": 0.17512437810945275,
+            "Slowloris_Scan": 0.15011851461680273,
+            "SynonymousIP_Flood": 0.9998961335722261,
+            "TCP_Flood": 0.9998569329015308,
+            "TCP_Port_Scan": 0.21913902879407013,
+            "UDP_Flood": 0.9991683991683992,
+            "Vulnerability_Scan": 0.2247490020563687
+          }
+        },
+        "SVM": {
+          "macro_f1": 0.42073026602184244,
+          "weighted_f1": 0.8513747256355647,
+          "accuracy": 0.8624271796041686,
+          "fit_seconds": 35.37,
+          "predict_seconds": 0.03,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.008056872037914692,
+            "Benign": 0.24,
+            "ICMP_Flood": 0.3157894736842105,
+            "ICMP_Fragmentation": 0.017817371937639197,
+            "OS_Fingerprinting": 0.012348610781287106,
+            "PSHACK_Flood": 0.9999319519580824,
+            "SYN_Flood": 0.9920894884708502,
+            "SYN_Stealth_Scan": 0.24098683034384125,
+            "Service_Version_Detection": 0.0595903165735568,
+            "Slowloris_Scan": 0.11036401576628797,
+            "SynonymousIP_Flood": 0.9921663617388615,
+            "TCP_Flood": 0.9998829329205635,
+            "TCP_Port_Scan": 0.0,
+            "UDP_Flood": 0.9993760399334443,
+            "Vulnerability_Scan": 0.32255372418109746
+          }
+        },
+        "LogisticRegression": {
+          "macro_f1": 0.44540526902573585,
+          "weighted_f1": 0.849940224543506,
+          "accuracy": 0.8637180550068717,
+          "fit_seconds": 71.07,
+          "predict_seconds": 0.01,
+          "per_class_f1": {
+            "Aggressive_Scan": 0.020570359981299673,
+            "Benign": 0.36065573770491804,
+            "ICMP_Flood": 0.42857142857142855,
+            "ICMP_Fragmentation": 0.021621621621621623,
+            "OS_Fingerprinting": 0.009006873666745675,
+            "PSHACK_Flood": 0.9999319519580824,
+            "SYN_Flood": 0.9910963076245156,
+            "SYN_Stealth_Scan": 0.0,
+            "Service_Version_Detection": 0.06587072869493618,
+            "Slowloris_Scan": 0.28021248339973437,
+            "SynonymousIP_Flood": 0.9911702620604438,
+            "TCP_Flood": 0.9998699271592092,
+            "TCP_Port_Scan": 0.3034598331180393,
+            "UDP_Flood": 0.9992719708788351,
+            "Vulnerability_Scan": 0.2097695489462281
+          }
+        }
+      }
+    }
+  ]
+}

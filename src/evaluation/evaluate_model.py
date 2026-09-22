@@ -37,6 +37,12 @@ def evaluate_predictions(csv_path, output_dir, model_name):
     precision = precision_score(y_true, y_pred, average=avg_method, zero_division=0)
     recall = recall_score(y_true, y_pred, average=avg_method, zero_division=0)
     f1 = f1_score(y_true, y_pred, average=avg_method, zero_division=0)
+    # Macro-F1 leads for multiclass (#54). With icmp_fragmentation at 28 raw flows
+    # and benign at 82, accuracy is dominated by the flood classes and says little:
+    # our leak-free runs show accuracy 0.85 against macro-F1 0.59 on identical
+    # predictions. Weighted F1 is reported alongside for comparability with the
+    # paper, which averages that way.
+    weighted_f1 = f1_score(y_true, y_pred, average='weighted', zero_division=0)
     
     # Full report
     report = classification_report(y_true, y_pred, zero_division=0)
@@ -45,10 +51,17 @@ def evaluate_predictions(csv_path, output_dir, model_name):
     print("\n" + "="*50)
     print(f" Evaluation Results: {model_name}")
     print("="*50)
-    print(f"Accuracy : {accuracy:.4f}")
-    print(f"Precision: {precision:.4f} ({avg_method})")
-    print(f"Recall   : {recall:.4f} ({avg_method})")
-    print(f"F1-Score : {f1:.4f} ({avg_method})")
+    if not is_binary:
+        print(f"Macro F1    : {f1:.4f}   <- headline metric")
+        print(f"Weighted F1 : {weighted_f1:.4f}")
+        print(f"Accuracy    : {accuracy:.4f}   (inflated by the majority flood classes)")
+        print(f"Precision   : {precision:.4f} (macro)")
+        print(f"Recall      : {recall:.4f} (macro)")
+    else:
+        print(f"Accuracy : {accuracy:.4f}")
+        print(f"Precision: {precision:.4f} ({avg_method})")
+        print(f"Recall   : {recall:.4f} ({avg_method})")
+        print(f"F1-Score : {f1:.4f} ({avg_method})")
     print("\nClassification Report:\n")
     print(report)
     print("="*50)
@@ -59,10 +72,21 @@ def evaluate_predictions(csv_path, output_dir, model_name):
         f.write(f"# Evaluation Summary: {model_name}\n\n")
         f.write(f"**Classification Type**: {'Binary' if is_binary else 'Multiclass'}\n\n")
         f.write("## Overall Metrics\n")
-        f.write(f"- **Accuracy**: {accuracy:.4f}\n")
-        f.write(f"- **Precision** ({avg_method}): {precision:.4f}\n")
-        f.write(f"- **Recall** ({avg_method}): {recall:.4f}\n")
-        f.write(f"- **F1-Score** ({avg_method}): {f1:.4f}\n\n")
+        if not is_binary:
+            f.write(f"- **Macro F1-Score**: {f1:.4f}  _(headline metric)_\n")
+            f.write(f"- **Weighted F1-Score**: {weighted_f1:.4f}\n")
+            f.write(f"- **Accuracy**: {accuracy:.4f}\n")
+            f.write(f"- **Precision** (macro): {precision:.4f}\n")
+            f.write(f"- **Recall** (macro): {recall:.4f}\n\n")
+            f.write("> Macro-F1 leads because the class distribution is extreme: the flood\n"
+                    "> classes hold most of the mass while `ICMP_Fragmentation` has 28 raw flows\n"
+                    "> and `Benign` has 82. Accuracy tracks the floods and hides the\n"
+                    "> reconnaissance classes almost entirely.\n\n")
+        else:
+            f.write(f"- **Accuracy**: {accuracy:.4f}\n")
+            f.write(f"- **Precision** ({avg_method}): {precision:.4f}\n")
+            f.write(f"- **Recall** ({avg_method}): {recall:.4f}\n")
+            f.write(f"- **F1-Score** ({avg_method}): {f1:.4f}\n\n")
         f.write("## Detailed Classification Report\n")
         f.write("```text\n")
         f.write(report)

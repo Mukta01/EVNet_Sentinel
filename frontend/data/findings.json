@@ -1,0 +1,536 @@
+{
+  "generated": "2026-09-08T07:13:29+00:00",
+  "seeds": [
+    42,
+    1337,
+    2024
+  ],
+  "featureSet": "extended",
+  "environment": {
+    "cpu": "Apple M5",
+    "logical_cores": 10,
+    "ram_gb": 16,
+    "os": "Darwin 25.5.0",
+    "machine": "arm64",
+    "versions": {
+      "python": "3.13.12",
+      "numpy": "2.4.4",
+      "pandas": "3.0.2",
+      "scikit-learn": "1.8.0",
+      "river": "0.26.1"
+    }
+  },
+  "dataset": {
+    "rows_after_dedup": 1198151,
+    "n_features": 60,
+    "preprocess_seconds": 44.9,
+    "train_rows": 838705,
+    "test_rows": 179723,
+    "n_classes": 15
+  },
+  "models": [
+    {
+      "name": "RandomForest",
+      "macro_f1": 0.5582,
+      "macro_f1_std": 0.008,
+      "weighted_f1": 0.8654,
+      "weighted_f1_std": 0.0006,
+      "accuracy": 0.8679,
+      "accuracy_std": 0.0007,
+      "fit_seconds": 8.5833,
+      "fit_seconds_std": 0.0754,
+      "predict_seconds": 0.1433,
+      "predict_seconds_std": 0.0094
+    },
+    {
+      "name": "DecisionTree",
+      "macro_f1": 0.5568,
+      "macro_f1_std": 0.0095,
+      "weighted_f1": 0.8677,
+      "weighted_f1_std": 0.0003,
+      "accuracy": 0.8681,
+      "accuracy_std": 0.0003,
+      "fit_seconds": 3.5033,
+      "fit_seconds_std": 0.1826,
+      "predict_seconds": 0.01,
+      "predict_seconds_std": 0.0
+    },
+    {
+      "name": "LogisticRegression",
+      "macro_f1": 0.4355,
+      "macro_f1_std": 0.0172,
+      "weighted_f1": 0.8529,
+      "weighted_f1_std": 0.0023,
+      "accuracy": 0.8626,
+      "accuracy_std": 0.0019,
+      "fit_seconds": 71.7,
+      "fit_seconds_std": 7.2927,
+      "predict_seconds": 0.0233,
+      "predict_seconds_std": 0.0189
+    },
+    {
+      "name": "SVM",
+      "macro_f1": 0.411,
+      "macro_f1_std": 0.0165,
+      "weighted_f1": 0.8489,
+      "weighted_f1_std": 0.0033,
+      "accuracy": 0.8623,
+      "accuracy_std": 0.0012,
+      "fit_seconds": 36.3133,
+      "fit_seconds_std": 1.2227,
+      "predict_seconds": 0.0367,
+      "predict_seconds_std": 0.0047
+    }
+  ],
+  "perClass": [
+    {
+      "class": "PSHACK_Flood",
+      "group": "volumetric",
+      "support": 195952,
+      "models": {
+        "RandomForest": {
+          "f1": 0.9999,
+          "std": 0.0
+        },
+        "DecisionTree": {
+          "f1": 0.9999,
+          "std": 0.0
+        },
+        "SVM": {
+          "f1": 0.9999,
+          "std": 0.0
+        },
+        "LogisticRegression": {
+          "f1": 0.9999,
+          "std": 0.0
+        }
+      }
+    },
+    {
+      "class": "SYN_Flood",
+      "group": "volumetric",
+      "support": 259484,
+      "models": {
+        "RandomForest": {
+          "f1": 0.9999,
+          "std": 0.0
+        },
+        "DecisionTree": {
+          "f1": 0.9999,
+          "std": 0.0
+        },
+        "SVM": {
+          "f1": 0.992,
+          "std": 0.0001
+        },
+        "LogisticRegression": {
+          "f1": 0.991,
+          "std": 0.0001
+        }
+      }
+    },
+    {
+      "class": "SynonymousIP_Flood",
+      "group": "volumetric",
+      "support": 256739,
+      "models": {
+        "RandomForest": {
+          "f1": 0.9999,
+          "std": 0.0
+        },
+        "DecisionTree": {
+          "f1": 0.9999,
+          "std": 0.0
+        },
+        "SVM": {
+          "f1": 0.9921,
+          "std": 0.0001
+        },
+        "LogisticRegression": {
+          "f1": 0.9911,
+          "std": 0.0001
+        }
+      }
+    },
+    {
+      "class": "TCP_Flood",
+      "group": "volumetric",
+      "support": 256297,
+      "models": {
+        "RandomForest": {
+          "f1": 0.9999,
+          "std": 0.0
+        },
+        "DecisionTree": {
+          "f1": 0.9999,
+          "std": 0.0
+        },
+        "SVM": {
+          "f1": 0.9999,
+          "std": 0.0
+        },
+        "LogisticRegression": {
+          "f1": 0.9999,
+          "std": 0.0
+        }
+      }
+    },
+    {
+      "class": "UDP_Flood",
+      "group": "volumetric",
+      "support": 32072,
+      "models": {
+        "RandomForest": {
+          "f1": 0.9994,
+          "std": 0.0001
+        },
+        "DecisionTree": {
+          "f1": 0.9991,
+          "std": 0.0
+        },
+        "SVM": {
+          "f1": 0.9995,
+          "std": 0.0001
+        },
+        "LogisticRegression": {
+          "f1": 0.9995,
+          "std": 0.0002
+        }
+      }
+    },
+    {
+      "class": "TCP_Port_Scan",
+      "group": "recon",
+      "support": 35123,
+      "models": {
+        "RandomForest": {
+          "f1": 0.2654,
+          "std": 0.0095
+        },
+        "DecisionTree": {
+          "f1": 0.2017,
+          "std": 0.0125
+        },
+        "SVM": {
+          "f1": 0.1005,
+          "std": 0.1421
+        },
+        "LogisticRegression": {
+          "f1": 0.2779,
+          "std": 0.0298
+        }
+      }
+    },
+    {
+      "class": "OS_Fingerprinting",
+      "group": "recon",
+      "support": 27702,
+      "models": {
+        "RandomForest": {
+          "f1": 0.2227,
+          "std": 0.0039
+        },
+        "DecisionTree": {
+          "f1": 0.2273,
+          "std": 0.0031
+        },
+        "SVM": {
+          "f1": 0.0225,
+          "std": 0.0087
+        },
+        "LogisticRegression": {
+          "f1": 0.039,
+          "std": 0.0364
+        }
+      }
+    },
+    {
+      "class": "Vulnerability_Scan",
+      "group": "recon",
+      "support": 39002,
+      "models": {
+        "RandomForest": {
+          "f1": 0.2043,
+          "std": 0.0127
+        },
+        "DecisionTree": {
+          "f1": 0.2301,
+          "std": 0.0041
+        },
+        "SVM": {
+          "f1": 0.2006,
+          "std": 0.1173
+        },
+        "LogisticRegression": {
+          "f1": 0.215,
+          "std": 0.0395
+        }
+      }
+    },
+    {
+      "class": "Service_Version_Detection",
+      "group": "recon",
+      "support": 30338,
+      "models": {
+        "RandomForest": {
+          "f1": 0.1561,
+          "std": 0.0145
+        },
+        "DecisionTree": {
+          "f1": 0.1741,
+          "std": 0.0065
+        },
+        "SVM": {
+          "f1": 0.0266,
+          "std": 0.0246
+        },
+        "LogisticRegression": {
+          "f1": 0.0762,
+          "std": 0.0102
+        }
+      }
+    },
+    {
+      "class": "Aggressive_Scan",
+      "group": "recon",
+      "support": 27815,
+      "models": {
+        "RandomForest": {
+          "f1": 0.1453,
+          "std": 0.0048
+        },
+        "DecisionTree": {
+          "f1": 0.1787,
+          "std": 0.007
+        },
+        "SVM": {
+          "f1": 0.0406,
+          "std": 0.0235
+        },
+        "LogisticRegression": {
+          "f1": 0.0811,
+          "std": 0.0605
+        }
+      }
+    },
+    {
+      "class": "SYN_Stealth_Scan",
+      "group": "recon",
+      "support": 34765,
+      "models": {
+        "RandomForest": {
+          "f1": 0.1053,
+          "std": 0.0028
+        },
+        "DecisionTree": {
+          "f1": 0.1746,
+          "std": 0.0141
+        },
+        "SVM": {
+          "f1": 0.1831,
+          "std": 0.1306
+        },
+        "LogisticRegression": {
+          "f1": 0.042,
+          "std": 0.0594
+        }
+      }
+    },
+    {
+      "class": "Benign",
+      "group": "other",
+      "support": 81,
+      "models": {
+        "RandomForest": {
+          "f1": 0.9855,
+          "std": 0.0205
+        },
+        "DecisionTree": {
+          "f1": 0.9407,
+          "std": 0.0224
+        },
+        "SVM": {
+          "f1": 0.1916,
+          "std": 0.126
+        },
+        "LogisticRegression": {
+          "f1": 0.2255,
+          "std": 0.1605
+        }
+      }
+    },
+    {
+      "class": "ICMP_Flood",
+      "group": "other",
+      "support": 32,
+      "models": {
+        "RandomForest": {
+          "f1": 0.6605,
+          "std": 0.0915
+        },
+        "DecisionTree": {
+          "f1": 0.6382,
+          "std": 0.0953
+        },
+        "SVM": {
+          "f1": 0.1776,
+          "std": 0.1171
+        },
+        "LogisticRegression": {
+          "f1": 0.2158,
+          "std": 0.1634
+        }
+      }
+    },
+    {
+      "class": "ICMP_Fragmentation",
+      "group": "other",
+      "support": 28,
+      "models": {
+        "RandomForest": {
+          "f1": 0.439,
+          "std": 0.1693
+        },
+        "DecisionTree": {
+          "f1": 0.4222,
+          "std": 0.1912
+        },
+        "SVM": {
+          "f1": 0.0936,
+          "std": 0.0914
+        },
+        "LogisticRegression": {
+          "f1": 0.0952,
+          "std": 0.1095
+        }
+      }
+    },
+    {
+      "class": "Slowloris_Scan",
+      "group": "other",
+      "support": 2721,
+      "models": {
+        "RandomForest": {
+          "f1": 0.1908,
+          "std": 0.0057
+        },
+        "DecisionTree": {
+          "f1": 0.1661,
+          "std": 0.0118
+        },
+        "SVM": {
+          "f1": 0.1455,
+          "std": 0.0263
+        },
+        "LogisticRegression": {
+          "f1": 0.283,
+          "std": 0.0444
+        }
+      }
+    }
+  ],
+  "fingerprintAblation": [
+    {
+      "timestamps": "kept",
+      "dstPort": "kept",
+      "total": 2728799,
+      "recon": 1724504,
+      "flood": 1001106
+    },
+    {
+      "timestamps": "kept",
+      "dstPort": "dropped",
+      "total": 1277520,
+      "recon": 273932,
+      "flood": 1001106,
+      "isReference": true
+    },
+    {
+      "timestamps": "dropped",
+      "dstPort": "kept",
+      "total": 1198143,
+      "recon": 194737,
+      "flood": 1000544
+    },
+    {
+      "timestamps": "dropped",
+      "dstPort": "dropped",
+      "total": 977862,
+      "recon": 6821,
+      "flood": 970079
+    }
+  ],
+  "leakEffect": [
+    {
+      "model": "RandomForest",
+      "leaked": 0.9547,
+      "corrected": 0.5894
+    },
+    {
+      "model": "LogisticRegression",
+      "leaked": 0.4622,
+      "corrected": 0.3308
+    },
+    {
+      "model": "SVM",
+      "leaked": 0.2829,
+      "corrected": 0.3084
+    }
+  ],
+  "singleColumnProbe": [
+    {
+      "feature": "bidirectional_first_seen_ms",
+      "accuracy": 0.9976,
+      "legitimate": false
+    },
+    {
+      "feature": "src_port",
+      "accuracy": 0.4028,
+      "legitimate": false
+    },
+    {
+      "feature": "dst_port",
+      "accuracy": 0.2917,
+      "legitimate": true
+    }
+  ],
+  "drift": {
+    "events": 43,
+    "withinHundred": 42,
+    "medianDistance": 22,
+    "nullMean": 2.2,
+    "nullStd": 1.5,
+    "captures": 58
+  },
+  "streamOrder": [
+    {
+      "order": "Capture order",
+      "accuracy": 0.9997,
+      "weightedF1": 0.9997,
+      "events": 43,
+      "minutes": 25.5
+    },
+    {
+      "order": "Shuffled",
+      "accuracy": 0.5585,
+      "weightedF1": 0.5129,
+      "events": 14,
+      "minutes": 255.3
+    }
+  ],
+  "paperReported": {
+    "accuracy": 0.984,
+    "weightedF1": 0.9831,
+    "driftEvents": 11
+  },
+  "supportControl": {
+    "solved": {
+      "class": "UDP_Flood",
+      "support": 32072
+    },
+    "unsolved": {
+      "class": "TCP_Port_Scan",
+      "support": 35123
+    }
+  }
+}

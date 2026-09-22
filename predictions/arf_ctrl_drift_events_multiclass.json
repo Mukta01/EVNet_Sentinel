@@ -1,0 +1,25 @@
+{
+  "stream_order": "file-then-shuffle",
+  "instances": 25000,
+  "target": "multiclass",
+  "events": [
+    {
+      "instance": 1888,
+      "accuracy_at_drift": 0.4809322033898305,
+      "elapsed_seconds": 15.809,
+      "source_file": "EVSE-A-idle-portscan.csv"
+    }
+  ],
+  "timing_seconds": {
+    "total": 184.36,
+    "metric_updates": 0.081,
+    "drift_detection": 0.015,
+    "mean_per_instance": 0.007374
+  },
+  "final_metrics": {
+    "accuracy": 0.5507820312812512,
+    "precision": 0.5626494985648223,
+    "recall": 0.5507820312812512,
+    "f1": 0.531793736128576
+  }
+}

@@ -1,0 +1,9 @@
+docs: add project planning PERT and Gantt chart
+
+Provides the critical path analysis, network diagram, and a comprehensive Gantt chart based on the Project SRS and DFD.
+The timeline encompasses Data Preparation, ML Engine, Simulation & API, Frontend Dashboard, and Integration phases.
+
+Co-authored-by: Mukta Varak <mukta.varak@example.com>
+Co-authored-by: Shardul Chogale <144150911+shard-c6@users.noreply.github.com>
+Co-authored-by: shrutich-30 <shrutich-30@users.noreply.github.com>
+Co-authored-by: nehachavhan2006 <nehachavhan2006@users.noreply.github.com>
