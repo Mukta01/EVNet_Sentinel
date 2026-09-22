@@ -1,0 +1,420 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{array}
+
+\title{\textbf{Function Point Analysis \& COCOMO Estimation}\\ \vspace{0.5cm} for \\ \vspace{0.5cm} \textbf{EVNet Sentinel: Anomaly Detection for EV Charging Infrastructure}}
+\author{\textbf{Prepared by:} \\ Group 1 \\ Mukta Varak 24102A0013 \\ Shruti Chaurasiya 24102A0018 \\ Shardul Chogale 24102A0021 \\ Neha Chavhan 24102A0022}
+\date{Vidyalankar Institute of Technology \\ \today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\tableofcontents
+\newpage
+
+%% ======================================================================
+%%  SECTION 1: FUNCTION POINT ANALYSIS
+%% ======================================================================
+\section{Function Point Analysis (FPA)}
+
+Function Point Analysis is a method for measuring the functional size of software based on what it \emph{does} rather than how it is implemented. We derive the counts by systematically examining the Level~1 and Level~2 Data Flow Diagrams (DFDs) of EVNet Sentinel.
+
+\subsection{Reference: Data Flow Diagrams}
+
+\subsubsection{Level~1 DFD Summary}
+The Level~1 DFD decomposes EVNet Sentinel into five major processes:
+\begin{enumerate}
+    \item \textbf{Process 1.0 --- Data Preprocessing:} Accepts raw CICEVSE2024 CSV datasets, cleans, masks PII, and performs feature engineering.
+    \item \textbf{Process 2.0 --- Model Training:} Trains static classifiers (RF, SVM, LR, DT) and the online ARF+ADWIN model using processed data.
+    \item \textbf{Process 3.0 --- Traffic Simulation:} Replays labelled traffic and injects synthetic attack patterns.
+    \item \textbf{Process 4.0 --- Anomaly Detection:} Classifies incoming traffic against trained models and identifies anomalies.
+    \item \textbf{Process 5.0 --- Alert and Monitoring:} Serves alerts, metrics, and dashboard data to the Security Analyst via REST/WebSocket.
+\end{enumerate}
+
+Data stores identified: \textbf{D1}~Dataset Storage, \textbf{D2}~Processed Data, \textbf{D3}~Trained Models, \textbf{D4}~Anomaly Reports.
+
+External entities: \textbf{Administrator/Researcher}, \textbf{Traffic Simulator}, \textbf{Security Analyst}.
+
+\subsubsection{Level~2 DFD Summary (Anomaly Detection --- Process 4.0)}
+Process~4.0 is further decomposed into six sub-processes:
+\begin{itemize}
+    \item \textbf{4.1} Receive Traffic
+    \item \textbf{4.2} Prepare Features
+    \item \textbf{4.3} Load ML Model
+    \item \textbf{4.4} Classify Traffic
+    \item \textbf{4.5} Identify Anomaly
+    \item \textbf{4.6} Generate Detection Result
+\end{itemize}
+
+\newpage
+%% ------------------------------------------------------------------
+%%  1.2  WEIGHTING FACTOR TABLE (from syllabus/reference)
+%% ------------------------------------------------------------------
+\subsection{Weighting Factor Reference Table}
+
+The standard IFPUG weighting factors used for each domain characteristic are:
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Domain Characteristic} & \textbf{Simple} & \textbf{Average} & \textbf{Complex} \\ \hline
+No. of User Inputs             & 3               & 4                & 6                \\ \hline
+No. of User Outputs            & 4               & 5                & 7                \\ \hline
+No. of User Inquiries          & 3               & 4                & 6                \\ \hline
+No. of Files (ILFs)            & 7               & 10               & 15               \\ \hline
+No. of External Interfaces     & 5               & 7                & 10               \\ \hline
+\end{tabular}
+\end{center}
+
+\newpage
+%% ------------------------------------------------------------------
+%%  1.3  DETAILED ITEM IDENTIFICATION & CLASSIFICATION
+%% ------------------------------------------------------------------
+\subsection{Detailed Item Identification and Classification}
+
+Each item is identified from the Level~1 and Level~2 DFDs, the SRS, and the codebase. Every item is individually classified as \textbf{Simple (S)}, \textbf{Average (A)}, or \textbf{Complex (C)} based on the number of data element types (DETs) and file types referenced (FTRs/RETs).
+
+%% --- INPUTS ---
+\subsubsection{User Inputs}
+User inputs are data-entry or control transactions that cross the application boundary inward.
+
+\begin{center}
+\begin{tabular}{|c|l|l|c|c|}
+\hline
+\textbf{\#} & \textbf{Input Item} & \textbf{DFD Reference} & \textbf{Complexity} & \textbf{Weight} \\ \hline
+I1 & Raw Dataset Upload (CICEVSE2024 CSVs)            & L1: Admin $\to$ P1.0           & Average  & 4 \\ \hline
+I2 & Training Request and Hyperparameters              & L1: Admin $\to$ P2.0           & Complex  & 6 \\ \hline
+I3 & Simulation Configuration Parameters               & L1: Traffic Sim $\to$ P3.0     & Average  & 4 \\ \hline
+I4 & Synthetic Attack Injection Patterns                & L1: Traffic Sim $\to$ P3.0     & Complex  & 6 \\ \hline
+I5 & Model Selection for Prediction (\texttt{model\_name})  & L2: 4.3 Load ML Model     & Simple   & 3 \\ \hline
+I6 & Network Traffic Feature Vector (\texttt{/predict})     & L2: 4.1 Receive Traffic    & Complex  & 6 \\ \hline
+I7 & Monitoring/Dashboard Request                       & L1: Analyst $\to$ P5.0         & Simple   & 3 \\ \hline
+I8 & Drift Detection Threshold Configuration            & L1: Admin $\to$ P2.0           & Average  & 4 \\ \hline
+\multicolumn{4}{|r|}{\textbf{Input Subtotal}} & \textbf{36} \\ \hline
+\end{tabular}
+\end{center}
+
+\textbf{Breakdown:} 2 Simple $\times$ 3 = 6, \quad 3 Average $\times$ 4 = 12, \quad 3 Complex $\times$ 6 = 18. \quad \textbf{Total = 36}
+
+%% --- OUTPUTS ---
+\subsubsection{User Outputs}
+User outputs are data or control transactions that cross the application boundary outward to the user/external entity.
+
+\begin{center}
+\begin{tabular}{|c|l|l|c|c|}
+\hline
+\textbf{\#} & \textbf{Output Item} & \textbf{DFD Reference} & \textbf{Complexity} & \textbf{Weight} \\ \hline
+O1 & Classification Report (per-model metrics)          & L1: P2.0 $\to$ Admin           & Complex  & 7 \\ \hline
+O2 & Prediction Result (\texttt{prediction\_class})      & L2: 4.6 $\to$ Analyst          & Simple   & 4 \\ \hline
+O3 & Live Alert Stream (WebSocket \texttt{/ws/alerts})   & L1: P5.0 $\to$ Analyst         & Complex  & 7 \\ \hline
+O4 & Dashboard Metrics and Visualisation Data            & L1: P5.0 $\to$ Analyst         & Complex  & 7 \\ \hline
+O5 & Anomaly Report (logged to D4)                       & L1: P5.0 $\to$ D4             & Average  & 5 \\ \hline
+O6 & Confusion Matrix Data                               & L1: P2.0 $\to$ Admin           & Average  & 5 \\ \hline
+O7 & Concept Drift Event Notification                    & L1: P4.0 $\to$ P5.0           & Average  & 5 \\ \hline
+\multicolumn{4}{|r|}{\textbf{Output Subtotal}} & \textbf{40} \\ \hline
+\end{tabular}
+\end{center}
+
+\textbf{Breakdown:} 1 Simple $\times$ 4 = 4, \quad 3 Average $\times$ 5 = 15, \quad 3 Complex $\times$ 7 = 21. \quad \textbf{Total = 40}
+
+%% --- INQUIRIES ---
+\subsubsection{User Inquiries (Queries to Data Stores)}
+An inquiry is a paired input/output where input causes immediate retrieval with no derived data.
+
+\begin{center}
+\begin{tabular}{|c|l|l|c|c|}
+\hline
+\textbf{\#} & \textbf{Inquiry Item} & \textbf{DFD Reference} & \textbf{Complexity} & \textbf{Weight} \\ \hline
+Q1 & Health Check (\texttt{GET /health}, \texttt{GET /api/status}) & L1: P5.0    & Simple   & 3 \\ \hline
+Q2 & List Loaded Models (\texttt{GET /})                           & L1: P5.0    & Simple   & 3 \\ \hline
+Q3 & Retrieve Processed Feature Format from D2                     & L2: D2 $\to$ 4.2 & Average & 4 \\ \hline
+Q4 & Load Trained Model from D3 Model Registry                    & L2: D3 $\to$ 4.3 & Average & 4 \\ \hline
+Q5 & Query Anomaly Report History from D4                          & L1: D4 $\to$ P5.0 & Average & 4 \\ \hline
+\multicolumn{4}{|r|}{\textbf{Inquiry Subtotal}} & \textbf{18} \\ \hline
+\end{tabular}
+\end{center}
+
+\textbf{Breakdown:} 2 Simple $\times$ 3 = 6, \quad 3 Average $\times$ 4 = 12. \quad \textbf{Total = 18}
+
+%% --- FILES (ILFs) ---
+\subsubsection{Internal Logical Files (ILFs)}
+ILFs are user-identifiable groups of logically related data maintained within the application boundary.
+
+\begin{center}
+\begin{tabular}{|c|l|l|c|c|}
+\hline
+\textbf{\#} & \textbf{File / Data Store} & \textbf{DFD Reference} & \textbf{Complexity} & \textbf{Weight} \\ \hline
+F1 & D1 --- Raw Dataset Storage (CICEVSE2024 CSVs)       & L1: D1       & Complex  & 15 \\ \hline
+F2 & D2 --- Processed/Scaled Feature Store                & L1: D2       & Average  & 10 \\ \hline
+F3 & D3 --- Trained Model Registry (.pkl files)           & L1: D3       & Complex  & 15 \\ \hline
+F4 & D4 --- Anomaly Reports / Alert Logs                  & L1: D4       & Average  & 10 \\ \hline
+F5 & Scaler Configuration (\texttt{StandardScaler.pkl})   & Code: API    & Simple   & 7  \\ \hline
+F6 & Feature Engineering Configuration / Column Mapping    & Code: Preprocess & Simple & 7 \\ \hline
+\multicolumn{4}{|r|}{\textbf{File Subtotal}} & \textbf{64} \\ \hline
+\end{tabular}
+\end{center}
+
+\textbf{Breakdown:} 2 Simple $\times$ 7 = 14, \quad 2 Average $\times$ 10 = 20, \quad 2 Complex $\times$ 15 = 30. \quad \textbf{Total = 64}
+
+%% --- EXTERNAL INTERFACES ---
+\subsubsection{External Interface Files (EIFs) / API Calls}
+EIFs are data referenced by the application but maintained outside its boundary (external systems, APIs).
+
+\begin{center}
+\begin{tabular}{|c|l|l|c|c|}
+\hline
+\textbf{\#} & \textbf{External Interface} & \textbf{DFD Reference} & \textbf{Complexity} & \textbf{Weight} \\ \hline
+E1 & REST API --- \texttt{POST /predict}                     & L2: 4.4 Classify     & Complex  & 10 \\ \hline
+E2 & REST API --- \texttt{GET /api/status}                    & L1: P5.0             & Simple   & 5  \\ \hline
+E3 & REST API --- \texttt{GET /health}                        & L1: P5.0             & Simple   & 5  \\ \hline
+E4 & WebSocket --- \texttt{/ws/alerts} (bidirectional)        & L1: P5.0 $\to$ FE    & Complex  & 10 \\ \hline
+E5 & Next.js $\leftrightarrow$ FastAPI HTTP Interface         & Architecture         & Average  & 7  \\ \hline
+\multicolumn{4}{|r|}{\textbf{External Interface Subtotal}} & \textbf{37} \\ \hline
+\end{tabular}
+\end{center}
+
+\textbf{Breakdown:} 2 Simple $\times$ 5 = 10, \quad 1 Average $\times$ 7 = 7, \quad 2 Complex $\times$ 10 = 20. \quad \textbf{Total = 37}
+
+\newpage
+%% ------------------------------------------------------------------
+%%  1.4  UNADJUSTED FUNCTION POINT COUNT SUMMARY
+%% ------------------------------------------------------------------
+\subsection{Unadjusted Function Point (UFP) Count Summary}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\hline
+\textbf{Parameter} & \textbf{Simple} & \textbf{$\times$ Wt} & \textbf{Average} & \textbf{$\times$ Wt} & \textbf{Complex} & \textbf{$\times$ Wt} & \textbf{Total} \\ \hline
+User Inputs            & 2 & $\times\;3 = 6$   & 3 & $\times\;4 = 12$  & 3 & $\times\;6 = 18$  & \textbf{36} \\ \hline
+User Outputs           & 1 & $\times\;4 = 4$   & 3 & $\times\;5 = 15$  & 3 & $\times\;7 = 21$  & \textbf{40} \\ \hline
+User Inquiries         & 2 & $\times\;3 = 6$   & 3 & $\times\;4 = 12$  & 0 & $\times\;6 = 0$   & \textbf{18} \\ \hline
+Files (ILFs)           & 2 & $\times\;7 = 14$  & 2 & $\times\;10 = 20$ & 2 & $\times\;15 = 30$ & \textbf{64} \\ \hline
+External Interfaces    & 2 & $\times\;5 = 10$  & 1 & $\times\;7 = 7$   & 2 & $\times\;10 = 20$ & \textbf{37} \\ \hline
+\multicolumn{7}{|r|}{\textbf{Unadjusted Function Point Count Total}} & \textbf{195} \\ \hline
+\end{tabular}
+\end{center}
+
+$$\boxed{\text{Count Total (CT)} = 195}$$
+
+\newpage
+%% ======================================================================
+%%  SECTION 2: COMPLEXITY ADJUSTMENT FACTOR
+%% ======================================================================
+\section{Complexity Adjustment Factor (CAF)}
+
+The 14 General System Characteristics (GSCs) are rated on a scale of 0--5 for our project:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Scale} & \textbf{Meaning} & \textbf{Description} \\ \hline
+0 & No influence    & Factor has no relevance to the project \\ \hline
+1 & Incidental      & Factor is present but has negligible effect \\ \hline
+2 & Moderate        & Factor has some influence \\ \hline
+3 & Average         & Factor has an average degree of influence \\ \hline
+4 & Significant     & Factor significantly affects the system \\ \hline
+5 & Essential       & Factor is absolutely essential \\ \hline
+\end{tabular}
+\end{center}
+
+\subsection{Factor Scores for EVNet Sentinel}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|c|l|c|p{7.5cm}|}
+\hline
+\textbf{$i$} & \textbf{Factor ($f_i$)} & \textbf{Score} & \textbf{Justification for EVNet Sentinel} \\ \hline
+1  & Backup and Recovery                   & 3 & Model checkpoints (.pkl) and dataset versioning; no enterprise-grade backup but reproducibility logs exist. \\ \hline
+2  & Data Communications                   & 4 & REST API + WebSocket between backend and Next.js frontend; real-time alert streaming. \\ \hline
+3  & Distributed Processing                & 1 & Single-machine deployment; backend and frontend are separate processes but on localhost. \\ \hline
+4  & Performance Critical                  & 4 & Near-real-time anomaly detection with sub-second inference latency targets (PR-1 in SRS). \\ \hline
+5  & Existing Operating Environment        & 3 & Runs on standard student hardware (Python 3.10+, Node.js 20+); cross-platform support. \\ \hline
+6  & Online Data Entry                     & 4 & Live traffic simulation with feature vector submission via REST; admin training controls. \\ \hline
+7  & Input Transaction Over Multiple Screens & 2 & Dashboard has multiple pages (metrics, simulation, investigation) but inputs are mostly single-screen. \\ \hline
+8  & Master Files Updated Online           & 3 & Model registry (D3) updated on training; anomaly reports (D4) updated on detection events. \\ \hline
+9  & Information Domain Values Complex     & 4 & 39 network-traffic features, multi-class labels, drift-detection metadata; complex domain. \\ \hline
+10 & Internal Processing Complex           & 5 & Multiple ML algorithms (RF, SVM, LR, DT, ARF+ADWIN), feature engineering pipeline, concept drift adaptation. \\ \hline
+11 & Code Designed for Reuse               & 3 & Modular Python packages (\texttt{src/data\_prep}, \texttt{src/models}, \texttt{src/api}); reusable React components. \\ \hline
+12 & Conversion/Installation in Design     & 2 & Docker-based deployment; \texttt{Makefile} automation; no complex data migration. \\ \hline
+13 & Multiple Installations                & 2 & Primarily local-only, but Docker enables multi-environment deployment. \\ \hline
+14 & Application Designed for Change       & 4 & Plugin-style model registry allows adding new classifiers; frontend component architecture supports extension. \\ \hline
+\multicolumn{2}{|r|}{\textbf{Sum $\sum f_i$}} & \textbf{44} & \\ \hline
+\end{tabular}
+\end{center}
+
+\newpage
+%% ======================================================================
+%%  SECTION 3: FUNCTION POINT CALCULATION
+%% ======================================================================
+\section{Function Point Calculation}
+
+The Adjusted Function Point (FP) is calculated using the standard formula:
+
+$$\boxed{FP = \text{Count Total} \times \left(0.65 + 0.01 \times \sum_{i=1}^{14} f_i\right)}$$
+
+\subsection{Substituting Values}
+
+\begin{align}
+\text{Count Total (CT)} &= 195 \\[6pt]
+\sum_{i=1}^{14} f_i &= 3 + 4 + 1 + 4 + 3 + 4 + 2 + 3 + 4 + 5 + 3 + 2 + 2 + 4 = 44 \\[6pt]
+\text{Complexity Adjustment Factor (CAF)} &= 0.65 + (0.01 \times 44) \\[4pt]
+&= 0.65 + 0.44 \\[4pt]
+&= 1.09 \\[8pt]
+\text{Function Points (FP)} &= 195 \times 1.09 \\[4pt]
+&= \boxed{212.55}
+\end{align}
+
+$$\therefore \quad \textbf{Function Points (FP)} \approx \textbf{213}$$
+
+\newpage
+%% ======================================================================
+%%  SECTION 4: MAPPING FP TO LINES OF CODE (LOC)
+%% ======================================================================
+\section{Mapping Function Points to Lines of Code}
+
+To apply COCOMO, we must first convert Function Points to Lines of Code (LOC). This conversion uses \emph{language-dependent gearing factors} (also called ``backfiring ratios'') published by QSM and other industry benchmarks.
+
+\subsection{Language Gearing Factors}
+
+EVNet Sentinel is a multi-language project:
+
+\begin{center}
+\begin{tabular}{|l|c|l|}
+\hline
+\textbf{Language} & \textbf{LOC per FP} & \textbf{Source} \\ \hline
+Python 3           & 35                  & QSM / Industry average for Python \\ \hline
+JavaScript/TypeScript (React/Next.js) & 47 & QSM / Industry average for JS frameworks \\ \hline
+\end{tabular}
+\end{center}
+
+\subsection{Estimated LOC Calculation}
+
+Since the project has both a Python backend/ML engine ($\approx$ 60\% of functionality) and a TypeScript/React frontend ($\approx$ 40\% of functionality), we use a weighted average:
+
+\begin{align}
+\text{LOC}_{\text{Python}} &= 213 \times 0.60 \times 35 = 4{,}473 \;\text{LOC} \\[4pt]
+\text{LOC}_{\text{TypeScript}} &= 213 \times 0.40 \times 47 = 4{,}004 \;\text{LOC} \\[6pt]
+\text{Total Estimated LOC} &= 4{,}473 + 4{,}004 = \boxed{8{,}477 \;\text{LOC}}
+\end{align}
+
+$$\text{KLOC} = \frac{8{,}477}{1{,}000} = \boxed{8.48 \;\text{KLOC}}$$
+
+\newpage
+%% ======================================================================
+%%  SECTION 5: COCOMO ESTIMATION (BASIC MODEL --- ORGANIC)
+%% ======================================================================
+\section{COCOMO Estimation --- Basic Model}
+
+The \textbf{Constructive Cost Model (COCOMO)} uses Lines of Code (KLOC) to estimate development effort, schedule, and team size.
+
+\subsection{COCOMO Basic Model Formulae}
+
+\begin{align}
+\text{Effort (E)} &= a_b \times (\text{KLOC})^{b_b} \quad \text{(in Person-Months)} \\[6pt]
+\text{Development Time (D)} &= c_b \times (E)^{d_b} \quad \text{(in Months)} \\[6pt]
+\text{Average Staff Size (SS)} &= \frac{E}{D} \quad \text{(in Persons)}
+\end{align}
+
+\subsection{COCOMO Coefficient Table}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Software Project Type} & $\boldsymbol{a_b}$ & $\boldsymbol{b_b}$ & $\boldsymbol{c_b}$ & $\boldsymbol{d_b}$ \\ \hline
+\textbf{Organic}        & \textbf{2.4}  & \textbf{1.05} & \textbf{2.5}  & \textbf{0.38} \\ \hline
+Semi-detached           & 3.0           & 1.12          & 2.5           & 0.35          \\ \hline
+Embedded                & 3.6           & 1.20          & 2.5           & 0.32          \\ \hline
+\end{tabular}
+\end{center}
+
+\subsection{Project Classification: Organic}
+
+EVNet Sentinel is classified as an \textbf{Organic} project because:
+\begin{itemize}
+    \item The team is small (4 members) with familiarity in the application domain (ML, web development).
+    \item The project size is moderate ($< 50$ KLOC).
+    \item The system does not have rigid real-time or safety-critical constraints.
+    \item It is an academic/research prototype, not an embedded or large-scale enterprise system.
+\end{itemize}
+
+\subsection{Calculation}
+
+Using the \textbf{Organic} coefficients: $a_b = 2.4$, $b_b = 1.05$, $c_b = 2.5$, $d_b = 0.38$, and $\text{KLOC} = 8.48$:
+
+\subsubsection{Step 1: Effort (E)}
+\begin{align}
+E &= a_b \times (\text{KLOC})^{b_b} \\[4pt]
+  &= 2.4 \times (8.48)^{1.05} \\[4pt]
+  &= 2.4 \times 9.21 \\[4pt]
+  &= \boxed{22.10 \;\text{Person-Months}}
+\end{align}
+
+\subsubsection{Step 2: Development Time (D)}
+\begin{align}
+D &= c_b \times (E)^{d_b} \\[4pt]
+  &= 2.5 \times (22.10)^{0.38} \\[4pt]
+  &= 2.5 \times 3.22 \\[4pt]
+  &= \boxed{8.05 \;\text{Months}}
+\end{align}
+
+\subsubsection{Step 3: Average Staff Size (SS)}
+\begin{align}
+SS &= \frac{E}{D} \\[4pt]
+   &= \frac{22.10}{8.05} \\[4pt]
+   &= \boxed{2.75 \;\text{Persons} \approx 3 \;\text{Persons}}
+\end{align}
+
+\newpage
+%% ======================================================================
+%%  SECTION 6: SUMMARY TABLE
+%% ======================================================================
+\section{Consolidated Summary}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Metric} & \textbf{Value} \\ \hline
+Unadjusted Function Point Count (CT)              & 195             \\ \hline
+Sum of Complexity Adjustment Factors ($\sum f_i$)  & 44              \\ \hline
+Complexity Adjustment Factor (CAF)                 & 1.09            \\ \hline
+\textbf{Adjusted Function Points (FP)}             & \textbf{212.55 $\approx$ 213} \\ \hline
+\hline
+Estimated LOC (Python component)                   & 4,473 LOC       \\ \hline
+Estimated LOC (TypeScript component)               & 4,004 LOC       \\ \hline
+\textbf{Total Estimated LOC}                       & \textbf{8,477 LOC}  \\ \hline
+\textbf{KLOC}                                      & \textbf{8.48}   \\ \hline
+\hline
+COCOMO Model Type                                  & Organic         \\ \hline
+\textbf{Effort (E)}                                & \textbf{22.10 Person-Months} \\ \hline
+\textbf{Development Time (D)}                      & \textbf{8.05 Months}         \\ \hline
+\textbf{Average Staff Size (SS)}                   & \textbf{$\approx$ 3 Persons} \\ \hline
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+
+\subsection{Interpretation and Gantt Chart Alignment}
+
+\begin{itemize}
+    \item The system requires approximately \textbf{22 Person-Months} of effort. With 4 team members working across a 4-month semester, this implies $22 / 4 = 5.5$ months of equivalent full-time effort per person --- reasonable since students also carry coursework, and not all members are coding simultaneously on all phases.
+    \item The COCOMO development time of \textbf{$\approx$ 8 months} represents the theoretical \emph{full lifecycle} duration (including requirements, design, verification, and documentation overhead). The project's \textbf{Gantt chart spans 88 working days ($\approx$ 4 months)}, which is a compressed academic timeline. The factor-of-two difference is expected: COCOMO assumes sequential, industry-standard phase gates, while the Gantt chart leverages parallel task tracks (ML Engine, Simulation, and Dashboard run concurrently) and pre-existing tooling (scikit-learn, Next.js, River).
+    \item The average staff size of \textbf{$\approx$ 3 persons} is consistent with the actual team size of 4 members (the slight overestimate accounts for the fact that not all members work full-time on coding at every phase).
+    \item The function point count of \textbf{213 FP} reflects a moderately complex system with significant data processing, multiple ML models, real-time communication (WebSocket), and a full-featured frontend dashboard.
+\end{itemize}
+
+\end{document}
