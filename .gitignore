@@ -64,3 +64,12 @@ frontend/.next-figma-capture/
 # Multi-seed intermediate splits (regenerate with src/evaluation/run_experiments.py)
 data/multiseed/
 saved_models/arf-full/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
