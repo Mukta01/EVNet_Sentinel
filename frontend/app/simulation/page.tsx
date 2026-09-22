@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SimulationConsole from "@/components/simulation/SimulationConsole";
-import sim from "@/data/network-sim.json";
+import { promises as fs } from "fs";
+import path from "path";
 
 export const metadata: Metadata = {
   title: "Attack simulation — EVNet Sentinel",
@@ -10,7 +11,10 @@ export const metadata: Metadata = {
     "Launch a real attack class across the CICEVSE2024 charging-station testbed and watch a detector call it, packet by packet.",
 };
 
-export default function SimulationPage() {
+export default async function SimulationPage() {
+  const simRaw = await fs.readFile(path.join(process.cwd(), "data", "network-sim.json"), "utf8");
+  const sim = JSON.parse(simRaw);
+
   return (
     <main className="dashboard-surface min-h-screen bg-[#020617]">
       <Navbar />
