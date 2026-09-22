@@ -1,0 +1,578 @@
+% ============================================================================
+%  EVNet Sentinel — Findings
+%
+%  The single source of prose for the research write-up. Every number here is
+%  reproduced by a named script in the repository; the command is given beside
+%  each table so a reviewer can regenerate it rather than trust it.
+%
+%  Build:  pdflatex EVNet_Sentinel_Findings.tex   (run twice for references)
+% ============================================================================
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+% ---- optional packages -----------------------------------------------------
+% BasicTeX ships without enumitem and tcolorbox, and installing them needs
+% sudo. The document degrades to plain lists and framed boxes when they are
+% absent, so it compiles on a minimal install as well as on Overleaf.
+\newif\ifhasenumitem
+\IfFileExists{enumitem.sty}{\usepackage{enumitem}\hasenumitemtrue}{\hasenumitemfalse}
+\newif\ifhastcb
+\IfFileExists{tcolorbox.sty}{\usepackage{tcolorbox}\hastcbtrue}{\hastcbfalse}
+\usepackage{caption}
+\usepackage{amssymb}
+
+% ---- shared palette with the other project documents ----------------------
+\definecolor{primary}{HTML}{1E40AF}
+\definecolor{secondary}{HTML}{0D9488}
+\definecolor{darkgray}{HTML}{374151}
+\definecolor{lightbg}{HTML}{F8FAFC}
+\definecolor{alertred}{HTML}{B91C1C}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=secondary,
+    citecolor=primary,
+    pdftitle={EVNet Sentinel --- Findings},
+    pdfauthor={EVNet Sentinel Team}
+}
+
+\ifhasenumitem
+  \newenvironment{tightitem}%
+    {\begin{itemize}[leftmargin=1.4em, itemsep=0.3em]}{\end{itemize}}
+  \newenvironment{tightenum}%
+    {\begin{enumerate}[leftmargin=1.6em, itemsep=0.3em]}{\end{enumerate}}
+\else
+  \newenvironment{tightitem}{\begin{itemize}}{\end{itemize}}
+  \newenvironment{tightenum}{\begin{enumerate}}{\end{enumerate}}
+\fi
+
+\ifhastcb
+  \newtcolorbox{finding}[1]{
+      colback=lightbg, colframe=primary, fonttitle=\bfseries,
+      title={#1}, breakable, boxrule=0.8pt, arc=2pt
+  }
+  \newtcolorbox{caution}[1]{
+      colback=white, colframe=alertred, fonttitle=\bfseries,
+      title={#1}, breakable, boxrule=0.8pt, arc=2pt
+  }
+\else
+  % Fallback: a ruled block with a coloured heading. Plainer, same information.
+  \newenvironment{finding}[1]
+    {\par\medskip\noindent\textcolor{primary}{\rule{\textwidth}{1pt}}\par\nobreak
+     \smallskip\noindent\textbf{\textcolor{primary}{#1}}\par\nobreak\smallskip\itshape}
+    {\par\smallskip\noindent\textcolor{primary}{\rule{\textwidth}{1pt}}\par\medskip}
+  \newenvironment{caution}[1]
+    {\par\medskip\noindent\textcolor{alertred}{\rule{\textwidth}{1pt}}\par\nobreak
+     \smallskip\noindent\textbf{\textcolor{alertred}{#1}}\par\nobreak\smallskip\itshape}
+    {\par\smallskip\noindent\textcolor{alertred}{\rule{\textwidth}{1pt}}\par\medskip}
+\fi
+
+\newcommand{\repro}[1]{\par\smallskip{\footnotesize\textcolor{darkgray}{%
+    \textbf{Reproduce:} \texttt{#1}}}\par}
+\newcommand{\col}[1]{\texttt{\small #1}}
+
+\title{\textbf{EVNet Sentinel}\\[0.3em]
+       \large Leakage-Corrected Intrusion Detection on CICEVSE2024}
+\author{EVNet Sentinel Team}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+% ===========================================================================
+\begin{abstract}
+\noindent
+We reproduce the online intrusion-detection method of Makhmudov et al.\ (2025)
+on the CICEVSE2024 electric-vehicle charging dataset and find that its reported
+multiclass accuracy is an artifact of \emph{capture-session timestamp leakage}.
+A decision tree given the single column \col{bidirectional\_first\_seen\_ms} and
+nothing else recovers the 15-class label at $0.9976$, exceeding the published
+$0.9840$. The reference preprocessing compounds the problem by discarding
+\col{dst\_port} --- the feature that legitimately identifies a port scan --- while
+retaining the timestamp that identifies it only by recording time. Removing both
+fingerprints collapses $1{,}724{,}504$ reconnaissance flows to $6{,}821$.
+
+With the leak removed, flow-level features separate volumetric denial-of-service
+families near-perfectly (mean $F_1 = 1.000$, zero variance across seeds) but
+cannot distinguish \texttt{nmap} reconnaissance modes (mean $F_1 = 0.183$), and
+the two groups carry comparable support --- so the gap is a property of the data
+rather than of model capacity. Separately, prequential accuracy in capture order
+is inflated a further 44 points by label autocorrelation, and 42 of 43 detected
+concept-drift events coincide with the seams where packet captures were
+concatenated.
+\end{abstract}
+
+% ===========================================================================
+\section{Dataset and Pipeline}
+
+CICEVSE2024 is access-restricted and carries no public version string, so the
+capture set is pinned by fingerprint rather than by version.
+
+\begin{table}[h]
+\centering
+\caption{Dataset provenance.}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Property} & \textbf{Value} \\
+\midrule
+Source            & CICEVSE2024, Canadian Institute for Cybersecurity (network traffic subset) \\
+Capture files     & 59 \\
+Raw flows         & 2{,}744{,}700 \\
+Classes           & 15 (14 attack types + benign) \\
+Aggregate SHA-256 & \texttt{\footnotesize be68ff18bbb86f217c7c0852c988f1fa4503b79bbda11c89960cf2700b63ea07} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\repro{python3 src/reproduction/dataset\_manifest.py --raw-dir data/raw}
+
+\begin{table}[h]
+\centering
+\caption{Preprocessing stages, \texttt{--feature-set extended}.}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Stage} & \textbf{Rows} & \textbf{Columns} \\
+\midrule
+59 capture CSVs concatenated, labelled from filename      & 2{,}744{,}700 & 86 + label \\
+After identifier, sparse, timestamp and \col{src\_port} drops & 2{,}744{,}700 & 65 \\
+After deduplication (\texttt{--dedup global})              & \textbf{1{,}198{,}151} & 65 \\
+Feature matrix (metadata and label separated)              & 1{,}198{,}151 & \textbf{60} \\
+Train / validation / test (70/15/15)                       & 838{,}705 / 179{,}723 / 179{,}723 & 60 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\repro{make data-process}
+
+\medskip
+\noindent
+Labels are derived from the capture filename inside \col{preprocess.py}, porting
+the reference implementation's 19-alias map. An earlier revision of this project
+depended on a pre-labelled private archive and could not rebuild the dataset from
+the public download; that step is now in version control.
+
+% ===========================================================================
+\section{Finding 1: The label is recoverable from a single timestamp column}
+
+The reference preprocessing retains six absolute epoch-millisecond columns:
+\col{bidirectional\_first\_seen\_ms}, \col{bidirectional\_last\_seen\_ms},
+\col{src2dst\_first\_seen\_ms}, \col{src2dst\_last\_seen\_ms},
+\col{dst2src\_first\_seen\_ms} and \col{dst2src\_last\_seen\_ms}.
+
+Each attack in CICEVSE2024 was captured in its own packet capture at its own
+wall-clock time, so these columns constitute a capture-session identifier rather
+than a property of the traffic. None of the three drop stages in the reference
+notebook removes them.
+
+\begin{table}[h]
+\centering
+\caption{What a single feature recovers on its own. Decision tree,
+         \texttt{max\_depth=25}, 15-class target, 3-fold cross-validation.}
+\begin{tabular}{llr}
+\toprule
+\textbf{Feature} & \textbf{Nature} & \textbf{Accuracy} \\
+\midrule
+\col{bidirectional\_first\_seen\_ms} & capture fingerprint         & \textbf{0.9976} \\
+\col{src\_port}                      & partial capture fingerprint & 0.4028 \\
+\col{dst\_port}                      & legitimate signal           & 0.2917 \\
+\midrule
+\multicolumn{2}{l}{\emph{Published multiclass accuracy (Makhmudov et al.)}} & \emph{0.9840} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{finding}{A single-column decision stump exceeds the published result}
+Replaying the reference preprocessing verbatim yields $1{,}277{,}520$ rows
+against its reported ``$\sim$1.2M'', confirming the reconstruction is faithful.
+On that feature set, a tree using \col{bidirectional\_first\_seen\_ms} alone
+scores $0.9976$ --- higher than the $0.9840$ the paper reports for its full
+model. In our own pre-correction pipeline, $39.8\%$ of the Random Forest's total
+feature importance sat on those six columns.
+\end{finding}
+\repro{python3 src/reproduction/replay\_reference\_preprocessing.py --audit}
+
+% ===========================================================================
+\section{Finding 2: Reconnaissance rests on two columns}
+
+Reconnaissance flows are distinguished almost entirely by \col{dst\_port} and the
+capture timestamp. Holding the reference feature set fixed and toggling only
+those two, then deduplicating as the reference does:
+
+\begin{table}[h]
+\centering
+\caption{Ablation over the two fingerprints. Flood classes are unaffected
+         throughout ($1{,}001{,}106 \rightarrow 970{,}079$, $96.9\%$ retained).}
+\begin{tabular}{llrrr}
+\toprule
+\textbf{Timestamps} & \textbf{\col{dst\_port}} & \textbf{Total rows} & \textbf{Recon.\ flows} & \textbf{\% of max} \\
+\midrule
+kept    & kept    & 2{,}728{,}799 & 1{,}724{,}504 & 100.0\,\% \\
+\textbf{kept} & \textbf{dropped} & \textbf{1{,}277{,}520} & \textbf{273{,}932} & \textbf{15.9\,\%} \\
+dropped & kept    & 1{,}198{,}143 & 194{,}737 & 11.3\,\% \\
+dropped & dropped & 977{,}862 & \textbf{6{,}821} & \textbf{0.4\,\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+\repro{python3 src/reproduction/ablate\_fingerprints.py}
+
+\noindent
+The emphasised row is the published preprocessing. Each column is independently
+near-sufficient, so neither alone explains the collapse --- but the two are not
+equivalent in kind:
+
+\begin{tightitem}
+  \item \col{dst\_port} is a \textbf{legitimate} discriminator. A port scan is
+        \emph{defined} by sweeping destination ports; that is the behaviour, not
+        an artifact.
+  \item The capture timestamp is \textbf{not}. It identifies which recording the
+        flow came from.
+\end{tightitem}
+
+\begin{finding}{The reference pipeline discards the real signal and keeps the artifact}
+By dropping \col{dst\_port} while retaining the timestamps, the reference
+preprocessing removes the feature that legitimately identifies reconnaissance and
+keeps the one that identifies it only by accident of recording time. Its
+$273{,}932$ reconnaissance flows are therefore separable by \emph{when they were
+captured} rather than by what they did --- which is precisely why a stump on
+\col{bidirectional\_first\_seen\_ms} reaches $0.9976$.
+\end{finding}
+
+\begin{caution}{Correction to an earlier revision}
+An earlier version of this document attributed the reconnaissance collapse to the
+timestamps alone. The ablation above shows that dropping \col{dst\_port} accounts
+for the larger share. The finding stands; the mechanism as previously stated did
+not.
+\end{caution}
+
+% ===========================================================================
+\section{Finding 3: Stream order, and what the drift detector is detecting}
+
+\subsection{Label autocorrelation}
+
+Evaluated prequentially on an identical 25{,}000-instance slice with leak-free
+features, varying only the order in which the stream arrives:
+
+\begin{table}[h]
+\centering
+\caption{Stream ordering, controlled. \texttt{file-then-shuffle} uses the same
+         instances and the same class distribution as \texttt{file}, differing
+         only in order.}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Order} & \textbf{Accuracy} & \textbf{Weighted $F_1$} & \textbf{Drift events} \\
+\midrule
+Capture order (\texttt{file})           & \textbf{0.9976} & 0.9975 & 3 \\
+Shuffled, controlled (\texttt{file-then-shuffle}) & \textbf{0.5508} & 0.5318 & 1 \\
+Shuffled, whole stream                  & 0.5029 & 0.4909 & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+In capture order, consecutive flows share a label, so a prequential learner
+scores near-perfectly by predicting ``the same as recently''. This is an
+inflation mechanism entirely separate from the timestamp leak of Finding 1.
+
+\subsection{Drift events are capture-file seams}
+
+CICEVSE2024 is 59 packet captures concatenated end to end, and each join is an
+abrupt distribution change by construction. Running ADWIN prequentially over the
+full $1{,}921{,}182$-instance stream in capture order:
+
+\begin{table}[h]
+\centering
+\caption{Alignment of detected drift events with capture-file boundaries,
+         against a null model of 2{,}000 random placements.}
+\begin{tabular}{lr}
+\toprule
+\textbf{Quantity} & \textbf{Value} \\
+\midrule
+Drift events detected                                & 43 \\
+Events within 100 instances of a capture boundary    & \textbf{42} \\
+Median distance to the nearest boundary              & 22 instances \\
+Expected under random placement                      & $2.2 \pm 1.5$ \\
+Empirical significance                               & $p < 0.0005$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{finding}{The detector is finding the seams, not the traffic}
+$42$ of $43$ drift events land within 100 instances of a point where one
+recording was stitched to the next, against $2.2 \pm 1.5$ expected by chance.
+These events are not evidence that charging-station traffic evolves; they mark
+dataset assembly. This matters because the adaptivity of the online method is
+justified in the original work by the presence of concept drift.
+\end{finding}
+
+% ===========================================================================
+\section{Finding 4: \col{src\_port} is a residual fingerprint}
+
+Ephemeral source ports are allocated near-sequentially by the operating system,
+so within a single capture they occupy a contiguous band --- a lower-resolution
+version of the timestamp fingerprint.
+
+\begin{table}[h]
+\centering
+\caption{Controlled measurement: identical rows, identical split, column removed
+         at fit time so deduplication cannot confound the comparison.}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Model} & \textbf{With \col{src\_port}} & \textbf{Without} & \textbf{$\Delta$} \\
+\midrule
+Random Forest (depth 15, 100 trees) & 0.5894 & 0.5138 & $-0.0756$ \\
+Decision Tree (depth 20)            & 0.6834 & \textbf{0.5135} & $\mathbf{-0.1699}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+\repro{python3 src/reproduction/srcport\_control.py}
+
+\noindent
+The deeper model loses more than twice as much, which is the signature of a
+memorisable fingerprint rather than a genuine feature: additional depth buys
+finer \col{src\_port} bands and nothing else. It also resolves an anomaly in the
+first round of corrected results, where an unrestricted Decision Tree appeared to
+outperform the ensemble. Once \col{src\_port} is removed the two converge
+($0.5138$ versus $0.5135$), so that entire advantage was memorisation.
+
+\col{dst\_port} is retained: unlike \col{src\_port} it is the behaviour that
+defines a port scan.
+
+% ===========================================================================
+\section{Corrected Results}
+
+\begin{caution}{Macro-$F_1$ is the headline, not accuracy}
+With \texttt{ICMP\_Fragmentation} at 28 flows and \texttt{Benign} at 81, accuracy
+tracks the volumetric floods and compresses genuinely different models into the
+same number. The corrected Random Forest scores $0.8679$ accuracy against
+$0.5582$ macro-$F_1$ on identical predictions.
+\end{caution}
+
+\begin{table}[h]
+\centering
+\caption{Multiclass results, mean $\pm$ standard deviation over seeds
+         42 / 1337 / 2024. Each seed re-runs the train/test split \emph{and}
+         model initialisation.}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Model} & \textbf{Macro $F_1$} & \textbf{Weighted $F_1$} & \textbf{Accuracy} & \textbf{Fit (s)} \\
+\midrule
+Random Forest       & \textbf{0.5582 $\pm$ 0.0080} & 0.8654 & 0.8679 & 8.6 \\
+Decision Tree       & 0.5568 $\pm$ 0.0095 & 0.8677 & 0.8681 & 3.5 \\
+Logistic Regression & 0.4355 $\pm$ 0.0172 & 0.8529 & 0.8626 & 71.7 \\
+SVM (SGD, hinge)    & 0.4110 $\pm$ 0.0165 & 0.8489 & 0.8623 & 36.3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\repro{python3 src/evaluation/run\_experiments.py --raw-dir data/raw --feature-set extended}
+
+\noindent
+Random Forest and Decision Tree overlap at one standard deviation, independently
+confirming Finding 4: their earlier apparent gap was \col{src\_port}
+memorisation, not modelling.
+
+\subsection{The central result, per class}
+
+\begin{table}[h]
+\centering
+\caption{Per-class $F_1$, mean over three seeds. ``Support'' is the total flow
+         count across all partitions after deduplication.}
+\small
+\begin{tabular}{llrrrrr}
+\toprule
+\textbf{Class} & \textbf{Group} & \textbf{Support} & \textbf{RF} & \textbf{DT} & \textbf{LogReg} & \textbf{SVM} \\
+\midrule
+PSHACK Flood        & Vol. & 195{,}952 & 1.000 & 1.000 & 1.000 & 1.000 \\
+SynonymousIP Flood  & Vol. & 256{,}739 & 1.000 & 1.000 & 0.991 & 0.992 \\
+TCP Flood           & Vol. & 256{,}297 & 1.000 & 1.000 & 1.000 & 1.000 \\
+SYN Flood           & Vol. & 259{,}484 & 1.000 & 1.000 & 0.991 & 0.992 \\
+UDP Flood           & Vol. & 32{,}072  & 0.999 & 0.999 & 1.000 & 1.000 \\
+\midrule
+TCP Port Scan       & Rec. & 35{,}123 & 0.265 & 0.202 & 0.278 & 0.100 \\
+OS Fingerprinting   & Rec. & 27{,}702 & 0.223 & 0.227 & 0.039 & 0.022 \\
+Vulnerability Scan  & Rec. & 39{,}002 & 0.204 & 0.230 & 0.215 & 0.201 \\
+Service Version Det.& Rec. & 30{,}338 & 0.156 & 0.174 & 0.076 & 0.027 \\
+Aggressive Scan     & Rec. & 27{,}815 & 0.145 & 0.179 & 0.081 & 0.041 \\
+SYN Stealth Scan    & Rec. & 34{,}765 & 0.105 & 0.175 & 0.042 & 0.183 \\
+\midrule
+Benign              & Oth. & 81    & 0.986 & 0.941 & 0.225 & 0.192 \\
+ICMP Flood          & Oth. & 32    & 0.660 & 0.638 & 0.216 & 0.178 \\
+ICMP Fragmentation  & Oth. & 28    & 0.439 & 0.422 & 0.095 & 0.094 \\
+Slowloris Scan      & Oth. & 2{,}721 & 0.191 & 0.166 & 0.283 & 0.145 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{finding}{The gap is a property of the data, not of model capacity}
+Volumetric floods reach mean $F_1 = 1.000$ with \emph{zero variance across
+seeds}; reconnaissance sits at $0.183$. The obvious objection --- that
+reconnaissance simply has fewer examples --- does not hold: \texttt{UDP\_Flood}
+has $32{,}072$ flows and scores $0.999$, while \texttt{TCP\_Port\_Scan} has
+$35{,}123$ flows and scores $0.265$. Comparable support, opposite outcomes.
+
+All six reconnaissance classes are \texttt{nmap} modes, and \texttt{-A} is
+literally \texttt{-sV -O -sC --traceroute}, a superset of two of the others. At
+flow level they emit near-identical single-probe flows and \emph{should} be
+confusable. This establishes a realistic ceiling for flow-based EVCS intrusion
+detection rather than a failure of the models.
+\end{finding}
+
+\noindent
+The four classes in the ``Other'' group are excluded from both group means and
+reported separately: three have fewer than 100 flows in the entire dataset, and
+Slowloris is a low-rate attack whose flows resemble neither group.
+
+\subsection{Effect of removing the leak}
+
+\begin{table}[h]
+\centering
+\caption{Macro-$F_1$ before and after removing the six timestamp columns,
+         like-for-like models.}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Model} & \textbf{Leaked} & \textbf{Corrected} & \textbf{$\Delta$} \\
+\midrule
+Random Forest       & 0.9547 & 0.5894 & $\mathbf{-0.3653}$ \\
+Logistic Regression & 0.4622 & 0.3308 & $-0.1314$ \\
+SVM (SGD, hinge)    & 0.2829 & 0.3084 & $+0.0255$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent
+The linear models barely move, because a hyperplane cannot exploit a timestamp
+axis the way a tree can. That --- not non-linearity --- is what the original
+$0.9994$-versus-$0.3665$ gap was measuring.
+
+% ===========================================================================
+\section{Reproducibility}
+
+\begin{table}[h]
+\centering
+\caption{Environment in which the reported numbers were produced.}
+\begin{tabular}{ll}
+\toprule
+\textbf{Component} & \textbf{Value} \\
+\midrule
+CPU               & Apple M5 (10 logical cores) \\
+Memory            & 16 GB \\
+Python            & 3.13.12 \\
+NumPy             & 2.4.4 \\
+pandas            & 3.0.2 \\
+scikit-learn      & 1.8.0 \\
+River             & 0.26.1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent
+\texttt{requirements.txt} pins exact versions. River's API changed materially
+around 0.21, and scikit-learn's \texttt{class\_weight} handling and
+tree-splitting behaviour have shifted across minor releases, so unpinned versions
+make these numbers unreproducible.
+
+Model artifacts are deliberately not version-controlled: \col{src/api/main.py}
+loads every \texttt{.pkl} in \texttt{saved\_models/} into its serving registry,
+so a stale committed model is served silently as though it were current. Until
+this was corrected, the models in that directory were trained on leaked features.
+
+% ===========================================================================
+\section{Limitations and Future Work}
+
+\subsection{Acknowledged limitations}
+
+\begin{tightitem}
+  \item \textbf{The benign class is effectively absent.} The network-traffic
+        subset contains 81 benign flows in total. A binary attack-versus-benign
+        task is therefore answered by predicting ``attack'' unconditionally, and
+        was removed from this work. Reported binary accuracies on this dataset,
+        including the original $0.9913$, should be read with that in mind.
+  \item \textbf{Grouped and temporal splits are implemented but not used for
+        headline numbers.} \col{preprocess.py} supports holding out whole
+        captures and splitting by time; the reported results use a random split
+        for comparability with prior work.
+  \item \textbf{Host-events and power-consumption domains are unexplored.}
+        CICEVSE2024 also provides hardware performance counters and power traces,
+        which may separate the reconnaissance classes that flow-level features
+        cannot.
+\end{tightitem}
+
+\subsection{Planned: a sequence-model comparator}
+
+A recurrent comparator (LSTM or GRU) is a natural next step, and would test
+whether the reconnaissance ceiling established here is a limit of \emph{flow-level
+features} or of \emph{non-sequential models}. Two design constraints follow
+directly from the findings above and must be respected, or the comparator will
+reproduce the artifacts this work set out to remove.
+
+\begin{caution}{A sequence model over an ordered stream will re-introduce Finding 3}
+Training an LSTM on flows in capture order hands it exactly the label
+autocorrelation that inflates prequential accuracy by 44 points. Consecutive
+flows share a label, so a model with memory can reach near-perfect accuracy by
+learning ``predict what came recently'' --- and will appear to beat every static
+model here. Any sequence model must be evaluated against the
+\texttt{file-then-shuffle} control, and its reported gain measured relative to a
+trivial ``repeat the last label'' baseline.
+\end{caution}
+
+\noindent
+The defensible formulations are:
+
+\begin{tightenum}
+  \item \textbf{Intra-flow packet sequences.} Model the packet-level sequence
+        \emph{within} a single flow rather than a sequence of flows. This is the
+        formulation that could genuinely beat the ceiling, because it accesses
+        structure that NFStream's aggregation discards --- the ordering of packet
+        sizes and inter-arrival times that might separate one \texttt{nmap} mode
+        from another. It requires re-extracting from the \texttt{.pcap} files
+        rather than using the provided flow CSVs.
+  \item \textbf{Grouped-split sequences of flows.} Keep flow sequences, but hold
+        out whole captures (\texttt{--split grouped --dedup per-capture}) so the
+        model cannot exploit position within a capture it has already seen.
+        Report against the autocorrelation baseline.
+\end{tightenum}
+
+\noindent
+Formulation 1 is the one worth pursuing: it asks a question the current results
+cannot answer. Formulation 2 mainly measures how well a model memorises capture
+structure, which this work has already shown to be the dominant confound in this
+dataset.
+
+% ===========================================================================
+\section*{Artifact Index}
+\addcontentsline{toc}{section}{Artifact Index}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Script} & \textbf{Produces} \\
+\midrule
+\col{src/data\_prep/preprocess.py}                       & The corrected dataset; feature-set, split, dedup and scaling options \\
+\col{src/evaluation/run\_experiments.py}                 & Every headline number, multi-seed \\
+\col{src/reproduction/replay\_reference\_preprocessing.py} & Faithful replay of the reference pipeline, with leak audit \\
+\col{src/reproduction/ablate\_fingerprints.py}           & The Finding 2 ablation \\
+\col{src/reproduction/srcport\_control.py}               & The Finding 4 controlled measurement \\
+\col{src/reproduction/dataset\_manifest.py}              & Dataset fingerprint \\
+\col{src/models/arfadwin/train\_arfadwin.py}             & Prequential ARF + ADWIN, drift log with capture provenance \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vfill
+\noindent\rule{\textwidth}{0.4pt}\\
+{\footnotesize\textcolor{darkgray}%
+{Reference implementation:
+\url{https://github.com/TATU-hacker/Intrusion_Detection_on_Electric_Vehicle_Charging_Systems}\\
+Makhmudov, F., Kilichev, D., Giyosov, U., Akhmedov, F. (2025).
+\emph{Online Machine Learning for Intrusion Detection in Electric Vehicle
+Charging Systems.} Mathematics 13(5), 712. DOI: 10.3390/math13050712}}
+
+\end{document}
