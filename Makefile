@@ -1,4 +1,4 @@
-.PHONY: data-fetch data-process data data-reference data-grouped replay-reference attack-test insights setup test run help
+.PHONY: data-fetch data-process data data-reference data-grouped replay-reference attack-test insights figures setup test run help
 
 PYTHON ?= python3
 RAW_DIR ?= data/raw
@@ -14,6 +14,7 @@ help:
 	@echo "  make replay-reference  - Replay the upstream notebook verbatim and audit the timestamp leak"
 	@echo "  make attack-test       - Test every attack type against every model; fails on regression"
 	@echo "  make insights          - attack-test, then rebuild the dashboard's insights bundle"
+	@echo "  make figures           - rebuild paper.json and every figure in docs/figures"
 	@echo "  make setup             - Install requirements"
 	@echo "  make test              - Run pytest"
 	@echo "  make run               - Run FastAPI backend locally"
@@ -51,6 +52,12 @@ attack-test:
 
 insights: attack-test
 	$(PYTHON) src/evaluation/export_insights.py
+
+# Needs saved_models/multiseed and data/multiseed (run_experiments.py) plus the
+# ARF drift logs; the figures then read the same JSON as the dashboard.
+figures:
+	$(PYTHON) src/evaluation/export_paper_data.py
+	$(PYTHON) src/evaluation/make_paper_figures.py
 
 replay-reference:
 	$(PYTHON) src/reproduction/replay_reference_preprocessing.py --audit
