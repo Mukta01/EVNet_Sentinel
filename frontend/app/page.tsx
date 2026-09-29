@@ -8,7 +8,7 @@ import TechStack from "@/components/TechStack";
 import Team from "@/components/Team";
 import Roadmap from "@/components/Roadmap";
 import Footer from "@/components/Footer";
-import type { DemoAttack } from "@/components/HeroAttackDemo";
+import type { DemoAttack } from "@/components/hero/BeatTheSentinel";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -20,9 +20,8 @@ const DEMO: [string, string, DemoAttack["category"]][] = [
   ["UDP_Flood", "UDP Flood", "dos"],
   ["Slowloris_Scan", "Slowloris", "dos"],
   ["TCP_Port_Scan", "Port Scan", "recon"],
-  ["OS_Fingerprinting", "OS Fingerprinting", "recon"],
+  ["SYN_Stealth_Scan", "Stealth Scan", "recon"],
   ["Vulnerability_Scan", "Vulnerability Scan", "recon"],
-  ["Benign", "Normal charging", "benign"],
 ];
 const VOLUMETRIC = new Set(["SYN_Flood", "TCP_Flood", "UDP_Flood", "SynonymousIP_Flood", "PSHACK_Flood"]);
 
@@ -34,6 +33,7 @@ async function heroData() {
   const sim = await read("network-sim.json");
   const insights = await read("insights.json");
   const findings = await read("findings.json");
+  const tuning = await read("hero.json");
 
   const rf = String(sim.models.indexOf("RandomForest"));
   const byId = new Map<number, any>(sim.flows.map((f: any) => [f.id, f]));
@@ -57,15 +57,15 @@ async function heroData() {
     { value: pct(1 - benign.models.RandomForest.exact), label: "False alarms", sub: "Random Forest" },
     { value: `${(findings.dataset.rows_after_dedup / 1e6).toFixed(1)}M`, label: "Flows analysed", sub: `${findings.dataset.n_classes} traffic classes` },
   ];
-  return { attacks, stats };
+  return { attacks, tuning, stats };
 }
 
 export default async function Home() {
-  const { attacks, stats } = await heroData();
+  const { attacks, tuning, stats } = await heroData();
   return (
     <main className="min-h-screen bg-[#020617]">
       <Navbar />
-      <Hero attacks={attacks} stats={stats} />
+      <Hero attacks={attacks} tuning={tuning} stats={stats} />
       <Features />
       <ArchitectureStory />
       <TechStack />

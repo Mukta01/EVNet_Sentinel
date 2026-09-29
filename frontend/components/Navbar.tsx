@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShieldCheck, Menu, X } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -61,6 +62,7 @@ export default function Navbar() {
           >
             Launch Dashboard
           </Link>
+          <ThemeToggle className="ml-4" />
         </div>
 
         {/* Mobile Toggle */}
@@ -93,6 +95,10 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              <div className="flex items-center justify-between px-4 py-3">
+                <span className="text-sm text-gray-300">Dark theme</span>
+                <ThemeToggle />
+              </div>
             </div>
           </motion.div>
         )}
