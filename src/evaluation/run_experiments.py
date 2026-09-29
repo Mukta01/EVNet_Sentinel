@@ -35,11 +35,12 @@ import subprocess
 import sys
 import time
 
+import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import SGDClassifier
-from sklearn.metrics import accuracy_score, classification_report, f1_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils.class_weight import compute_class_weight
 
@@ -55,6 +56,11 @@ MODELS = {
     "LogisticRegression": lambda cw, seed: SGDClassifier(
         loss="log_loss", class_weight=cw, random_state=seed),
 }
+
+
+# File names match the per-model scripts so either set can be loaded the same way.
+MODEL_SLUG = {"RandomForest": "rf", "DecisionTree": "dt",
+              "SVM": "svm", "LogisticRegression": "logreg"}
 
 
 def environment_report():
@@ -86,7 +92,7 @@ def environment_report():
     }
 
 
-def run_seed(raw_dir, feature_set, dedup, split, seed, work_dir):
+def run_seed(raw_dir, feature_set, dedup, split, seed, work_dir, models_out=None):
     """Preprocess with this seed, then train and score every model."""
     from src.data_prep.preprocess import (clean_and_reduce_features, engineer_features,
                                           load_network_traffic_data, split_and_export_data)
@@ -130,6 +136,17 @@ def run_seed(raw_dir, feature_set, dedup, split, seed, work_dir):
         predict_seconds = time.perf_counter() - t0
 
         per_class = classification_report(y_test, predicted, output_dict=True, zero_division=0)
+        # Kept so per-attack analysis can say what each attack is mistaken for,
+        # and whether a miss still lands in the right attack family.
+        labels = sorted(set(y_test) | set(predicted))
+        matrix = confusion_matrix(y_test, predicted, labels=labels)
+        if models_out:
+            # The attack harness and the dashboard replay load these, so every
+            # per-attack number comes from the same models as the headline table.
+            seed_dir = os.path.join(models_out, f"seed-{seed}")
+            os.makedirs(seed_dir, exist_ok=True)
+            joblib.dump(model, os.path.join(seed_dir, f"{MODEL_SLUG[name]}_model_multiclass.pkl"))
+
         results[name] = {
             "macro_f1": f1_score(y_test, predicted, average="macro", zero_division=0),
             "weighted_f1": f1_score(y_test, predicted, average="weighted", zero_division=0),
@@ -139,6 +156,7 @@ def run_seed(raw_dir, feature_set, dedup, split, seed, work_dir):
             "per_class_f1": {k: v["f1-score"] for k, v in per_class.items()
                              if isinstance(v, dict) and k not in
                              ("macro avg", "weighted avg", "accuracy")},
+            "confusion": {"labels": labels, "matrix": matrix.tolist()},
         }
         print(f"  {name:<20} macro-F1 {results[name]['macro_f1']:.4f}  "
               f"acc {results[name]['accuracy']:.4f}  fit {fit_seconds:6.1f}s")
@@ -236,6 +254,8 @@ def main():
     parser.add_argument("--seeds", type=int, nargs="+", default=[42, 1337, 2024])
     parser.add_argument("--output-dir", dest="output_dir", default="evaluation_results/multiseed")
     parser.add_argument("--work-dir", dest="work_dir", default="data/multiseed")
+    parser.add_argument("--models-out", dest="models_out", default="saved_models/multiseed",
+                        help="save each seed's trained models here (the attack harness reads them)")
     args = parser.parse_args()
 
     environment = environment_report()
@@ -246,7 +266,7 @@ def main():
     started = time.perf_counter()
     for seed in args.seeds:
         per_seed.append(run_seed(args.raw_dir, args.feature_set, args.dedup,
-                                 args.split, seed, args.work_dir))
+                                 args.split, seed, args.work_dir, args.models_out))
     print(f"\nAll seeds finished in {(time.perf_counter() - started) / 60:.1f} min")
 
     aggregate(per_seed, args.output_dir, args.feature_set, args.seeds, environment)
