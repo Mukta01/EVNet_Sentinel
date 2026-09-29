@@ -5,6 +5,7 @@ import { Pause, Play, Radio, Square } from "lucide-react";
 import TopologyCanvas, { groupTone, type Packet } from "./TopologyCanvas";
 import { LAUNCH_POINTS, nodeById, pathForFlow, type NodeId } from "./topology";
 import { FAMILY, MODEL_LABEL, prettyClass } from "../dashboard/theme";
+import ResponsePanel, { type ResponseMap } from "./ResponsePanel";
 
 type Verdict = {
   label: string; group: string; correct: boolean;
@@ -39,17 +40,28 @@ type Sim = {
   flows: Flow[];
 };
 
-const GROUP_ORDER = ["volumetric", "recon", "other"] as const;
+/**
+ * The console is an operator view, so it speaks in response categories — what
+ * you would act on — rather than the analytic grouping used on the findings
+ * page. Every flood, including the low-rate ones, is denial of service.
+ */
+const categoryOf = (group: string) =>
+  group === "recon" ? "recon" : group === "benign" ? "benign" : "dos";
+const CATEGORY_ORDER = ["dos", "recon"] as const;
 const GROUP_TITLE: Record<string, string> = {
-  volumetric: "Volumetric flood",
+  dos: "Denial of service",
   recon: "Reconnaissance",
-  other: "Low-rate or sparse",
-  benign: "Benign",
+  benign: "Normal traffic",
 };
 
 const EMIT_MS = { slow: 900, normal: 420, fast: 160 };
 
-export default function SimulationConsole({ sim }: { sim: Sim }) {
+export default function SimulationConsole({
+  sim, responses, roles, categorySeverity,
+}: {
+  sim: Sim; responses: ResponseMap; roles: Record<string, string>;
+  categorySeverity: Record<string, string[]>;
+}) {
   const byId = useMemo(() => new Map(sim.flows.map((f) => [f.id, f])), [sim.flows]);
   const modelIndex = useMemo(
     () => Object.fromEntries(sim.models.map((m, i) => [m, String(i)])),
@@ -176,8 +188,8 @@ export default function SimulationConsole({ sim }: { sim: Sim }) {
             onChange={(e) => { setAttackClass(e.target.value); if (attacking) reset(); }}
             className="mt-1.5 w-full rounded-md border border-white/10 bg-[#0B1220] px-2.5 py-2 text-[13px] text-slate-100 focus-visible:outline-2 focus-visible:outline-emerald-400"
           >
-            {GROUP_ORDER.map((g) => {
-              const members = attackClasses.filter((c) => sim.groups[c] === g);
+            {CATEGORY_ORDER.map((g) => {
+              const members = attackClasses.filter((c) => categoryOf(sim.groups[c]) === g);
               if (!members.length) return null;
               return (
                 <optgroup key={g} label={`${GROUP_TITLE[g]} · ${members.length}`}>
@@ -294,6 +306,14 @@ export default function SimulationConsole({ sim }: { sim: Sim }) {
         )}
 
         <FlowInspector flow={current} model={model} spec={sim.featureSpec} verdictFor={verdictFor} />
+        <ResponsePanel
+          truth={current?.trueLabel ?? null}
+          predicted={current ? verdictFor(current, model)?.label ?? null : null}
+          model={model}
+          responses={responses}
+          roles={roles}
+          categorySeverity={categorySeverity}
+        />
       </section>
 
       {/* ── detector ───────────────────────────────────────── */}
@@ -351,7 +371,7 @@ export default function SimulationConsole({ sim }: { sim: Sim }) {
                       {!verdict.correct && (
                         <p className="mt-1 truncate font-mono text-[10.5px] text-rose-300/85">
                           called {prettyClass(verdict.label)}
-                          <span className="text-slate-600"> · {GROUP_TITLE[verdict.group] ?? verdict.group}</span>
+                          <span className="text-slate-600"> · {GROUP_TITLE[categoryOf(verdict.group)]}</span>
                         </p>
                       )}
                     </div>
@@ -376,17 +396,19 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 }
 
 function GroupChip({ group, tiny, className = "" }: { group: string; tiny?: boolean; className?: string }) {
-  const fam = group === "benign"
-    ? { dim: "rgba(56,189,248,0.16)", stroke: "#38BDF8" }
-    : FAMILY[(group as keyof typeof FAMILY)] ?? FAMILY.other;
+  const cat = categoryOf(group);
+  const tone =
+    cat === "benign" ? { dim: "rgba(56,189,248,0.16)", stroke: "#38BDF8" }
+    : cat === "recon" ? { dim: FAMILY.recon.dim, stroke: FAMILY.recon.stroke }
+    : { dim: "rgba(167,139,250,0.16)", stroke: "#C4B5FD" };
   return (
     <span
       className={`inline-block rounded px-1.5 py-0.5 font-medium uppercase tracking-wide ${
         tiny ? "mt-0.5 text-[9px]" : "text-[10px]"
       } ${className}`}
-      style={{ background: fam.dim, color: fam.stroke }}
+      style={{ background: tone.dim, color: tone.stroke }}
     >
-      {GROUP_TITLE[group] ?? group}
+      {GROUP_TITLE[cat]}
     </span>
   );
 }

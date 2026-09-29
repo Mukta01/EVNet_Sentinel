@@ -1,4 +1,4 @@
-.PHONY: data-fetch data-process data data-reference data-grouped replay-reference setup test run help
+.PHONY: data-fetch data-process data data-reference data-grouped replay-reference attack-test insights setup test run help
 
 PYTHON ?= python3
 RAW_DIR ?= data/raw
@@ -12,6 +12,8 @@ help:
 	@echo "  make data-reference    - Process using the reference feature set (drops ports, >80%-zeros rule)"
 	@echo "  make data-grouped      - Process with whole captures held out (per-capture dedup)"
 	@echo "  make replay-reference  - Replay the upstream notebook verbatim and audit the timestamp leak"
+	@echo "  make attack-test       - Test every attack type against every model; fails on regression"
+	@echo "  make insights          - attack-test, then rebuild the dashboard's insights bundle"
 	@echo "  make setup             - Install requirements"
 	@echo "  make test              - Run pytest"
 	@echo "  make run               - Run FastAPI backend locally"
@@ -42,6 +44,13 @@ data-reference:
 data-grouped:
 	$(PYTHON) src/data_prep/preprocess.py --raw_dir "$(RAW_DIR)" --output_dir "$(OUT_DIR)-grouped" \
 		--feature-set extended --split grouped --dedup per-capture
+
+# Draws fresh flows each run unless SEED is set: make attack-test SEED=42
+attack-test:
+	$(PYTHON) src/evaluation/attack_test_harness.py $(if $(SEED),--seed $(SEED),)
+
+insights: attack-test
+	$(PYTHON) src/evaluation/export_insights.py
 
 replay-reference:
 	$(PYTHON) src/reproduction/replay_reference_preprocessing.py --audit

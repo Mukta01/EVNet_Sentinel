@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import AttackInsights from "./AttackInsights";
 import ClassSeparation from "./ClassSeparation";
 import DriftAlignment from "./DriftAlignment";
 import FingerprintAblation from "./FingerprintAblation";
@@ -16,6 +17,7 @@ type Simulation = any;
 
 const TABS = [
   { id: "findings", label: "Findings" },
+  { id: "insights", label: "Attack insights" },
   { id: "replay", label: "Live inference" },
 ] as const;
 
@@ -26,9 +28,11 @@ const numberFormat = new Intl.NumberFormat("en-US");
 export default function DashboardShell({
   findings,
   simulation,
+  insights,
 }: {
   findings: Findings;
   simulation: Simulation;
+  insights: Findings;
 }) {
   const [tab, setTab] = useState<TabId>("findings");
 
@@ -101,7 +105,11 @@ export default function DashboardShell({
         </div>
       </nav>
 
-      {tab === "findings" ? (
+      {tab === "insights" ? (
+        <div className="pt-12">
+          <AttackInsights insights={insights} />
+        </div>
+      ) : tab === "findings" ? (
         <div className="space-y-20 pt-12">
           <ClassSeparation
             rows={findings.perClass as { class: string; group: Family; support: number; models: Record<string, { f1: number; std: number }> }[]}

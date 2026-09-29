@@ -152,6 +152,44 @@ def run_arf(unscaled_dir, positions, labels, warm_rows, seed):
     return verdicts
 
 
+def rescore_static(bundle_path, data_dir, models_dir):
+    """
+    Replace the static models' verdicts in an existing bundle, keeping ARF's.
+
+    The ARF pass takes several minutes because it must learn the stream in
+    order; the static models are a lookup. When the static models are retrained,
+    this brings their verdicts up to date without repeating the ARF pass, so the
+    console never shows verdicts from a different model than the one the attack
+    harness graded.
+    """
+    bundle = json.load(open(bundle_path))
+    X_test = pd.read_csv(os.path.join(data_dir, "X_test.csv"))
+    y_test = pd.read_csv(os.path.join(data_dir, "y_test.csv"))["Label_Multiclass"]
+    ids = [f["id"] for f in bundle["flows"]]
+    for f in bundle["flows"]:
+        if y_test.iloc[f["id"]] != f["trueLabel"]:
+            raise SystemExit(f"flow {f['id']}: split does not match the bundle -- wrong data dir")
+    sample = X_test.iloc[ids]
+    slot = {name: str(i) for i, name in enumerate(bundle["models"])}
+    for name, filename in MODEL_FILES.items():
+        path = os.path.join(models_dir, filename)
+        if name not in slot or not os.path.exists(path):
+            continue
+        model = joblib.load(path)
+        preds = model.predict(sample)
+        conf = confidence_for(model, sample)
+        for f, pred, c in zip(bundle["flows"], preds, conf):
+            f["p"][slot[name]] = [pred, group_of(pred), int(pred == f["trueLabel"]),
+                                  None if np.isnan(c) else round(float(c), 3)]
+        hits = sum(1 for f in bundle["flows"] if f["p"][slot[name]][2])
+        print(f"    {name:<20} {hits}/{len(ids)} correct")
+    bundle["generated"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    bundle["staticModelsFrom"] = models_dir
+    with open(bundle_path, "w") as handle:
+        json.dump(bundle, handle, separators=(",", ":"))
+    print(f"[+] re-scored static verdicts in {bundle_path}")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -164,7 +202,13 @@ def main():
     parser.add_argument("--warm-rows", dest="warm_rows", type=int, default=120000)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--skip-arf", dest="skip_arf", action="store_true")
+    parser.add_argument("--rescore-static", dest="rescore_static", action="store_true",
+                        help="update only the static models' verdicts in an existing --out bundle")
     args = parser.parse_args()
+
+    if args.rescore_static:
+        rescore_static(args.out, args.data_dir, args.models_dir)
+        return
 
     X_test = pd.read_csv(os.path.join(args.data_dir, "X_test.csv"))
     y_test = pd.read_csv(os.path.join(args.data_dir, "y_test.csv"))["Label_Multiclass"]
