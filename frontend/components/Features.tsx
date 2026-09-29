@@ -1,97 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  ShieldAlert,
-  Wifi,
-  ServerCrash,
-  Lock,
-  Zap,
-  CircuitBoard,
-} from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 import PixelBlast from "./PixelBlast";
-import ThreatAccordion from "./ThreatAccordion";
 import FoldText from "./FoldText";
-
-const threats = [
-  {
-    icon: <Wifi className="w-6 h-6" />,
-    title: "OCPP Protocol Exploitation",
-    description:
-      "Attackers intercept OCPP messages between EVSE chargers and CSMS cloud backends to inject malicious charging commands.",
-    color: "text-red-400",
-    border: "border-red-500/20",
-    bg: "bg-red-500/[0.02]",
-    glow: "shadow-[0_0_30px_-5px_rgba(239,68,68,0.15)]",
-    iconBg: "bg-red-500/10",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    icon: <ServerCrash className="w-6 h-6" />,
-    title: "Denial of Service",
-    description:
-      "Flooding charging station networks to render them inoperable, disrupting EV charging infrastructure at scale.",
-    color: "text-orange-400",
-    border: "border-orange-500/20",
-    bg: "bg-orange-500/[0.02]",
-    glow: "shadow-[0_0_30px_-5px_rgba(249,115,22,0.15)]",
-    iconBg: "bg-orange-500/10",
-    image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    icon: <Lock className="w-6 h-6" />,
-    title: "Firmware Manipulation",
-    description:
-      "Compromising EVSE firmware to install backdoors, enabling persistent unauthorized access to charging networks.",
-    color: "text-yellow-400",
-    border: "border-white/[0.1] hover:border-yellow-500/60",
-    bg: "bg-white/[0.03] hover:bg-yellow-950/30",
-    glow: "hover:shadow-[0_0_30px_rgba(234,179,8,0.25)]",
-    iconBg: "bg-yellow-500/10",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    icon: <CircuitBoard className="w-6 h-6" />,
-    title: "Man-in-the-Middle Attacks",
-    description:
-      "Intercepting unencrypted traffic between vehicles and stations to steal credentials or manipulate charging sessions.",
-    color: "text-violet-400",
-    border: "border-purple-500/20",
-    bg: "bg-purple-500/[0.02]",
-    glow: "shadow-[0_0_30px_-5px_rgba(168,85,247,0.15)]",
-    iconBg: "bg-violet-500/10",
-    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    icon: <Zap className="w-6 h-6" />,
-    title: "Grid Overload Attacks",
-    description:
-      "Coordinated manipulation of multiple chargers to create sudden demand spikes that could destabilize the power grid.",
-    color: "text-cyan-400",
-    border: "border-cyan-500/20",
-    bg: "bg-cyan-500/[0.02]",
-    glow: "shadow-[0_0_30px_-5px_rgba(6,182,212,0.15)]",
-    iconBg: "bg-cyan-500/10",
-    image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&auto=format&fit=crop&q=60"
-  },
-  {
-    icon: <ShieldAlert className="w-6 h-6" />,
-    title: "Data Exfiltration",
-    description:
-      "Extracting sensitive user payment data, vehicle identifiers, and location patterns from compromised EVCS endpoints.",
-    color: "text-pink-400",
-    border: "border-pink-500/20",
-    bg: "bg-pink-500/[0.02]",
-    glow: "shadow-[0_0_30px_-5px_rgba(236,72,153,0.15)]",
-    iconBg: "bg-pink-500/10",
-    image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&auto=format&fit=crop&q=60"
-  },
-];
 
 export default function Features() {
   return (
     <>
-      <section id="threat" className="relative py-32 overflow-hidden">
+      <section id="threat" className="relative pt-32 pb-10 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-40">
           <PixelBlast
             color="#ef4444"
@@ -116,7 +33,7 @@ export default function Features() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "0px" }}
           transition={{ duration: 0.6 }}
-          className="max-w-3xl mb-20"
+          className="max-w-3xl"
         >
           <div className="inline-flex items-center space-x-2 bg-red-500/[0.08] border border-red-500/20 text-red-400 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] mb-6">
             <ShieldAlert className="w-3 h-3" />
@@ -150,7 +67,7 @@ export default function Features() {
             whileInView="visible"
             viewport={{ once: true, margin: "0px" }}
           >
-            {"As the world electrifies transportation, charging infrastructure becomes critical — and a prime target. These are the real threats facing EVCS networks today.".split(" ").map((word, i) => (
+            {"As the world electrifies transportation, charging infrastructure becomes critical — and a prime target. Scroll on to see how an attack unfolds across a real city — and where Sentinel stops it.".split(" ").map((word, i) => (
               <motion.span
                 key={i}
                 variants={{
@@ -165,10 +82,6 @@ export default function Features() {
           </motion.p>
         </motion.div>
 
-        {/* Threat cards (Accordion effect) */}
-        <div className="mt-12 w-full max-w-7xl">
-          <ThreatAccordion threats={threats} />
-        </div>
       </div>
         </div>
       </section>

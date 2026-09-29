@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 /**
  * The detailed architecture diagram lives here.
  *
- * The landing page tells the same story as a narrative (components/Storyline.tsx),
+ * The landing page tells the same story as a narrative (components/story/ArchitectureStory.tsx),
  * which is more persuasive but deliberately less complete. This page keeps the
  * component-level detail for anyone who wants it.
  */
