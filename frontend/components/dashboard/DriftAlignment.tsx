@@ -44,7 +44,7 @@ export default function DriftAlignment({
         </h3>
         <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">
           ADWIN run prequentially over the full 1,921,182-instance stream in
-          capture order. CICEVSE2024 is {drift.captures + 1} packet captures
+          capture order. The stream is {drift.captures} packet captures
           concatenated end to end, and each join is an abrupt distribution change
           by construction.
         </p>
