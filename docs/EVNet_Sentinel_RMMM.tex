@@ -14,6 +14,7 @@
 \usepackage{graphicx}
 \usepackage{adjustbox}
 \usepackage{xcolor}
+\usepackage{colortbl}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{tabularx}
@@ -27,7 +28,6 @@
 \usepackage{array}
 \usepackage{tikz}
 \usepackage{pgfplots}
-\usepackage{pgf-pie}
 \usepackage{bookmark}
 \usepackage{footmisc}
 \usepackage{calc}
@@ -856,7 +856,7 @@ Detailed RMMM plans are prepared for the \textbf{8 first-order priority risks} (
 
 \subsubsection*{Mitigation (Avoidance)}
 \begin{itemize}[leftmargin=*]
-    \item Download dataset immediately at project start (Aug 05) --- done \cmark
+    \item Download dataset immediately at project start (Aug 05) --- done \cmark{}
     \item Maintain at least two local copies of the raw dataset across different team members' machines
     \item Store the dataset URL securely in \col{.env} (never hardcoded in code or docs)
     \item Verify file integrity with checksums after download (documented in \col{docs/dataset\_manifest.json})
@@ -1312,23 +1312,6 @@ Staff (ST) & 5 & 64,050 & 11.6\% \\
 \end{tabular}
 \end{center}
 
-\vspace{1em}
-
-\begin{center}
-\begin{tikzpicture}
-\pie[
-    radius=3,
-    color={red!60, orange!60, blue!40},
-    text=legend,
-    sum=auto,
-    before number=\phantom{0},
-    after number=\%,
-]{
-    68.1/Technical (TE) --- 3{,}76{,}150 INR,
-    20.3/Business (BU) --- 1{,}12{,}000 INR,
-    11.6/Staff (ST) --- 64{,}050 INR
-}
-\end{tikzpicture}
 \end{center}
 
 \newpage
