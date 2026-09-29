@@ -7,13 +7,15 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, Shield } from "lucide-react";
 import DotField from "./DotField";
 import ParticleText from "./ParticleText";
-import HeroAttackDemo, { type DemoAttack } from "./HeroAttackDemo";
+import HeroPlayground from "./hero/HeroPlayground";
+import type { DemoAttack } from "./hero/BeatTheSentinel";
+import type { HeroTuning } from "./hero/TuneDetector";
 
 export type HeroStat = { value: string; label: string; sub: string };
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Hero({ attacks, stats }: { attacks: DemoAttack[]; stats: HeroStat[] }) {
+export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]; tuning: HeroTuning; stats: HeroStat[] }) {
   const sectionRef = useRef<HTMLElement>(null);
 
   const subRef = useRef<HTMLParagraphElement>(null);
@@ -127,7 +129,7 @@ export default function Hero({ attacks, stats }: { attacks: DemoAttack[]; stats:
           className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light"
         >
           Machine-learning intrusion detection for EV charging networks — tested attack by
-          attack, with the data leak in the published results removed. Try it below.
+          attack, with the data leak in the published results removed. Try to beat it.
         </motion.p>
 
         {/* Hands-on: fire a real held-out flow at the detector */}
@@ -137,7 +139,7 @@ export default function Hero({ attacks, stats }: { attacks: DemoAttack[]; stats:
           transition={{ duration: 0.6, delay: 0.45 }}
           className="mb-12"
         >
-          <HeroAttackDemo attacks={attacks} />
+          <HeroPlayground attacks={attacks} tuning={tuning} />
         </motion.div>
       </div>
 
