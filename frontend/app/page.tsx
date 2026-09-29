@@ -34,14 +34,19 @@ async function heroData() {
   const insights = await read("insights.json");
   const findings = await read("findings.json");
   const tuning = await read("hero.json");
+  const routes = await read("attack-routes.json");
 
   const rf = String(sim.models.indexOf("RandomForest"));
   const byId = new Map<number, any>(sim.flows.map((f: any) => [f.id, f]));
   const attacks: DemoAttack[] = DEMO.map(([cls, label, category]) => ({
     cls, label, category,
-    flows: (sim.byClass[cls] ?? []).slice(0, 60).map((id: number) => {
-      const v = byId.get(id).p[rf];
-      return { id, called: v[0], confidence: v[3] ?? null };
+    flows: (sim.byClass[cls] ?? []).slice(0, 120).map((id: number) => {
+      const f = byId.get(id);
+      const v = f.p[rf];
+      return {
+        id, called: v[0], confidence: v[3] ?? null,
+        station: f.evse, sender: routes.captures[f.capture]?.sender ?? "kali",
+      };
     }),
   })).filter((a) => a.flows.length);
 

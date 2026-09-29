@@ -29,12 +29,12 @@ const CHAPTERS: Chapter[] = [
   { k: "One charging hub", title: "A car plugs in. The station reports home.",
     body: "The car talks to the station over ISO 15118. The station talks to the CSMS over OCPP — heartbeats, meter values, session starts — usually across the site’s shared wifi.",
     fact: "This is the setup behind <b>CICEVSE2024</b>: two stations, a CSMS, and recorded attack traffic." },
-  { k: "The threat", title: "Someone else is on the same wifi.",
-    body: "Anyone in range can reach that link. First they scan — mapping ports and firmware. Then they flood, and the CSMS stops hearing from its stations.",
-    fact: "14 attack types in the dataset: <b>8 denial-of-service, 6 reconnaissance</b>." },
-  { k: "The defence", title: "Sentinel sits on the wire.",
-    body: "An inline tap between the stations and the CSMS. Normal OCPP passes through; attack traffic is classified the moment its flow completes.",
-    fact: "Placement matters: it sees <b>every station’s traffic</b> without touching station firmware." },
+  { k: "The threat", title: "The charging station is the target.",
+    body: "Anyone on the site wifi can reach the station itself. First they scan it — ports, services, firmware. Then they flood it until it can’t keep up its link to the CSMS. Even the car can be the attacker, scanning through the charging cable.",
+    fact: "In CICEVSE2024 <b>every attack targets a charging station</b>: 51 captures from a PC or Raspberry Pi on the wifi, 6 from a compromised car." },
+  { k: "The defence", title: "Sentinel watches a copy of every packet.",
+    body: "The site’s switch mirrors all traffic to Sentinel. It never sits in the way: it classifies each flow and raises an alert naming the attack and the station it hit — so people can act.",
+    fact: "This is exactly how the dataset was recorded: <b>from a mirrored switch port</b>. An IDS detects; it does not block." },
   { k: "Inside Sentinel", title: "From packets to a verdict.",
     body: "Packets become one flow of 60 statistics. Columns that only identify the recording are stripped. Four static models and an online learner judge it.",
     fact: "Removing those columns is our core correction: the published <b>98%</b> came from a single timestamp column." },
@@ -51,9 +51,8 @@ const FOCUS = HUBS.findIndex((h) => h.name === "BKC");
 const CSMS_AT = { x: 1420, y: 150 };
 /** The hub close-up is drawn in its own frame, placed right of the narrative. */
 const HUB_FRAME = "translate(100 30) scale(0.98)";
-const SENTINEL_AT = { x: 1085, y: 385 };
-/** Fraction along the CSMS uplink where Sentinel sits. */
-const SENTINEL_T = 0.62;
+/** Sentinel hangs off the switch's mirror port, out of the traffic's way. */
+const SENTINEL_AT = { x: 700, y: 380 };
 
 /** How far into each chapter its narration appears: the scene builds first, then the words. */
 const TEXT_AT = [0, 0.62, 0.3, 0.3, 0, 0, 0];
@@ -79,7 +78,7 @@ function PinnedStory() {
   const chapterRef = useRef(0);
   const trigger = useRef<ScrollTrigger | null>(null);
   // What the packet loop needs to know about the current frame.
-  const scene = useRef({ hubOn: 0, attack: 0, sentinel: 0, wires: 0, plugged: 0 });
+  const scene = useRef({ hubOn: 0, attack: 0, sentinel: 0, wires: 0, plugged: 0, evil: 0 });
 
   const q = (sel: string) => stage.current?.querySelector(sel) as SVGElement | HTMLElement | null;
   const qa = (sel: string) => Array.from(stage.current?.querySelectorAll<HTMLElement>(sel) ?? []);
@@ -122,8 +121,7 @@ function PinnedStory() {
     show("#as-iso-label", seg(b, 0.64, 0.7), 0);
     const plugged = seg(b, 0.68, 0.74);
     show("#as-charge", plugged, 10);
-    const screen = q("#as-evse-screen");
-    if (screen) screen.textContent = plugged > 0.5 ? "⚡ 7.4kW" : "READY";
+
     const bar = q(".progress i") as HTMLElement | null;
     if (bar) bar.style.width = `${p * 100}%`;
 
@@ -147,13 +145,17 @@ function PinnedStory() {
     const attack = seg(p, 2 / N + 0.01, 2 / N + 0.05);
     q("#as-attacker")?.setAttribute("opacity", String(attack));
     q("#as-wireA")?.setAttribute("stroke-opacity", String(attack * 0.8));
+    // Halfway through the threat chapter the car itself turns attacker.
+    const evil = seg(p, 2 / N + 0.5 / N, 2 / N + 0.56 / N);
+    q("#as-car-evil")?.setAttribute("opacity", String(evil));
+    qa(".as-mirror").forEach((e) => e.setAttribute("opacity", String(seg(p, 3 / N + 0.01, 3 / N + 0.05))));
     const sentinel = seg(p, 3 / N + 0.01, 3 / N + 0.05);
     const sent = q("#as-sentinel");
     sent?.setAttribute("opacity", String(sentinel));
     sent?.setAttribute("transform", `translate(${SENTINEL_AT.x} ${SENTINEL_AT.y - (1 - sentinel) * 60})`);
     scene.current = {
       hubOn: hubIn > 0.5 && hubOut < 0.5 ? 1 : 0, attack, sentinel,
-      wires: b > 0.34 ? 1 : 0, plugged: plugged > 0.5 ? 1 : 0,
+      wires: b > 0.34 ? 1 : 0, plugged: plugged > 0.5 ? 1 : 0, evil: evil > 0.5 ? 1 : 0,
     };
 
     // chapters 5–7: html overlays, stepped by progress within the chapter
@@ -210,39 +212,49 @@ function PinnedStory() {
     const paths = {
       cable: q("#as-cable") as SVGPathElement,
       w1: q("#as-wire1") as SVGPathElement,
+      w1r: q("#as-wire1r") as SVGPathElement,
       w2: q("#as-wire2") as SVGPathElement,
       wa: q("#as-wireA") as SVGPathElement,
+      mirror: q("#as-mirror-path") as SVGPathElement,
+      mirrorV2g: q("#as-mirror-v2g") as SVGPathElement,
     };
     const hb = q("#as-hb");
     const status = q("#as-csms-status");
+    const note = q("#as-csms-note");
     const glow = q("#as-sent-glow");
     const battery = q("#as-battery");
+    const screen = q("#as-evse-screen");
+    const body = q("#as-evse-body");
+    const alert = q("#as-alert");
     let charge = 0.18;
     if (!layer || !hb || !status) return;
 
-    type Pk = { route: (keyof typeof paths)[]; i: number; t: number; c: SVGCircleElement; attack: boolean; dead: boolean };
+    type Route = (keyof typeof paths)[];
+    type Pk = { route: Route; i: number; t: number; c: SVGCircleElement; kind: "ok" | "wifi" | "car" | "copy"; dead: boolean };
     const packets: Pk[] = [];
-    let last = 0, phase = 0, down = 0, raf = 0;
+    let last = 0, phase = 0, down = 0, raf = 0, hitAt = -1e9, alertAt = -1e9;
+    let alertText = "";
 
-    const spawn = (route: Pk["route"], color: string, attack: boolean) => {
+    const spawn = (route: Route, color: string, kind: Pk["kind"]) => {
       const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      c.setAttribute("r", attack ? "5" : "4");
+      c.setAttribute("r", kind === "ok" ? "4" : kind === "copy" ? "3" : "5");
       c.setAttribute("fill", color);
+      if (kind === "copy") c.setAttribute("fill-opacity", "0.7");
       layer.appendChild(c);
-      packets.push({ route, i: 0, t: 0, c, attack, dead: false });
+      packets.push({ route, i: 0, t: 0, c, kind, dead: false });
     };
 
     const tick = (now: number) => {
-      const { hubOn, attack, sentinel, wires, plugged } = scene.current;
+      const { hubOn, attack, sentinel, wires, plugged, evil } = scene.current;
       if (battery) {
         charge = plugged ? Math.min(1, charge + 0.0025) : 0.18;
         battery.setAttribute("width", String(120 * charge));
       }
       glow?.setAttribute("r", String(90 + 25 * Math.sin(now / 500)));
 
-      // heartbeat flatlines while attacked and unguarded
-      const underAttack = attack > 0.5 && sentinel < 0.5;
-      down += ((underAttack ? 1 : 0) - down) * 0.03;
+      // A flooded station can't keep its OCPP link up. Sentinel observes, it
+      // doesn't block, so its arrival doesn't restore the link.
+      down += ((attack > 0.5 ? 1 : 0) - down) * 0.03;
       phase += 0.04;
       const pts: string[] = [];
       for (let x = 0; x <= 150; x += 5) {
@@ -254,31 +266,52 @@ function PinnedStory() {
       const online = Math.round(12 - down * 9);
       status.textContent = `${online} / 12 stations online`;
       status.setAttribute("fill", online < 12 ? "#FDA4AF" : "#86EFAC");
+      note?.setAttribute("opacity", String(down));
+
+      // The targeted station reacts when attack traffic lands on it.
+      const hit = now - hitAt < 450;
+      if (screen) {
+        screen.textContent = hit ? "⚠ ATTACK" : plugged ? "⚡ 7.4kW" : "READY";
+        screen.setAttribute("fill", hit ? "#FDA4AF" : "#86EFAC");
+      }
+      body?.setAttribute("stroke", hit ? "#F43F5E" : "#22C55E");
+      if (alert) {
+        const age = now - alertAt;
+        alert.textContent = alertText;
+        alert.setAttribute("opacity", String(sentinel > 0.5 ? Math.max(0, 1 - age / 1600) : 0));
+      }
 
       if (hubOn && wires && now - last > 260) {
         last = now;
-        spawn(plugged ? ["cable", "w1", "w2"] : ["w1", "w2"], "#38BDF8", false);
-        if (attack > 0.5 && Math.random() < 0.75) spawn(["wa", "w2"], "#F43F5E", true);
+        spawn(plugged ? ["cable", "w1", "w2"] : ["w1", "w2"], "#38BDF8", "ok");
+        if (attack > 0.5 && Math.random() < 0.7) spawn(["wa", "w1r"], "#F43F5E", "wifi");
+        if (evil && plugged && Math.random() < 0.35) spawn(["cable"], "#FB7185", "car");
       }
       for (const k of packets) {
-        const path = paths[k.route[k.i]];
-        k.t += (k.attack ? 0.011 : 0.008) * (k.route[k.i] === "w2" ? 0.8 : 1.3);
-        if (k.attack && sentinel > 0.5 && k.route[k.i] === "w2" && k.t >= SENTINEL_T) {
-          // stopped at the tap: burst and fade
-          k.c.setAttribute("r", String(5 + (k.t - SENTINEL_T) * 80));
-          k.c.setAttribute("fill-opacity", String(Math.max(0, 1 - (k.t - SENTINEL_T) * 12)));
-          if (k.t > SENTINEL_T + 0.09) k.dead = true;
-          continue;
-        }
+        k.t += (k.kind === "ok" ? 0.008 : k.kind === "copy" ? 0.02 : 0.011) * (k.route[k.i] === "w2" ? 0.8 : 1.3);
         if (k.t >= 1) {
+          const finished = k.route[k.i];
+          // Everything crossing the switch is mirrored to Sentinel.
+          if (sentinel > 0.5 && k.kind !== "copy") {
+            if (k.kind === "wifi" && finished === "wa") spawn(["mirror"], "#F43F5E", "copy");
+            if (k.kind === "ok" && finished === "w1" && Math.random() < 0.3) spawn(["mirror"], "#38BDF8", "copy");
+            if (k.kind === "car" && finished === "cable") spawn(["mirrorV2g"], "#FB7185", "copy");
+          }
           k.i += 1; k.t = 0;
-          if (k.i >= k.route.length) { k.dead = true; continue; }
+          if (k.i >= k.route.length) {
+            k.dead = true;
+            if (k.kind === "wifi" || k.kind === "car") hitAt = now;
+            if (k.kind === "copy" && k.c.getAttribute("fill") !== "#38BDF8") {
+              alertAt = now;
+              alertText = finished === "mirrorV2g" ? "⚠ ALERT · port scan from the car" : "⚠ ALERT · SYN Flood → station";
+            }
+            continue;
+          }
         }
         const cur = paths[k.route[k.i]];
         const pt = cur.getPointAtLength(k.t * cur.getTotalLength());
         k.c.setAttribute("cx", String(pt.x));
         k.c.setAttribute("cy", String(pt.y));
-        if (!k.attack && path === paths.w2 && k.t > SENTINEL_T && sentinel > 0.5) k.c.setAttribute("fill", "#22C55E");
       }
       for (let i = packets.length - 1; i >= 0; i--) {
         if (packets[i].dead) { packets[i].c.remove(); packets.splice(i, 1); }
@@ -367,6 +400,10 @@ function PinnedStory() {
                     </g>
                   </g>
                 ))}
+                <g id="as-car-evil" opacity="0">
+                  <rect x="-122" y="-74" width="244" height="120" rx="26" fill="none" stroke="#F43F5E" strokeWidth="2" strokeDasharray="6 5" />
+                  <text x="0" y="66" textAnchor="middle" fill="#FDA4AF" fontSize="12" fontWeight="600">compromised car · scanning the station</text>
+                </g>
                 <g id="as-charge" opacity="0">
                   <circle cx="0" cy="-92" r="20" fill="rgba(34,197,94,0.16)" stroke="#22C55E" className="as-charge-ring" />
                   <text x="0" y="-85" textAnchor="middle" fontSize="20">⚡</text>
@@ -376,8 +413,8 @@ function PinnedStory() {
 
               <g id="as-evse" opacity="0">
                 <g transform="translate(640 640)">
-                  <rect x="-34" y="-90" width="68" height="150" rx="10" fill="#0F172A" stroke="#22C55E" strokeOpacity=".7" />
-                  <rect x="-22" y="-74" width="44" height="30" rx="4" fill="#052E1A" />
+                  <rect id="as-evse-body" x="-34" y="-90" width="68" height="150" rx="10" fill="#0F172A" stroke="#22C55E" strokeOpacity=".8" strokeWidth="1.5" />
+                  <rect x="-26" y="-74" width="52" height="30" rx="4" fill="#052E1A" />
                   <text id="as-evse-screen" y="-54" textAnchor="middle" fill="#86EFAC" fontSize="10" className="mono">READY</text>
                   <text y="84" textAnchor="middle" fill="#F8FAFC" fontSize="13" fontWeight="600">Charging station</text>
                   <text y="101" textAnchor="middle" fill="#64748B" fontSize="11">EVSE</text>
@@ -399,6 +436,7 @@ function PinnedStory() {
                 <text y="-16" textAnchor="middle" fill="#64748B" fontSize="10.5">heartbeats from stations</text>
                 <polyline id="as-hb" fill="none" stroke="#22C55E" strokeWidth="2" points="" />
                 <text id="as-csms-status" y="46" textAnchor="middle" fill="#86EFAC" fontSize="11" className="mono">12 / 12 stations online</text>
+                <text id="as-csms-note" y="80" textAnchor="middle" fill="#94A3B8" fontSize="10" opacity="0">expected effect · not measured in the dataset</text>
               </g></g>
 
               <path id="as-wire1" d="M674 590 C 760 560, 800 500, 834 480" pathLength={1} strokeDasharray="1" strokeDashoffset="1" fill="none" stroke="#22C55E" strokeOpacity=".45" strokeWidth="2.5" />
@@ -413,13 +451,22 @@ function PinnedStory() {
                 <text y="58" textAnchor="middle" fill="#F8FAFC" fontSize="13" fontWeight="600">Attacker on the wifi</text>
               </g>
               <path id="as-wireA" d="M990 630 C 960 580, 930 530, 900 492" fill="none" stroke="#F43F5E" strokeOpacity="0" strokeWidth="2" strokeDasharray="5 6" />
+              {/* attack onward from the wifi to the station: the target */}
+              <path id="as-wire1r" d="M834 480 C 800 500, 760 560, 674 590" fill="none" stroke="none" />
+              {/* switch mirror port -> Sentinel (a copy; the original carries on) */}
+              <g className="as-mirror" opacity="0">
+                <path id="as-mirror-path" d="M836 468 C 812 440, 800 404, 782 394" fill="none" stroke="#22C55E" strokeOpacity=".6" strokeWidth="1.5" strokeDasharray="3 5" />
+                <path id="as-mirror-v2g" d="M652 552 C 664 500, 690 452, 700 412" fill="none" stroke="#22C55E" strokeOpacity=".4" strokeWidth="1.5" strokeDasharray="3 5" />
+                <text x="812" y="418" fill="#86EFAC" fontSize="10.5" className="mono">mirror copy</text>
+              </g>
 
               <g id="as-sentinel" opacity="0" transform={`translate(${SENTINEL_AT.x} ${SENTINEL_AT.y})`}>
                 <circle id="as-sent-glow" r="110" fill="url(#as-glow)" />
                 <rect x="-80" y="-30" width="160" height="60" rx="14" fill="#052E1A" stroke="#22C55E" strokeWidth="2" />
                 <path d="M-58 -8 l10 -8 l10 8 v10 q-10 8 -10 8 q0 0 -10 -8z" fill="none" stroke="#86EFAC" strokeWidth="1.5" />
                 <text x="10" y="-2" textAnchor="middle" fill="#F8FAFC" fontSize="14" fontWeight="700">Sentinel</text>
-                <text x="10" y="15" textAnchor="middle" fill="#86EFAC" fontSize="10.5" className="mono">inline tap</text>
+                <text x="10" y="15" textAnchor="middle" fill="#86EFAC" fontSize="10.5" className="mono">mirror-port IDS</text>
+                <text id="as-alert" x="0" y="-44" textAnchor="middle" fill="#FDA4AF" fontSize="13" fontWeight="700" opacity="0" />
               </g>
 
               <g id="as-packets" />
@@ -479,8 +526,8 @@ function PinnedStory() {
             <div className="card" style={{ padding: "16px 18px", display: "flex", gap: 16, alignItems: "center", borderColor: "rgba(244,63,94,.35)" }}>
               <span className="pulse" />
               <div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#F8FAFC" }}>SYN Flood detected on EVSE-A → CSMS</div>
-                <div className="mono" style={{ fontSize: 11.5, color: "#94A3B8", marginTop: 3 }}>severity high · denial of service · Random Forest</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "#F8FAFC" }}>SYN Flood aimed at charging station EVSE-A</div>
+                <div className="mono" style={{ fontSize: 11.5, color: "#94A3B8", marginTop: 3 }}>from a device on the site wifi · severity high · Random Forest</div>
               </div>
             </div>
             <div className="roles">
