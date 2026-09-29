@@ -1,0 +1,1345 @@
+%% ============================================================================
+%% EVNet Sentinel — RMMM Document
+%% Risk Mitigation, Monitoring, and Management Plan
+%% Date: September 29, 2026
+%% ============================================================================
+\documentclass[11pt, a4paper]{article}
+
+% ---- Packages ----
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{pifont}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{bookmark}
+\usepackage{footmisc}
+\usepackage{calc}
+
+\pgfplotsset{compat=1.18}
+
+% ---- Colors ----
+\definecolor{primary}{HTML}{1E40AF}
+\definecolor{accent}{HTML}{10B981}
+\definecolor{warning}{HTML}{F59E0B}
+\definecolor{danger}{HTML}{EF4444}
+\definecolor{darkbg}{HTML}{1F2937}
+\definecolor{lightgray}{HTML}{F3F4F6}
+\definecolor{sectionblue}{HTML}{2563EB}
+\definecolor{highrisk}{HTML}{DC2626}
+\definecolor{medrisk}{HTML}{EA580C}
+\definecolor{lowrisk}{HTML}{16A34A}
+
+% ---- Hyperref Setup (Interactive PDF) ----
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=sectionblue,
+    citecolor=accent,
+    pdftitle={EVNet Sentinel — RMMM Document},
+    pdfauthor={EVNet Sentinel Team},
+    pdfsubject={Risk Mitigation Monitoring and Management},
+    pdfkeywords={RMMM, Risk Management, IDS, EVCS, CICEVSE2024},
+    bookmarks=true,
+    bookmarksopen=true,
+    bookmarksnumbered=true,
+    bookmarksopenlevel=2,
+    pdfstartview=FitH,
+    pdfpagemode=UseOutlines,
+    pdfpagelayout=SinglePage,
+}
+
+% ---- Header/Footer ----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{primary}{\textbf{EVNet Sentinel}}}
+\fancyhead[R]{\textcolor{gray}{RMMM Document v1.0}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{primary}\leaders\hrule height \headrulewidth\hfill}}
+
+% ---- Section Styling ----
+\titleformat{\section}{\Large\bfseries\color{primary}}{\thesection}{1em}{}[\vspace{-0.5em}\textcolor{primary}{\rule{\textwidth}{0.5pt}}]
+\titleformat{\subsection}{\large\bfseries\color{sectionblue}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{darkbg}}{\thesubsubsection}{1em}{}
+
+% ---- Custom Environments ----
+\newtcolorbox{infobox}[1][]{
+    colback=blue!5,
+    colframe=primary,
+    fonttitle=\bfseries,
+    title=#1,
+    rounded corners,
+    boxrule=0.5pt,
+    left=4pt, right=4pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{warnbox}[1][]{
+    colback=yellow!5,
+    colframe=warning,
+    fonttitle=\bfseries,
+    title=#1,
+    rounded corners,
+    boxrule=0.5pt,
+    left=4pt, right=4pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{dangerbox}[1][]{
+    colback=red!5,
+    colframe=danger,
+    fonttitle=\bfseries,
+    title=#1,
+    rounded corners,
+    boxrule=0.5pt,
+    left=4pt, right=4pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{successbox}[1][]{
+    colback=green!5,
+    colframe=accent,
+    fonttitle=\bfseries,
+    title=#1,
+    rounded corners,
+    boxrule=0.5pt,
+    left=4pt, right=4pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{risksheet}[1][]{
+    colback=lightgray,
+    colframe=darkbg,
+    fonttitle=\bfseries\large,
+    title=#1,
+    rounded corners,
+    boxrule=1pt,
+    left=6pt, right=6pt, top=6pt, bottom=6pt
+}
+
+% ---- Checkmark/Cross Commands ----
+\newcommand{\cmark}{\textcolor{accent}{\ding{51}}}
+\newcommand{\xmark}{\textcolor{danger}{\ding{55}}}
+\newcommand{\wmark}{\textcolor{warning}{\ding{115}}}
+
+% ---- Code/Feature Name Command ----
+\newcommand{\col}[1]{\texttt{\small #1}}
+
+% ---- Rupee Symbol ----
+\newcommand{\rupee}{INR}
+
+% ---- Quick-Nav Command ----
+\newcommand{\goref}[2]{\hyperref[#1]{\textcolor{primary}{\textbf{#2}}}}
+
+% ============================================================================
+\begin{document}
+
+% ---- Title Page ----
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+
+{\Huge\bfseries\textcolor{primary}{EVNet Sentinel}\par}
+\vspace{0.4cm}
+{\Large\textcolor{sectionblue}{Intrusion Detection System for EV Charging Networks}\par}
+\vspace{1.5cm}
+
+{\LARGE\bfseries Risk Mitigation, Monitoring, and\\Management (RMMM) Plan\par}
+\vspace{0.3cm}
+{\large Version 1.0\par}
+\vspace{1.5cm}
+
+\begin{tcolorbox}[colback=lightgray, colframe=darkbg, width=0.82\textwidth, rounded corners]
+\centering
+\textbf{Project:} EVNet Sentinel --- IDS for EV Charging Networks\\[0.3em]
+\textbf{Working Phase:} 05 August 2026 --- 25 September 2026\\[0.3em]
+\textbf{Architecture:} Python/FastAPI Backend $\longleftrightarrow$ Next.js/React Frontend\\[0.3em]
+\textbf{Dataset:} CICEVSE2024 Network Traffic Dataset (2.4\,GB)\\[0.3em]
+\textbf{Repository:} \url{https://github.com/Mukta01/EVNet_Sentinel}
+\end{tcolorbox}
+
+\vspace{1.2cm}
+
+\begin{tcolorbox}[colback=blue!3, colframe=primary, width=0.82\textwidth, rounded corners, title={\textbf{Quick Navigation (Click to Jump)}}]
+\centering
+\begin{tabular}{ll}
+\hyperref[sec:intro]{\textcolor{primary}{$\triangleright$ Introduction}} & \hyperref[sec:strategy]{\textcolor{primary}{$\triangleright$ Risk Management Strategy}} \\[0.3em]
+\hyperref[sec:identification]{\textcolor{primary}{$\triangleright$ Step 1: Risk Identification}} & \hyperref[sec:analysis]{\textcolor{primary}{$\triangleright$ Step 2: Risk Analysis}} \\[0.3em]
+\hyperref[sec:exposure]{\textcolor{primary}{$\triangleright$ Step 3: Risk Exposure (RE)}} & \hyperref[sec:ranking]{\textcolor{primary}{$\triangleright$ Step 4: Ranking \& Prioritization}} \\[0.3em]
+\hyperref[sec:rmmm]{\textcolor{primary}{$\triangleright$ Step 5: RMMM Plans}} & \hyperref[sec:infosheet]{\textcolor{primary}{$\triangleright$ Risk Information Sheets}} \\[0.3em]
+\hyperref[sec:threshold]{\textcolor{primary}{$\triangleright$ Threshold \& Summary}} & \hyperref[sec:references]{\textcolor{primary}{$\triangleright$ References}} \\
+\end{tabular}
+\end{tcolorbox}
+
+\vspace{1.0cm}
+
+\begin{tcolorbox}[colback=lightgray, colframe=darkbg, width=0.82\textwidth, rounded corners, title={\textbf{Team Members}}]
+\centering
+\begin{tabular}{llll}
+\textbf{Roll No.} & \textbf{Name} & \textbf{Role} \\
+\midrule
+24102A0013 & Mukta Varak & Cloud Deployment \& Backend API \\
+24102A0018 & Shruti Chaurasiya & Data Visualization \& Testing QA \\
+24102A0021 & Shardul Chogale & ML Pipelining \& Model Evaluation \\
+24102A0022 & Neha Chavhan & Frontend UI \& Real-Time Integration \\
+\end{tabular}
+\end{tcolorbox}
+
+\vfill
+{\large\textbf{Prepared by:} Mukta Varak, Shruti Chaurasiya, Shardul Chogale, Neha Chavhan}\par
+\vspace{0.2cm}
+{\large\textbf{Affiliation:} Dept.\ of Computer Engineering, Vidyalankar Institute of Technology, Mumbai}\par
+\vspace{0.2cm}
+{\large\textbf{Date:} September 29, 2026}\par
+\end{titlepage}
+
+% ---- Table of Contents ----
+\tableofcontents
+\newpage
+
+% ============================================================================
+% 1. INTRODUCTION
+% ============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+EVNet Sentinel is a leakage-corrected Intrusion Detection System (IDS) for Electric Vehicle Charging Station (EVCS) networks. The system reproduces and benchmarks methods from Makhmudov et al.\ (2025) on the CICEVSE2024 dataset using a combination of static ML classifiers (Random Forest, Decision Tree, Logistic Regression, SVM) and online adaptive learning (ARF + ADWIN). The project also features a FastAPI backend with Docker deployment and a Next.js real-time dashboard.
+
+\begin{infobox}[Purpose of this Document]
+This RMMM document systematically identifies, analyses, ranks, and proposes mitigation, monitoring, and management strategies for all potential risks that could threaten the successful completion of the EVNet Sentinel project. The methodology follows the four-step risk management process:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Identify} risks using a structured checklist
+    \item \textbf{Analyse} each risk for probability of occurrence and impact
+    \item \textbf{Rank} risks by computing Risk Exposure (RE = Probability $\times$ Cost/Impact)
+    \item \textbf{Manage} risks via Mitigation (avoidance), Monitoring (tracking), and Management (contingency)
+\end{enumerate}
+\end{infobox}
+
+% ============================================================================
+% 2. RISK MANAGEMENT STRATEGY
+% ============================================================================
+\section{Risk Management Strategy}
+\label{sec:strategy}
+
+\subsection{Risk Categories}
+
+Risks are classified into three primary categories as per software engineering risk management practice:
+
+\begin{center}
+\begin{tabular}{|c|l|p{8.5cm}|}
+\hline
+\rowcolor{lightgray}
+\textbf{Code} & \textbf{Category} & \textbf{Description} \\
+\hline
+\textbf{TE} & Technical & Risks related to technology, tools, frameworks, algorithms, data, and infrastructure \\
+\hline
+\textbf{BU} & Business & Risks related to project scope, schedule, budget, academic deadlines, and stakeholder expectations \\
+\hline
+\textbf{ST} & Staff / People & Risks related to team members, skills, availability, communication, and knowledge gaps \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Impact Scale}
+
+Impact is rated on a \textbf{1--4 scale} where higher values represent more severe consequences:
+
+\begin{center}
+\begin{tabular}{|c|l|p{7cm}|r|}
+\hline
+\rowcolor{lightgray}
+\textbf{Rating} & \textbf{Level} & \textbf{Description} & \textbf{Est.\ Cost (INR)} \\
+\hline
+\rowcolor{red!8}
+\textbf{4} & \textbf{Catastrophic} & Project failure; complete re-work required; academic deadline missed & 1,00,000 \\
+\hline
+\rowcolor{orange!8}
+\textbf{3} & \textbf{Critical} & Major deliverable delayed by $>$1 week; significant quality degradation & 50,000 \\
+\hline
+\rowcolor{yellow!8}
+\textbf{2} & \textbf{Marginal} & Partial feature degradation; 2--5 day delay; workaround available & 10,000 \\
+\hline
+\rowcolor{green!8}
+\textbf{1} & \textbf{Negligible} & Minor inconvenience; $<$1 day delay; no functional impact & 1,000 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+
+\subsection{Probability Scale}
+
+Probability of occurrence is estimated on a \textbf{0.0--1.0} continuous scale:
+
+\begin{center}
+\begin{tabular}{|c|l|p{8cm}|}
+\hline
+\rowcolor{lightgray}
+\textbf{Range} & \textbf{Level} & \textbf{Description} \\
+\hline
+\rowcolor{red!8}
+0.81 -- 1.00 & Very High & Almost certain to occur \\
+\hline
+\rowcolor{orange!8}
+0.61 -- 0.80 & High & Likely to occur \\
+\hline
+\rowcolor{yellow!8}
+0.41 -- 0.60 & Moderate & May or may not occur \\
+\hline
+\rowcolor{green!8}
+0.21 -- 0.40 & Low & Unlikely to occur \\
+\hline
+\rowcolor{green!8}
+0.01 -- 0.20 & Very Low & Rare; only under exceptional circumstances \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Risk Exposure Formula}
+
+\begin{dangerbox}[Risk Exposure (RE) Calculation]
+\begin{center}
+{\Large $\mathbf{RE = P \times C}$}
+\end{center}
+\vspace{0.3em}
+Where \textbf{P} = Probability of occurrence (0.0--1.0) and \textbf{C} = Estimated cost/impact in INR.
+
+\textbf{Example:} If a risk has probability 0.60 and catastrophic impact (1,00,000), then:\\
+$\text{RE} = 0.60 \times 1{,}00{,}000 = \text{60,000}$
+\end{dangerbox}
+
+\newpage
+
+% ============================================================================
+% 3. STEP 1 — RISK IDENTIFICATION (CHECKLIST)
+% ============================================================================
+\section{Step 1 --- Risk Identification (Checklist)}
+\label{sec:identification}
+
+The following risks were identified using a structured checklist approach, covering all three categories relevant to EVNet Sentinel.
+
+\subsection{Technical Risks (TE)}
+
+\small
+\begin{longtable}{|c|p{13cm}|}
+\hline
+\rowcolor{red!10}
+\textbf{ID} & \textbf{Risk Description} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{red!10}
+\textbf{ID} & \textbf{Risk Description} \\
+\hline
+\endhead
+
+TE-01 & \textbf{Data leakage in the CICEVSE2024 dataset} --- Capture-session timestamp columns act as proxies for the class label, inflating model accuracy. If not detected and corrected, all evaluation results are invalid. \\
+\hline
+TE-02 & \textbf{Server / Backend failure} --- FastAPI backend crashes due to model loading errors, memory exhaustion from large \col{.pkl} files (RF $\approx$ 38\,MB, ARF up to 97\,MB), or Docker container runtime failures. \\
+\hline
+TE-03 & \textbf{Dependency version incompatibility} --- River ML library API changed materially around v0.21; scikit-learn's tree-splitting and \col{class\_weight} behaviour shifts across minor releases, making results unreproducible with unpinned versions. \\
+\hline
+TE-04 & \textbf{Dataset unavailability or corruption} --- The 2.4\,GB CICEVSE2024 dataset is hosted on restricted Google Drive; download failures, link expiration, or file corruption block all ML training. \\
+\hline
+TE-05 & \textbf{Docker build failures} --- River's \col{\_river\_rust} extension requires Rust/C++ compilation; multi-stage Docker builds silently lose dynamically linked libraries, causing \col{ModuleNotFoundError} at runtime. \\
+\hline
+TE-06 & \textbf{WebSocket connection instability} --- Real-time dashboard relies on WebSocket connections to the FastAPI backend; dropped connections cause stale UI data and missed drift alerts. \\
+\hline
+TE-07 & \textbf{Model overfitting to capture-session artifacts} --- Even after timestamp removal, \col{src\_port} ephemeral allocation creates contiguous per-capture bands that tree models memorise, producing illusory accuracy gains. \\
+\hline
+TE-08 & \textbf{Concept drift detection false positives} --- ADWIN triggers on dataset-assembly seams (42 of 43 drift events in capture order) rather than genuine traffic evolution, misleading system operators. \\
+\hline
+TE-09 & \textbf{Insufficient benign class samples} --- Only 81 benign flows exist in the network-traffic subset, making binary classification trivially solvable by predicting ``attack'' unconditionally and invalidating binary metrics. \\
+\hline
+TE-10 & \textbf{Large model file storage exceeding GitHub limits} --- Random Forest \col{.pkl} is 38\,MB and ARF pipelines up to 97\,MB; GitHub's 100\,MB file limit blocks direct version-control of models. \\
+\hline
+TE-11 & \textbf{Processed data loss} --- Processed datasets in \col{data/processed/} are generated by the preprocessing pipeline and not committed to Git; a local machine failure loses hours of data processing work. \\
+\hline
+TE-12 & \textbf{Next.js frontend build failures} --- \col{.next/} build cache corruption, Node.js version mismatches, or TailwindCSS configuration conflicts break the dashboard during development. \\
+\hline
+\end{longtable}
+\normalsize
+
+\subsection{Business Risks (BU)}
+
+\small
+\begin{longtable}{|c|p{13cm}|}
+\hline
+\rowcolor{orange!10}
+\textbf{ID} & \textbf{Risk Description} \\
+\hline
+\endfirsthead
+
+BU-01 & \textbf{Requirement changes mid-project} --- Scope expansion beyond the SRS v1.2 baseline (e.g., adding LSTM comparator, packet-level models) during the 52-day development window. \\
+\hline
+BU-02 & \textbf{Academic deadline overrun} --- Failing to deliver all required documentation (SRS, RMMM, research paper, project management docs) and working software by the 25 September 2026 deadline. \\
+\hline
+BU-03 & \textbf{Inflated accuracy claims in publications} --- If the leakage correction is not communicated clearly, external reviewers may challenge the validity of both the original and corrected results. \\
+\hline
+BU-04 & \textbf{Dataset licensing and access restrictions} --- CICEVSE2024 is from the Canadian Institute for Cybersecurity with specific usage terms; unauthorised redistribution could cause legal/ethical issues. \\
+\hline
+BU-05 & \textbf{Stakeholder misalignment on evaluation metrics} --- Academic evaluators expecting raw accuracy ($>$99\%) may view the corrected macro-$F_1$ (0.558) as a failure rather than a methodological improvement. \\
+\hline
+\end{longtable}
+\normalsize
+
+\subsection{Staff / People Risks (ST)}
+
+\small
+\begin{longtable}{|c|p{13cm}|}
+\hline
+\rowcolor{blue!10}
+\textbf{ID} & \textbf{Risk Description} \\
+\hline
+\endfirsthead
+
+ST-01 & \textbf{Team member unavailability} --- A team member (4-person team) becomes unavailable due to illness, exams, or personal reasons during the 52-day critical development window. \\
+\hline
+ST-02 & \textbf{Skill gaps in online ML (River framework)} --- No team member has prior experience with River's streaming ML API; learning curve delays ARF+ADWIN implementation. \\
+\hline
+ST-03 & \textbf{Git workflow conflicts and merge failures} --- Multiple feature branches (\col{feature/dt-model}, \col{feature/logreg-model}, etc.) cause complex merge conflicts when integrating into main. \\
+\hline
+ST-04 & \textbf{Uneven workload distribution} --- One team member handling both backend API and Docker deployment while others have lighter assignments, leading to bottleneck and burnout. \\
+\hline
+ST-05 & \textbf{Communication gaps between frontend and backend teams} --- API contract mismatches between the FastAPI endpoints and the Next.js frontend cause integration failures during the final sprint. \\
+\hline
+\end{longtable}
+\normalsize
+
+\newpage
+
+% ============================================================================
+% 4. STEP 2 — RISK ANALYSIS (PROBABILITY & IMPACT)
+% ============================================================================
+\section{Step 2 --- Risk Analysis (Probability \& Impact)}
+\label{sec:analysis}
+
+\small
+\begin{longtable}{|c|p{4.5cm}|c|c|c|r|}
+\hline
+\rowcolor{lightgray}
+\textbf{Risk ID} & \textbf{Risk (Short)} & \textbf{Cat} & \textbf{P} & \textbf{Impact (C)} & \textbf{Cost (INR)} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{lightgray}
+\textbf{Risk ID} & \textbf{Risk (Short)} & \textbf{Cat} & \textbf{P} & \textbf{Impact (C)} & \textbf{Cost (INR)} \\
+\hline
+\endhead
+
+\rowcolor{red!5}
+TE-01 & Data leakage in CICEVSE2024 & TE & 0.95 & 4 --- Catastrophic & 1,00,000 \\
+\hline
+TE-02 & Server / backend failure & TE & 0.50 & 3 --- Critical & 50,000 \\
+\hline
+\rowcolor{red!5}
+TE-03 & Dependency version incomp. & TE & 0.70 & 3 --- Critical & 50,000 \\
+\hline
+TE-04 & Dataset unavailability & TE & 0.40 & 4 --- Catastrophic & 1,00,000 \\
+\hline
+\rowcolor{red!5}
+TE-05 & Docker build failures & TE & 0.60 & 3 --- Critical & 50,000 \\
+\hline
+TE-06 & WebSocket instability & TE & 0.45 & 2 --- Marginal & 10,000 \\
+\hline
+\rowcolor{red!5}
+TE-07 & Model overfitting (src\_port) & TE & 0.80 & 3 --- Critical & 50,000 \\
+\hline
+TE-08 & ADWIN drift false positives & TE & 0.85 & 2 --- Marginal & 10,000 \\
+\hline
+\rowcolor{red!5}
+TE-09 & Insufficient benign samples & TE & 0.90 & 2 --- Marginal & 10,000 \\
+\hline
+TE-10 & Large model files (GitHub) & TE & 0.65 & 1 --- Negligible & 1,000 \\
+\hline
+TE-11 & Processed data loss & TE & 0.30 & 2 --- Marginal & 10,000 \\
+\hline
+TE-12 & Next.js build failures & TE & 0.35 & 2 --- Marginal & 10,000 \\
+\hline
+\rowcolor{orange!5}
+BU-01 & Requirement changes & BU & 0.60 & 3 --- Critical & 50,000 \\
+\hline
+\rowcolor{orange!5}
+BU-02 & Academic deadline overrun & BU & 0.55 & 4 --- Catastrophic & 1,00,000 \\
+\hline
+BU-03 & Inflated accuracy claims & BU & 0.40 & 3 --- Critical & 50,000 \\
+\hline
+BU-04 & Dataset licensing restrictions & BU & 0.20 & 2 --- Marginal & 10,000 \\
+\hline
+BU-05 & Stakeholder metric misalign. & BU & 0.50 & 2 --- Marginal & 10,000 \\
+\hline
+\rowcolor{blue!5}
+ST-01 & Team member unavailability & ST & 0.45 & 3 --- Critical & 50,000 \\
+\hline
+ST-02 & Skill gaps (River framework) & ST & 0.70 & 2 --- Marginal & 10,000 \\
+\hline
+ST-03 & Git merge conflicts & ST & 0.55 & 1 --- Negligible & 1,000 \\
+\hline
+ST-04 & Uneven workload distribution & ST & 0.60 & 2 --- Marginal & 10,000 \\
+\hline
+ST-05 & Frontend--backend API mismatch & ST & 0.50 & 2 --- Marginal & 10,000 \\
+\hline
+\end{longtable}
+\normalsize
+
+\newpage
+
+% ============================================================================
+% 5. STEP 3 — RISK EXPOSURE CALCULATION
+% ============================================================================
+\section{Step 3 --- Risk Exposure Calculation (RE = P $\times$ C)}
+\label{sec:exposure}
+
+\begin{dangerbox}[Formula]
+\begin{center}
+{\Large $\mathbf{RE = P \times C}$}
+\end{center}
+Where \textbf{P} = Probability (0.0--1.0) and \textbf{C} = Estimated Cost Impact (INR)
+\end{dangerbox}
+
+\vspace{0.5em}
+
+\small
+\begin{longtable}{|c|c|p{4.5cm}|c|c|r|r|}
+\hline
+\rowcolor{lightgray}
+\textbf{Rank} & \textbf{Risk ID} & \textbf{Risk (Short)} & \textbf{Cat} & \textbf{P} & \textbf{C (INR)} & \textbf{RE (INR)} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{lightgray}
+\textbf{Rank} & \textbf{Risk ID} & \textbf{Risk (Short)} & \textbf{Cat} & \textbf{P} & \textbf{C (INR)} & \textbf{RE (INR)} \\
+\hline
+\endhead
+
+\rowcolor{red!12}
+1 & \textbf{TE-01} & \textbf{Data leakage in CICEVSE2024} & TE & 0.95 & 1,00,000 & \textbf{95,000} \\
+\hline
+\rowcolor{red!10}
+2 & \textbf{BU-02} & \textbf{Academic deadline overrun} & BU & 0.55 & 1,00,000 & \textbf{55,000} \\
+\hline
+\rowcolor{red!8}
+3 & \textbf{TE-07} & \textbf{Model overfitting (src\_port)} & TE & 0.80 & 50,000 & \textbf{40,000} \\
+\hline
+\rowcolor{red!8}
+4 & \textbf{TE-04} & \textbf{Dataset unavailability} & TE & 0.40 & 1,00,000 & \textbf{40,000} \\
+\hline
+\rowcolor{orange!10}
+5 & \textbf{TE-03} & \textbf{Dependency incompatibility} & TE & 0.70 & 50,000 & \textbf{35,000} \\
+\hline
+\rowcolor{orange!8}
+6 & \textbf{TE-05} & \textbf{Docker build failures} & TE & 0.60 & 50,000 & \textbf{30,000} \\
+\hline
+\rowcolor{orange!8}
+7 & \textbf{BU-01} & \textbf{Requirement changes} & BU & 0.60 & 50,000 & \textbf{30,000} \\
+\hline
+\rowcolor{orange!6}
+8 & \textbf{TE-02} & \textbf{Server / backend failure} & TE & 0.50 & 50,000 & \textbf{25,000} \\
+\hline
+9 & ST-01 & Team member unavailability & ST & 0.45 & 50,000 & 22,500 \\
+\hline
+10 & BU-03 & Inflated accuracy claims & BU & 0.40 & 50,000 & 20,000 \\
+\hline
+11 & TE-09 & Insufficient benign samples & TE & 0.90 & 10,000 & 9,000 \\
+\hline
+12 & TE-08 & ADWIN drift false positives & TE & 0.85 & 10,000 & 8,500 \\
+\hline
+13 & ST-02 & Skill gaps (River framework) & ST & 0.70 & 10,000 & 7,000 \\
+\hline
+14 & ST-04 & Uneven workload distribution & ST & 0.60 & 10,000 & 6,000 \\
+\hline
+15 & BU-05 & Stakeholder metric misalign. & BU & 0.50 & 10,000 & 5,000 \\
+\hline
+16 & ST-05 & Frontend--backend API mismatch & ST & 0.50 & 10,000 & 5,000 \\
+\hline
+17 & TE-06 & WebSocket instability & TE & 0.45 & 10,000 & 4,500 \\
+\hline
+18 & TE-12 & Next.js build failures & TE & 0.35 & 10,000 & 3,500 \\
+\hline
+19 & TE-11 & Processed data loss & TE & 0.30 & 10,000 & 3,000 \\
+\hline
+20 & BU-04 & Dataset licensing restrictions & BU & 0.20 & 10,000 & 2,000 \\
+\hline
+21 & TE-10 & Large model files (GitHub) & TE & 0.65 & 1,000 & 650 \\
+\hline
+22 & ST-03 & Git merge conflicts & ST & 0.55 & 1,000 & 550 \\
+\hline
+\end{longtable}
+\normalsize
+
+\newpage
+
+% ============================================================================
+% 6. STEP 4 — RISK RANKING & FIRST-ORDER PRIORITIZATION
+% ============================================================================
+\section{Step 4 --- Risk Ranking \& First-Order Prioritization}
+\label{sec:ranking}
+
+\subsection{First-Order Prioritization Criteria}
+
+\begin{infobox}[First-Order Prioritization]
+Risks are classified into the \textbf{first-order priority} group if they satisfy \textbf{BOTH} conditions:
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Highly Probable:} P $\geq$ 0.50
+    \item \textbf{Highly Impactful:} Impact rating $\geq$ 3 (Critical or Catastrophic)
+\end{itemize}
+The \textbf{risk threshold} is set at \textbf{RE $\geq$ 25,000 INR}. Risks above this threshold require formal RMMM plans.
+\end{infobox}
+
+\subsection{First-Order Priority Risks (Above Threshold)}
+
+\small
+\begin{longtable}{|c|c|p{3.8cm}|c|c|c|r|c|}
+\hline
+\rowcolor{danger!15}
+\textbf{\#} & \textbf{Risk ID} & \textbf{Risk Description} & \textbf{Cat} & \textbf{P} & \textbf{Impact} & \textbf{RE (INR)} & \textbf{1st Order?} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{danger!15}
+\textbf{\#} & \textbf{Risk ID} & \textbf{Risk Description} & \textbf{Cat} & \textbf{P} & \textbf{Impact} & \textbf{RE (INR)} & \textbf{1st Order?} \\
+\hline
+\endhead
+
+\rowcolor{red!8}
+1 & TE-01 & Data leakage in CICEVSE2024 & TE & 0.95 & Catastrophic (4) & 95,000 & \cmark{} Yes \\
+\hline
+\rowcolor{red!6}
+2 & BU-02 & Academic deadline overrun & BU & 0.55 & Catastrophic (4) & 55,000 & \cmark{} Yes \\
+\hline
+\rowcolor{orange!8}
+3 & TE-07 & Model overfitting (src\_port) & TE & 0.80 & Critical (3) & 40,000 & \cmark{} Yes \\
+\hline
+\rowcolor{orange!6}
+4 & TE-04 & Dataset unavailability & TE & 0.40 & Catastrophic (4) & 40,000 & \wmark{} Borderline \\
+\hline
+\rowcolor{orange!6}
+5 & TE-03 & Dependency incompatibility & TE & 0.70 & Critical (3) & 35,000 & \cmark{} Yes \\
+\hline
+\rowcolor{yellow!10}
+6 & TE-05 & Docker build failures & TE & 0.60 & Critical (3) & 30,000 & \cmark{} Yes \\
+\hline
+\rowcolor{yellow!10}
+7 & BU-01 & Requirement changes & BU & 0.60 & Critical (3) & 30,000 & \cmark{} Yes \\
+\hline
+\rowcolor{yellow!8}
+8 & TE-02 & Server / backend failure & TE & 0.50 & Critical (3) & 25,000 & \cmark{} Yes \\
+\hline
+\end{longtable}
+\normalsize
+
+\subsection{Below-Threshold Risks (Monitor Only)}
+
+Risks below the 25,000 INR threshold are tracked passively and revisited if conditions change:
+
+\small
+\begin{longtable}{|c|p{4.5cm}|r|p{5cm}|}
+\hline
+\rowcolor{lightgray}
+\textbf{Risk ID} & \textbf{Risk Description} & \textbf{RE (INR)} & \textbf{Action} \\
+\hline
+\endfirsthead
+
+ST-01 & Team member unavailability & 22,500 & Monitor; escalate if team drops to $<$3 \\
+\hline
+BU-03 & Inflated accuracy claims & 20,000 & Monitor; address in paper review \\
+\hline
+TE-09 & Insufficient benign samples & 9,000 & Accept; document as known limitation \\
+\hline
+TE-08 & ADWIN drift false positives & 8,500 & Accept; characterised in findings \\
+\hline
+ST-02 & Skill gaps (River framework) & 7,000 & Monitor; pair programming mitigates \\
+\hline
+ST-04 & Uneven workload distribution & 6,000 & Monitor; weekly redistribution reviews \\
+\hline
+BU-05 & Stakeholder metric misalignment & 5,000 & Monitor; add accuracy alongside macro-$F_1$ \\
+\hline
+ST-05 & Frontend--backend API mismatch & 5,000 & Monitor; OpenAPI spec enforced \\
+\hline
+TE-06 & WebSocket instability & 4,500 & Monitor; auto-reconnect implemented \\
+\hline
+TE-12 & Next.js build failures & 3,500 & Monitor; \col{.next/} in \col{.gitignore} \\
+\hline
+TE-11 & Processed data loss & 3,000 & Monitor; Makefile regeneration available \\
+\hline
+BU-04 & Dataset licensing restrictions & 2,000 & Accept; academic use compliant \\
+\hline
+TE-10 & Large model files (GitHub) & 650 & Accept; \col{.gitignore} blocks \col{.pkl} \\
+\hline
+ST-03 & Git merge conflicts & 550 & Accept; feature-branch workflow prevents \\
+\hline
+\end{longtable}
+\normalsize
+
+\newpage
+
+% ============================================================================
+% 7. STEP 5 — RMMM PLANS FOR TOP-PRIORITY RISKS
+% ============================================================================
+\section{Step 5 --- RMMM Plans for Top-Priority Risks}
+\label{sec:rmmm}
+
+Detailed RMMM plans are prepared for the \textbf{8 first-order priority risks} (RE $\geq$ 25,000 INR).
+
+% ---- RMMM Plan #1 ----
+\subsection{RMMM Plan \#1 --- TE-01: Data Leakage in CICEVSE2024}
+
+\begin{center}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\rowcolor{red!10}
+\textbf{Attribute} & \textbf{Detail} \\
+\hline
+\textbf{Risk ID} & TE-01 \\
+\hline
+\textbf{Risk} & Capture-session timestamp columns (\col{bidirectional\_first/last\_seen\_ms}, \col{src2dst\_first/last\_seen\_ms}, \col{dst2src\_first/last\_seen\_ms}) act as class-label proxies, inflating model accuracy to 0.9976 on a single column \\
+\hline
+\textbf{Probability} & 0.95 (confirmed via empirical testing) \\
+\hline
+\textbf{Impact} & 4 --- Catastrophic (all reported evaluation numbers are invalid) \\
+\hline
+\textbf{RE} & 95,000 INR \\
+\hline
+\end{tabular}
+\normalsize
+\end{center}
+
+\subsubsection*{Mitigation (Avoidance)}
+\begin{itemize}[leftmargin=*]
+    \item Drop all six absolute epoch-millisecond timestamp columns in \col{src/data\_prep/preprocess.py} before any model training
+    \item Implement an automated leakage audit script (\col{src/reproduction/replay\_reference\_preprocessing.py}) that runs a single-column decision tree probe on every feature and flags any column with accuracy $>$ 0.50
+    \item Add the \col{src\_port} controlled experiment (\col{src/reproduction/srcport\_control.py}) to detect residual ephemeral-port fingerprints
+    \item Document the four findings explicitly in the research paper and findings document
+\end{itemize}
+
+\subsubsection*{Monitoring (Tracking)}
+\begin{itemize}[leftmargin=*]
+    \item Run the leakage probe script as part of the CI pipeline on every change to the preprocessing code
+    \item Track feature importance distributions: if any single feature exceeds 15\% importance in Random Forest, flag for manual review
+    \item Monitor the gap between accuracy and macro-$F_1$ --- a gap $>$ 0.25 suggests class-distribution masking genuine poor performance
+\end{itemize}
+
+\subsubsection*{Management (Contingency)}
+\begin{itemize}[leftmargin=*]
+    \item If a new leakage vector is discovered post-correction, re-run the full 3-seed evaluation pipeline (\col{src/evaluation/run\_experiments.py}) and update all reported numbers
+    \item Maintain the $2 \times 2$ ablation script to rapidly verify any feature-level leakage
+    \item Keep the \col{data/reproduction/} directory to preserve before/after evidence
+\end{itemize}
+
+% ---- RMMM Plan #2 ----
+\subsection{RMMM Plan \#2 --- BU-02: Academic Deadline Overrun}
+
+\begin{center}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\rowcolor{orange!10}
+\textbf{Attribute} & \textbf{Detail} \\
+\hline
+\textbf{Risk ID} & BU-02 \\
+\hline
+\textbf{Risk} & Failing to deliver all documentation (SRS, RMMM, research paper, project management) and working software by the academic deadline \\
+\hline
+\textbf{Probability} & 0.55 \\
+\hline
+\textbf{Impact} & 4 --- Catastrophic (academic failure; re-submission required) \\
+\hline
+\textbf{RE} & 55,000 INR \\
+\hline
+\end{tabular}
+\normalsize
+\end{center}
+
+\subsubsection*{Mitigation (Avoidance)}
+\begin{itemize}[leftmargin=*]
+    \item Phase-wise timeline with hard milestones (Phase 1: Data \& preprocessing by Aug 20; Phase 2: Model training by Sep 5; Phase 3: Dashboard \& API by Sep 18; Phase 4: Documentation by Sep 25)
+    \item Use the Gantt chart in the project management document as the single source of truth for schedule tracking
+    \item Implement ``documentation-as-you-go'' --- each feature branch includes its own docs update before merge
+    \item Prioritise core deliverables (corrected benchmarks, research paper) over nice-to-have features
+\end{itemize}
+
+\subsubsection*{Monitoring (Tracking)}
+\begin{itemize}[leftmargin=*]
+    \item Weekly stand-up meetings (every Monday) to assess progress against milestones
+    \item GitHub project board with columns: Backlog $\to$ In Progress $\to$ Review $\to$ Done
+    \item Track the number of open PRs and unmerged feature branches weekly
+\end{itemize}
+
+\subsubsection*{Management (Contingency)}
+\begin{itemize}[leftmargin=*]
+    \item If behind schedule by $>$ 5 days at any milestone, drop lowest-priority features (e.g., attack simulation console polish, extra seed runs)
+    \item Pre-prepare minimal viable documentation that can be expanded later
+    \item Assign a documentation lead (Mukta Varak) responsible for final compilation
+\end{itemize}
+
+% ---- RMMM Plan #3 ----
+\subsection{RMMM Plan \#3 --- TE-07: Model Overfitting to src\_port Artifact}
+
+\begin{center}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\rowcolor{orange!10}
+\textbf{Attribute} & \textbf{Detail} \\
+\hline
+\textbf{Risk ID} & TE-07 \\
+\hline
+\textbf{Risk} & Ephemeral source ports are allocated near-sequentially by the OS, forming contiguous bands within each capture session. Tree-based models memorise these bands, inflating accuracy by up to 0.17 (Decision Tree) \\
+\hline
+\textbf{Probability} & 0.80 \\
+\hline
+\textbf{Impact} & 3 --- Critical (misleading model comparison; publication integrity at risk) \\
+\hline
+\textbf{RE} & 40,000 INR \\
+\hline
+\end{tabular}
+\normalsize
+\end{center}
+
+\subsubsection*{Mitigation (Avoidance)}
+\begin{itemize}[leftmargin=*]
+    \item Drop \col{src\_port} from the feature set in the \col{extended} configuration of \col{preprocess.py}
+    \item Run the controlled measurement (\col{src/reproduction/srcport\_control.py}) showing RF and DT convergence after removal
+    \item Use the \col{extended} (no \col{src\_port}) configuration for all headline numbers
+    \item Document Finding 4 with before/after comparison in the research paper
+\end{itemize}
+
+\subsubsection*{Monitoring (Tracking)}
+\begin{itemize}[leftmargin=*]
+    \item Compare Decision Tree vs.\ Random Forest macro-$F_1$: if gap $>$ 0.05, suspect a memorisation artifact and investigate
+    \item Track feature importance of \col{src\_port} if it is re-introduced for any experimental variant
+\end{itemize}
+
+\subsubsection*{Management (Contingency)}
+\begin{itemize}[leftmargin=*]
+    \item If additional ephemeral-port-like features are discovered, apply the same controlled ablation methodology
+    \item Maintain the \col{srcport\_control.py} script as a template for future fingerprint detection
+\end{itemize}
+
+% ---- RMMM Plan #4 ----
+\subsection{RMMM Plan \#4 --- TE-04: Dataset Unavailability or Corruption}
+
+\begin{center}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\rowcolor{red!10}
+\textbf{Attribute} & \textbf{Detail} \\
+\hline
+\textbf{Risk ID} & TE-04 \\
+\hline
+\textbf{Risk} & The 2.4\,GB CICEVSE2024 dataset hosted on Google Drive becomes unavailable (link expiry, quota exceeded, CIC server down) or corrupted during download \\
+\hline
+\textbf{Probability} & 0.40 \\
+\hline
+\textbf{Impact} & 4 --- Catastrophic (all ML training blocked; no alternative dataset) \\
+\hline
+\textbf{RE} & 40,000 INR \\
+\hline
+\end{tabular}
+\normalsize
+\end{center}
+
+\subsubsection*{Mitigation (Avoidance)}
+\begin{itemize}[leftmargin=*]
+    \item Download dataset immediately at project start (Aug 05) --- done \cmark{}
+    \item Maintain at least two local copies of the raw dataset across different team members' machines
+    \item Store the dataset URL securely in \col{.env} (never hardcoded in code or docs)
+    \item Verify file integrity with checksums after download (documented in \col{docs/dataset\_manifest.json})
+\end{itemize}
+
+\subsubsection*{Monitoring (Tracking)}
+\begin{itemize}[leftmargin=*]
+    \item Test the download URL monthly; if it returns 404, escalate immediately
+    \item Monitor \col{data/raw/} directory for unexpected file size changes
+\end{itemize}
+
+\subsubsection*{Management (Contingency)}
+\begin{itemize}[leftmargin=*]
+    \item If the Google Drive link expires, contact the Canadian Institute for Cybersecurity for a replacement link
+    \item The processed data can be regenerated from raw CSVs via \col{make data-process}, so only the raw files need backup
+    \item As a last resort, the \col{evaluation\_results/} directory contains pre-computed metrics that allow documentation to proceed even without re-training
+\end{itemize}
+
+% ---- RMMM Plan #5 ----
+\subsection{RMMM Plan \#5 --- TE-03: Dependency Version Incompatibility}
+
+\begin{center}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\rowcolor{orange!10}
+\textbf{Attribute} & \textbf{Detail} \\
+\hline
+\textbf{Risk ID} & TE-03 \\
+\hline
+\textbf{Risk} & River's streaming ML API changed materially around v0.21; scikit-learn's tree-splitting behaviour shifts across minor releases; unpinned dependencies produce unreproducible results \\
+\hline
+\textbf{Probability} & 0.70 \\
+\hline
+\textbf{Impact} & 3 --- Critical (evaluation numbers become unreproducible; paper claims invalidated) \\
+\hline
+\textbf{RE} & 35,000 INR \\
+\hline
+\end{tabular}
+\normalsize
+\end{center}
+
+\subsubsection*{Mitigation (Avoidance)}
+\begin{itemize}[leftmargin=*]
+    \item Pin all dependency versions exactly in \col{requirements.txt} (e.g., \col{river==0.26.1}, \col{scikit-learn==1.8.0}, \col{numpy==2.4.4})
+    \item Document the verified environment (Python 3.13.12, macOS 26.5, arm64) in \col{requirements.txt} header comments
+    \item Use virtual environments (\col{.venv}) to isolate project dependencies from system packages
+    \item Docker container locks the exact environment for deployment
+\end{itemize}
+
+\subsubsection*{Monitoring (Tracking)}
+\begin{itemize}[leftmargin=*]
+    \item Run \col{pip freeze} after any dependency change and diff against \col{requirements.txt}
+    \item CI pipeline runs \col{pip install -r requirements.txt} and executes a smoke test on every PR
+    \item Track River and scikit-learn changelogs for breaking changes
+\end{itemize}
+
+\subsubsection*{Management (Contingency)}
+\begin{itemize}[leftmargin=*]
+    \item If a dependency upgrade is required, create a dedicated branch, re-run the full 3-seed evaluation, and verify all numbers match before merging
+    \item Maintain the Docker image as a ``known-good'' reproducible environment
+    \item The \col{Makefile} provides \col{make setup} for one-command environment recreation
+\end{itemize}
+
+% ---- RMMM Plan #6 ----
+\subsection{RMMM Plan \#6 --- TE-05: Docker Build Failures (Rust/C++)}
+
+\begin{center}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\rowcolor{orange!10}
+\textbf{Attribute} & \textbf{Detail} \\
+\hline
+\textbf{Risk ID} & TE-05 \\
+\hline
+\textbf{Risk} & River's \col{\_river\_rust} extension requires Rust toolchain compilation; multi-stage Docker builds lose dynamically linked libraries, causing \col{ModuleNotFoundError} at runtime \\
+\hline
+\textbf{Probability} & 0.60 \\
+\hline
+\textbf{Impact} & 3 --- Critical (backend cannot start; no inference possible; demo fails) \\
+\hline
+\textbf{RE} & 30,000 INR \\
+\hline
+\end{tabular}
+\normalsize
+\end{center}
+
+\subsubsection*{Mitigation (Avoidance)}
+\begin{itemize}[leftmargin=*]
+    \item Use single-stage Docker build (\col{python:3.10-slim} base) to preserve all compilation artifacts
+    \item Install Rust via \col{rustup} during build, compile River, then uninstall Rust toolchain to reduce image size
+    \item Pin the Docker base image version to prevent upstream OS-level changes
+    \item Test Docker build on every release tag
+\end{itemize}
+
+\subsubsection*{Monitoring (Tracking)}
+\begin{itemize}[leftmargin=*]
+    \item Add Docker build to CI/CD pipeline --- any build failure triggers immediate notification
+    \item Track Docker image size to detect bloat from unnecessary build artifacts
+    \item Monitor River's release notes for changes to the Rust compilation process
+\end{itemize}
+
+\subsubsection*{Management (Contingency)}
+\begin{itemize}[leftmargin=*]
+    \item If single-stage build becomes impractical (image too large), investigate copying the compiled \col{.so} file from a builder stage
+    \item Maintain a pre-built Docker image on a team member's registry as a fallback
+    \item For local development, provide \col{make setup} as a non-Docker alternative
+\end{itemize}
+
+% ---- RMMM Plan #7 ----
+\subsection{RMMM Plan \#7 --- BU-01: Requirement Changes Mid-Project}
+
+\begin{center}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\rowcolor{orange!10}
+\textbf{Attribute} & \textbf{Detail} \\
+\hline
+\textbf{Risk ID} & BU-01 \\
+\hline
+\textbf{Risk} & Scope creep beyond SRS v1.2 baseline --- e.g., adding LSTM sequence models, packet-level analysis, host-based IDS, or power consumption fusion during the 52-day window \\
+\hline
+\textbf{Probability} & 0.60 \\
+\hline
+\textbf{Impact} & 3 --- Critical (diverts resources from core deliverables; delays deadline) \\
+\hline
+\textbf{RE} & 30,000 INR \\
+\hline
+\end{tabular}
+\normalsize
+\end{center}
+
+\subsubsection*{Mitigation (Avoidance)}
+\begin{itemize}[leftmargin=*]
+    \item Freeze requirements after SRS v1.2 approval --- any new feature request goes to ``Phase 2 Backlog''
+    \item Document the LSTM warning explicitly in the research paper Limitations section
+    \item Maintain strict adherence to the defined epics and user stories in the project management document
+\end{itemize}
+
+\subsubsection*{Monitoring (Tracking)}
+\begin{itemize}[leftmargin=*]
+    \item Track new feature requests in GitHub Issues with a \col{scope-change} label
+    \item Weekly scope review: count the number of unplanned tasks added vs.\ planned tasks completed
+    \item If the ratio of unplanned/planned $>$ 0.3, trigger a formal scope review meeting
+\end{itemize}
+
+\subsubsection*{Management (Contingency)}
+\begin{itemize}[leftmargin=*]
+    \item If a requirement change is unavoidable, apply MoSCoW prioritisation: Must-have, Should-have, Could-have, Won't-have
+    \item Drop the lowest-priority existing feature to accommodate the new requirement
+    \item Document the scope change and its impact on the timeline in the project management document
+\end{itemize}
+
+% ---- RMMM Plan #8 ----
+\subsection{RMMM Plan \#8 --- TE-02: Server / Backend Failure}
+
+\begin{center}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\rowcolor{yellow!15}
+\textbf{Attribute} & \textbf{Detail} \\
+\hline
+\textbf{Risk ID} & TE-02 \\
+\hline
+\textbf{Risk} & FastAPI backend crashes at runtime due to model loading failures (corrupted \col{.pkl}), memory exhaustion from loading multiple large models simultaneously, or unhandled exceptions in prediction endpoints \\
+\hline
+\textbf{Probability} & 0.50 \\
+\hline
+\textbf{Impact} & 3 --- Critical (dashboard offline; live demo fails; no real-time detection) \\
+\hline
+\textbf{RE} & 25,000 INR \\
+\hline
+\end{tabular}
+\normalsize
+\end{center}
+
+\subsubsection*{Mitigation (Avoidance)}
+\begin{itemize}[leftmargin=*]
+    \item Dynamic Model Registry with \col{try/except} fault tolerance --- if one model fails to load, others continue serving
+    \item Memory-map large \col{.pkl} files where possible to reduce RAM footprint
+    \item Implement health-check endpoint (\col{/health}) that reports status of each loaded model
+    \item Set Uvicorn worker count based on available memory (1 worker for development, scale for production)
+\end{itemize}
+
+\subsubsection*{Monitoring (Tracking)}
+\begin{itemize}[leftmargin=*]
+    \item Health-check endpoint polled every 60 seconds by the frontend dashboard
+    \item Log model loading status and memory usage at startup
+    \item Monitor Docker container resource usage (CPU, RAM) via \col{docker stats}
+\end{itemize}
+
+\subsubsection*{Management (Contingency)}
+\begin{itemize}[leftmargin=*]
+    \item If a specific model consistently fails, remove it from the \col{saved\_models/} directory and serve predictions from remaining models
+    \item Implement automatic container restart via Docker \col{--restart=unless-stopped} flag
+    \item Pre-compute evaluation results so the dashboard can display static data as a fallback when backend is down
+\end{itemize}
+
+\newpage
+
+% ============================================================================
+% 8. RISK INFORMATION SHEETS
+% ============================================================================
+\section{Risk Information Sheets}
+\label{sec:infosheet}
+
+Detailed Risk Information Sheets for the top 3 risks:
+
+\vspace{1em}
+
+% ---- Risk Info Sheet: TE-01 ----
+\begin{risksheet}[Risk Information Sheet --- TE-01: Data Leakage in CICEVSE2024]
+
+\begin{tabular}{@{}p{3.5cm}p{10cm}@{}}
+\textbf{Risk ID:} & TE-01 \\[0.3em]
+\textbf{Date Identified:} & September 2026 \\[0.3em]
+\textbf{Reported By:} & Shardul Chogale (ML Pipelining Lead) \\[0.3em]
+\textbf{Category:} & Technical (TE) \\[0.3em]
+\textbf{Probability:} & \textcolor{highrisk}{\textbf{0.95 (Very High --- empirically confirmed)}} \\[0.3em]
+\textbf{Impact:} & \textcolor{highrisk}{\textbf{4 --- Catastrophic (1,00,000 INR)}} \\[0.3em]
+\textbf{Risk Exposure:} & \textcolor{highrisk}{\textbf{95,000 INR}} \\[0.3em]
+\textbf{Priority:} & \textbf{\#1 (First-Order)} \\
+\end{tabular}
+
+\vspace{0.5em}
+\textbf{Description:}\\
+Six absolute epoch-millisecond timestamp columns in the CICEVSE2024 dataset act as capture-session identifiers. A \col{DecisionTree(max\_depth=25)} trained on \col{bidirectional\_first\_seen\_ms} alone achieves 0.9976 accuracy on the 15-class target --- exceeding the published 0.9840. The reference preprocessing retains all six timestamps while dropping \col{dst\_port}, the legitimate reconnaissance feature.
+
+\vspace{0.5em}
+\textbf{Root Cause:}\\
+Each attack class was captured in a dedicated pcap file at a distinct wall-clock time. The timestamps encode ``when'' data was recorded, not ``what'' the traffic did. 39.8\% of Random Forest feature importance was on timestamps.
+
+\vspace{0.5em}
+\textbf{Mitigation Applied:}
+\begin{itemize}[leftmargin=*, nosep]
+    \item Drop all 6 timestamp columns in preprocessing pipeline
+    \item Drop \col{src\_port} as secondary fingerprint
+    \item Retain \col{dst\_port} for legitimate reconnaissance signal
+    \item Run leakage probe on every preprocessing change
+    \item Document as Finding 1 in research paper
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Current Status:} \cmark{} \textcolor{accent}{\textbf{MITIGATED}} --- All timestamps dropped; corrected benchmarks published. Leakage audit documented in \col{docs/leakage\_audit\_results.md}.
+\end{risksheet}
+
+\vspace{1.5em}
+
+% ---- Risk Info Sheet: BU-02 ----
+\begin{risksheet}[Risk Information Sheet --- BU-02: Academic Deadline Overrun]
+
+\begin{tabular}{@{}p{3.5cm}p{10cm}@{}}
+\textbf{Risk ID:} & BU-02 \\[0.3em]
+\textbf{Date Identified:} & August 2026 \\[0.3em]
+\textbf{Reported By:} & Mukta Varak (Cloud Deployment Lead) \\[0.3em]
+\textbf{Category:} & Business (BU) \\[0.3em]
+\textbf{Probability:} & \textcolor{medrisk}{\textbf{0.55 (Moderate --- tight but feasible)}} \\[0.3em]
+\textbf{Impact:} & \textcolor{highrisk}{\textbf{4 --- Catastrophic (1,00,000 INR)}} \\[0.3em]
+\textbf{Risk Exposure:} & \textcolor{highrisk}{\textbf{55,000 INR}} \\[0.3em]
+\textbf{Priority:} & \textbf{\#2 (First-Order)} \\
+\end{tabular}
+
+\vspace{0.5em}
+\textbf{Description:}\\
+The project has a fixed academic deadline of 25 September 2026. Deliverables include: working software (FastAPI + Next.js), SRS document, RMMM document, project management document, research paper (IEEE format), and presentation. A 52-day development window with a 4-person team creates tight schedule constraints.
+
+\vspace{0.5em}
+\textbf{Root Cause:}\\
+Parallel development across ML pipeline, API backend, frontend dashboard, and 5+ documentation deliverables with only 4 team members. Leakage discovery (mid-project) forced a complete re-evaluation of all model results.
+
+\vspace{0.5em}
+\textbf{Mitigation Applied:}
+\begin{itemize}[leftmargin=*, nosep]
+    \item Phase-wise milestones with weekly progress reviews
+    \item Gantt chart tracking in project management document
+    \item Documentation-as-you-go policy for each feature branch
+    \item MoSCoW prioritisation for feature scope control
+    \item Dedicated documentation lead assignment
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Current Status:} \wmark{} \textcolor{warning}{\textbf{ACTIVE --- BEING MONITORED}} --- Core software delivered. Research paper draft v1 submitted via PR \#68. RMMM and remaining docs in progress.
+\end{risksheet}
+
+\vspace{1.5em}
+
+% ---- Risk Info Sheet: TE-07 ----
+\begin{risksheet}[Risk Information Sheet --- TE-07: Model Overfitting to src\_port Artifact]
+
+\begin{tabular}{@{}p{3.5cm}p{10cm}@{}}
+\textbf{Risk ID:} & TE-07 \\[0.3em]
+\textbf{Date Identified:} & September 2026 \\[0.3em]
+\textbf{Reported By:} & Shardul Chogale (ML Pipelining Lead) \\[0.3em]
+\textbf{Category:} & Technical (TE) \\[0.3em]
+\textbf{Probability:} & \textcolor{medrisk}{\textbf{0.80 (High --- inherent to OS port allocation)}} \\[0.3em]
+\textbf{Impact:} & \textcolor{medrisk}{\textbf{3 --- Critical (50,000 INR)}} \\[0.3em]
+\textbf{Risk Exposure:} & \textcolor{medrisk}{\textbf{40,000 INR}} \\[0.3em]
+\textbf{Priority:} & \textbf{\#3 (First-Order)} \\
+\end{tabular}
+
+\vspace{0.5em}
+\textbf{Description:}\\
+Ephemeral source ports (\col{src\_port}) are allocated near-sequentially by the operating system, forming contiguous bands within each capture session. Decision Tree exploits this via depth-based band memorisation, gaining a 0.17 advantage over Random Forest. After removal, both models converge to identical macro-$F_1 \approx 0.514$.
+
+\vspace{0.5em}
+\textbf{Root Cause:}\\
+OS-level sequential ephemeral port allocation creates capture-session-specific port bands. A deep tree can split these bands precisely, but a shallower ensemble cannot. The DT's apparent superiority was entirely memorisation.
+
+\vspace{0.5em}
+\textbf{Mitigation Applied:}
+\begin{itemize}[leftmargin=*, nosep]
+    \item Drop \col{src\_port} from the \col{extended} feature configuration
+    \item Run \col{srcport\_control.py} to verify model convergence
+    \item Use convergence as a diagnostic for future fingerprints
+    \item Document as Finding 4 in the research paper
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Current Status:} \cmark{} \textcolor{accent}{\textbf{MITIGATED}} --- \col{src\_port} dropped; DT and RF convergence confirmed across three random seeds.
+\end{risksheet}
+
+\newpage
+
+% ============================================================================
+% 9. THRESHOLD & OVERALL RISK TABLE
+% ============================================================================
+\section{Threshold \& Overall Risk Table}
+\label{sec:threshold}
+
+\subsection{Risk Exposure Threshold Diagram}
+
+The following bar chart visualises all 22 risks by their Risk Exposure values, with the threshold line at 25,000 INR:
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    width=14cm,
+    height=16cm,
+    xlabel={Risk Exposure (INR)},
+    symbolic y coords={
+        ST-03, TE-10, BU-04, TE-11, TE-12, TE-06,
+        ST-05, BU-05, ST-04, ST-02, TE-08, TE-09,
+        BU-03, ST-01, TE-02, BU-01, TE-05, TE-03,
+        TE-04, TE-07, BU-02, TE-01
+    },
+    ytick=data,
+    y tick label style={font=\small},
+    x tick label style={font=\small},
+    xmin=0, xmax=100000,
+    bar width=8pt,
+    nodes near coords,
+    nodes near coords style={font=\tiny, anchor=west},
+    extra x ticks={25000},
+    extra x tick labels={},
+    extra x tick style={
+        grid=major,
+        grid style={red, thick, dashed},
+    },
+    legend style={at={(0.95,0.05)}, anchor=south east, font=\small},
+]
+% Above threshold (red/orange bars)
+\addplot[fill=highrisk!80, draw=highrisk] coordinates {
+    (95000, TE-01)
+    (55000, BU-02)
+    (40000, TE-07)
+    (40000, TE-04)
+    (35000, TE-03)
+    (30000, TE-05)
+    (30000, BU-01)
+    (25000, TE-02)
+};
+% Below threshold (gray bars)
+\addplot[fill=gray!40, draw=gray!60] coordinates {
+    (22500, ST-01)
+    (20000, BU-03)
+    (9000, TE-09)
+    (8500, TE-08)
+    (7000, ST-02)
+    (6000, ST-04)
+    (5000, BU-05)
+    (5000, ST-05)
+    (4500, TE-06)
+    (3500, TE-12)
+    (3000, TE-11)
+    (2000, BU-04)
+    (650, TE-10)
+    (550, ST-03)
+};
+\legend{Above Threshold (RMMM Required), Below Threshold (Monitor Only)}
+\end{axis}
+% Threshold label
+\node[red, font=\small\bfseries, rotate=90] at (4.85, 14.5) {THRESHOLD (25{,}000)};
+\end{tikzpicture}
+\end{center}
+
+\newpage
+
+\subsection{Summary Statistics}
+
+\begin{center}
+\begin{tabular}{|p{6.5cm}|r|}
+\hline
+\rowcolor{primary!10}
+\textbf{Metric} & \textbf{Value} \\
+\hline
+Total risks identified & 22 \\
+\hline
+Technical risks (TE) & 12 \\
+\hline
+Business risks (BU) & 5 \\
+\hline
+Staff risks (ST) & 5 \\
+\hline
+First-order priority risks (above threshold) & 8 \\
+\hline
+Risks with RMMM plans & 8 \\
+\hline
+\textbf{Total combined risk exposure} & \textbf{5,52,200 INR} \\
+\hline
+Maximum single risk exposure & 95,000 (TE-01) \\
+\hline
+Minimum single risk exposure & 550 (ST-03) \\
+\hline
+Risks currently mitigated & 3 (TE-01, TE-07, TE-10) \\
+\hline
+Risks actively monitored & 5 (BU-02, TE-03, TE-05, BU-01, TE-02) \\
+\hline
+Risks accepted & 4 (TE-09, TE-08, BU-04, ST-03) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Risk Distribution by Category}
+
+\begin{center}
+\begin{tabular}{|l|c|r|r|}
+\hline
+\rowcolor{primary!10}
+\textbf{Category} & \textbf{Count} & \textbf{Combined RE (INR)} & \textbf{\% of Total RE} \\
+\hline
+Technical (TE) & 12 & 3,76,150 & 68.1\% \\
+\hline
+Business (BU) & 5 & 1,12,000 & 20.3\% \\
+\hline
+Staff (ST) & 5 & 64,050 & 11.6\% \\
+\hline
+\textbf{Total} & \textbf{22} & \textbf{5,52,200} & \textbf{100\%} \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+% ============================================================================
+% 10. REFERENCES
+% ============================================================================
+\section{References}
+\label{sec:references}
+
+\begin{enumerate}[leftmargin=*]
+    \item Pressman, R.S.\ \& Maxim, B.R.\ (2020). \textit{Software Engineering: A Practitioner's Approach}, 9th Edition. McGraw-Hill. --- Chapter 31: Risk Management.
+    \item Sommerville, I.\ (2016). \textit{Software Engineering}, 10th Edition. Pearson. --- Chapter 22: Project Management, Risk Management.
+    \item Makhmudov, F.\ et al.\ (2025). ``Online Machine Learning for Intrusion Detection in Electric Vehicle Charging Systems,'' \textit{Mathematics}, 13(5), 712. DOI: 10.3390/math13050712.
+    \item EVNet Sentinel Repository: \url{https://github.com/Mukta01/EVNet_Sentinel}
+    \item EVNet Sentinel Project Management Document v2.0 (internal).
+    \item EVNet Sentinel SRS v1.2 (internal).
+    \item Canadian Institute for Cybersecurity, ``CICEVSE2024 Dataset,'' University of New Brunswick, 2024. Available: \url{https://www.unb.ca/cic/datasets/}
+\end{enumerate}
+
+% ============================================================================
+% END OF DOCUMENT
+% ============================================================================
+\vfill
+\begin{center}
+\textcolor{primary}{\rule{0.5\textwidth}{1pt}}\\[0.5em]
+{\large\textbf{End of Document}}\\[0.3em]
+{\small EVNet Sentinel --- RMMM Document v1.0 --- September 2026}\\[0.2em]
+{\small Dept.\ of Computer Engineering, Vidyalankar Institute of Technology, Mumbai}
+\end{center}
+
+\end{document}
