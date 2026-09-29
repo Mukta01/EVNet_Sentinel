@@ -161,6 +161,50 @@ the reference implementation's 19-alias map. An earlier revision of this project
 depended on a pre-labelled private archive and could not rebuild the dataset from
 the public download; that step is now in version control.
 
+\subsection{Who attacks what}
+\label{sec:routes}
+
+The dataset's device table names the testbed hardware but not which device
+attacked which. Every flow record carries its source and destination MAC
+address, so the route of each capture can be read from the captures
+themselves (\col{src/reproduction/attack\_routes.py}).
+
+\begin{table}[h]
+\centering
+\caption{Attack routes in CICEVSE2024, from the MAC addresses in each of the
+         57 attack captures. In every capture outside the tiny ICMP files,
+         99--100\% of flows follow the listed route.}
+\begin{tabular}{llrl}
+\toprule
+\textbf{Attacker} & \textbf{Target} & \textbf{Captures} & \textbf{Attacks} \\
+\midrule
+Kali Linux PC (site wifi)       & EVSE-A & 24 & every type except UDP flood \\
+Kali Linux PC (site wifi)       & EVSE-B & 23 & every type except UDP flood and Slowloris \\
+Raspberry Pi (site wifi)        & EVSE-A, EVSE-B & 4 & UDP flood \\
+Compromised EV (ISO 15118 link) & EVSE-B & 6 & the six reconnaissance scans \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{finding}{Every attack targets a charging station}
+No capture targets the CSMS or the vehicle. Denial of service disrupts the
+CSMS only indirectly --- a flooded station cannot keep its OCPP link --- and
+that effect is not itself measured in the dataset. In six captures the
+\emph{vehicle} is the attacker, scanning EVSE-B through the charging cable.
+\end{finding}
+
+\noindent
+Traffic was recorded from a mirrored port on the testbed switch
+(\texttt{network toplogy\_updated.pdf} in the dataset). A detector trained on
+it is therefore a passive IDS: it observes a copy of the traffic and raises
+alerts; it does not sit in the path and cannot block. The project's
+simulation, landing page and response guidance are framed accordingly. Two
+details for reproducers: the UDP floods come from MAC
+\texttt{dc:a6:32:dc:27:d5}, one hex digit from the Readme's Raspberry Pi
+attacker (\texttt{\dots 25:d5}), which we treat as a typo in the Readme; and
+Slowloris was recorded against EVSE-A only.
+\repro{python3 src/reproduction/attack\_routes.py}
+
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{fig_pipeline.pdf}
@@ -803,6 +847,7 @@ dataset.
 \col{src/evaluation/response\_playbook.json}             & Response guidance per attack and role \\
 \col{src/evaluation/export\_paper\_data.py}              & Confusion matrices, feature separability, drift timeline (\texttt{frontend/data/paper.json}) \\
 \col{src/evaluation/make\_paper\_figures.py}             & Every figure in this document, from the same JSON as the dashboard \\
+\col{src/reproduction/attack\_routes.py}                 & Attacker and target of every capture, from its MAC addresses \\
 \bottomrule
 \end{tabularx}
 \end{table}
