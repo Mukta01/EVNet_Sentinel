@@ -1,0 +1,225 @@
+{
+  "_about": "Recommended response for each attack class EVNet Sentinel detects, split by who acts. These are standard defensive measures for each attack mechanism, adapted to an OCPP/ISO 15118 charging network. They are guidance for operators; they were not themselves tested in this project. Edit freely -- the dashboard and simulation console read this file through src/evaluation/export_insights.py.",
+  "roles": {
+    "owner": "Station owner / site operator",
+    "csms": "CSMS operator",
+    "analyst": "Network analyst"
+  },
+  "categories": {
+    "dos": {
+      "label": "Denial of service",
+      "summary": "Someone is trying to overwhelm a charging station or the management system so it stops responding.",
+      "impact": "Stations lose their OCPP link to the CSMS: heartbeats stop, sessions cannot be authorised or billed, and remote control (start, stop, reset, price updates) fails. Drivers see a station that will not start a charge.",
+      "actions": {
+        "owner": [
+          "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+          "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+        ],
+        "csms": [
+          "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+          "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+          "Hold off remote resets of affected stations until the flood stops — a reset during an attack just adds reconnect load."
+        ],
+        "analyst": [
+          "Identify the source address or addresses and block them at the edge firewall.",
+          "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+          "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+        ]
+      }
+    },
+    "recon": {
+      "label": "Reconnaissance",
+      "summary": "Someone is mapping the charging network — finding which devices exist, which ports are open, and what software they run. Nothing is broken yet, but this is usually the step before an attack.",
+      "impact": "No direct outage. The risk is what comes next: an attacker who knows the firmware version and open services can target a known vulnerability in the station or the CSMS.",
+      "actions": {
+        "owner": [
+          "Make sure station firmware is current — reconnaissance is typically looking for a known, unpatched weakness.",
+          "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+        ],
+        "csms": [
+          "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+          "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+        ],
+        "analyst": [
+          "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable — they call for different containment.",
+          "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+          "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+        ]
+      },
+      "uncertainty": "The detector reliably recognises that a scan is happening but often cannot tell which nmap mode it is — they emit nearly identical traffic. Respond to it as reconnaissance; do not wait for the exact scan type."
+    },
+    "benign": {
+      "label": "Normal traffic",
+      "summary": "Ordinary OCPP and charging traffic.",
+      "impact": "None.",
+      "actions": {
+        "owner": [],
+        "csms": [],
+        "analyst": []
+      }
+    }
+  },
+  "attacks": {
+    "SYN_Flood": {
+      "category": "dos",
+      "severity": "high",
+      "what": "Floods the target with TCP connection requests (SYN packets) that are never completed, filling the table of half-open connections so real stations cannot connect.",
+      "actions": {
+        "analyst": [
+          "Enable SYN cookies on the CSMS host (net.ipv4.tcp_syncookies=1) and shorten the SYN-RECEIVED timeout."
+        ],
+        "csms": [
+          "Expect OCPP reconnect storms once the flood ends; stagger station reconnection if the platform supports it."
+        ]
+      }
+    },
+    "TCP_Flood": {
+      "category": "dos",
+      "severity": "high",
+      "what": "Floods the target with established-looking TCP traffic to exhaust bandwidth and connection-handling capacity.",
+      "actions": {
+        "analyst": [
+          "Cap concurrent connections per source address and drop traffic from sources exceeding it."
+        ]
+      }
+    },
+    "UDP_Flood": {
+      "category": "dos",
+      "severity": "high",
+      "what": "Floods the target with UDP datagrams to saturate its link.",
+      "actions": {
+        "analyst": [
+          "OCPP runs over TCP. Charging stations need very little UDP (DNS, NTP) — rate-limit or drop all other inbound UDP to them."
+        ]
+      }
+    },
+    "SynonymousIP_Flood": {
+      "category": "dos",
+      "severity": "high",
+      "what": "Floods the target with packets whose source address is forged to match the target's own address, so the victim ends up replying to itself.",
+      "actions": {
+        "analyst": [
+          "Drop any inbound packet whose source address equals its destination, and apply anti-spoofing ingress filtering (BCP 38 / unicast reverse-path forwarding)."
+        ]
+      }
+    },
+    "PSHACK_Flood": {
+      "category": "dos",
+      "severity": "high",
+      "what": "Floods the target with TCP packets carrying PUSH and ACK flags that do not belong to any real connection, forcing it to process each one.",
+      "actions": {
+        "analyst": [
+          "Use a stateful firewall that drops TCP segments not belonging to a tracked connection."
+        ]
+      }
+    },
+    "ICMP_Flood": {
+      "category": "dos",
+      "severity": "medium",
+      "what": "Floods the target with ICMP echo (ping) requests.",
+      "actions": {
+        "analyst": [
+          "Rate-limit ICMP echo at the edge; charging stations do not need to answer ping from outside their segment."
+        ]
+      }
+    },
+    "ICMP_Fragmentation": {
+      "category": "dos",
+      "severity": "medium",
+      "what": "Sends fragmented ICMP packets that force the target to spend memory and CPU reassembling them.",
+      "actions": {
+        "analyst": [
+          "Drop fragmented ICMP at the edge and set conservative reassembly limits on exposed hosts."
+        ]
+      }
+    },
+    "Slowloris_Scan": {
+      "category": "dos",
+      "severity": "high",
+      "what": "Opens many connections to a web server and keeps each one alive by sending a request extremely slowly, until the server has no connections left for real clients. OCPP-J runs over WebSocket, which starts as an HTTP request, so the CSMS endpoint is exposed to this.",
+      "actions": {
+        "csms": [
+          "Put the OCPP WebSocket endpoint behind a reverse proxy with short header and body timeouts and a per-address connection cap."
+        ],
+        "analyst": [
+          "Look for many long-lived, near-idle connections from a single source — that pattern, not volume, is the signature."
+        ]
+      }
+    },
+    "TCP_Port_Scan": {
+      "category": "recon",
+      "severity": "medium",
+      "what": "Probes a range of ports to find which ones are open.",
+      "actions": {
+        "analyst": [
+          "Compare the scanned ports against what each station is supposed to expose; any unexpected open port is the finding."
+        ]
+      }
+    },
+    "SYN_Stealth_Scan": {
+      "category": "recon",
+      "severity": "medium",
+      "what": "A port scan that sends connection requests but never completes them, to avoid appearing in application logs.",
+      "actions": {
+        "analyst": [
+          "Application logs will show nothing for this one — rely on firewall and IDS logs to see its extent."
+        ]
+      }
+    },
+    "Service_Version_Detection": {
+      "category": "recon",
+      "severity": "medium",
+      "what": "Connects to open ports and asks each service what software and version it is running.",
+      "actions": {
+        "owner": [
+          "Remove version banners from station services where the vendor allows it."
+        ],
+        "analyst": [
+          "Check the versions that were exposed against known vulnerabilities."
+        ]
+      }
+    },
+    "OS_Fingerprinting": {
+      "category": "recon",
+      "severity": "medium",
+      "what": "Sends crafted packets and studies the replies to work out the target's operating system.",
+      "actions": {
+        "analyst": [
+          "Knowing the OS narrows which exploits apply — confirm the station's OS is patched."
+        ]
+      }
+    },
+    "Aggressive_Scan": {
+      "category": "recon",
+      "severity": "high",
+      "what": "nmap's -A mode: port scan, service versions, OS detection and default scripts together. Loud, fast and thorough.",
+      "actions": {
+        "analyst": [
+          "An aggressive scan returns a complete picture of the target in one pass; treat the scanned hosts as fully mapped."
+        ]
+      }
+    },
+    "Vulnerability_Scan": {
+      "category": "recon",
+      "severity": "critical",
+      "what": "Actively tests the target for known exploitable weaknesses. This is the closest reconnaissance gets to an attack.",
+      "actions": {
+        "owner": [
+          "Contact the station vendor: confirm the firmware has no known unpatched vulnerabilities."
+        ],
+        "csms": [
+          "Audit the scanned stations' configuration and credentials; rotate them if there is any doubt."
+        ],
+        "analyst": [
+          "Treat as an active incident. Isolate the source immediately and review the target hosts for signs of compromise."
+        ]
+      }
+    },
+    "Benign": {
+      "category": "benign",
+      "severity": "none",
+      "what": "Normal charging-network traffic.",
+      "actions": {}
+    }
+  }
+}

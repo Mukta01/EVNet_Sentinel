@@ -451,6 +451,123 @@ axis the way a tree can. That --- not non-linearity --- is what the original
 $0.9994$-versus-$0.3665$ gap was measuring.
 
 % ===========================================================================
+\section{Per-Attack Detection and Response}
+
+The results above answer ``how good is each model''. An operator needs a
+different answer: \emph{for this attack, does the system catch it, and which
+model should I trust to name it?} Every attack type was therefore fed to every
+model in 30 random batches of 50 unseen flows, repeated for
+each of the 3 independently trained model sets, and each verdict was scored
+at three levels:
+
+\begin{tightitem}
+  \item \textbf{Detected} --- flagged as malicious at all, rather than called benign;
+  \item \textbf{Category} --- placed in the right response category, denial of
+        service or reconnaissance;
+  \item \textbf{Exact} --- named as the exact attack class.
+\end{tightitem}
+
+\noindent
+The levels matter because they fail differently. A port scan reported as an
+aggressive scan is still a scan, and the correct response is the same; a port
+scan passed as benign is a genuine miss.
+\repro{make attack-test}
+
+\begin{table}[h]
+\centering
+\caption{Exact\,/\,category rate per attack and model, with the resulting
+         verdict: \textsc{id} names the attack ($\geq 0.90$ exact),
+         \textsc{cat} right category only, \textsc{det} flagged but wrong
+         category, \textsc{miss} passed as benign. For benign traffic the
+         failure is a false alarm: \textsc{ok} or \textsc{fa}. $^{*}$Fewer than
+         100 unseen flows; resampled, indicative only.}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lccccl}
+\toprule
+\textbf{Attack} & \textbf{RF} & \textbf{DT} & \textbf{LR} & \textbf{SVM} & \textbf{Best} \\
+\midrule
+PSHACK Flood & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & all tie \\
+SYN Flood & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & 0.98\,/\,1.00 \textsc{id} & 0.99\,/\,1.00 \textsc{id} & RF/DT \\
+Slowloris Scan & 0.82\,/\,0.82 \textsc{det} & 0.70\,/\,0.70 \textsc{det} & 0.52\,/\,0.64 \textsc{det} & 0.70\,/\,0.79 \textsc{det} & RF \\
+SynonymousIP Flood & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & all tie \\
+TCP Flood & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & all tie \\
+UDP Flood & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & 1.00\,/\,1.00 \textsc{id} & all tie \\
+ICMP Flood$^{*}$ & 0.74\,/\,0.74 \textsc{det} & 0.73\,/\,0.73 \textsc{det} & 0.49\,/\,0.56 \textsc{miss} & 0.44\,/\,0.51 \textsc{miss} & RF \\
+ICMP Fragmentation$^{*}$ & 0.49\,/\,0.81 \textsc{det} & 0.40\,/\,0.81 \textsc{det} & 0.58\,/\,0.81 \textsc{miss} & 0.46\,/\,0.82 \textsc{miss} & LR \\
+\midrule
+Aggressive Scan & 0.12\,/\,0.90 \textsc{det} & 0.15\,/\,0.90 \textsc{det} & 0.09\,/\,0.94 \textsc{cat} & 0.02\,/\,0.85 \textsc{det} & DT \\
+OS Fingerprinting & 0.41\,/\,0.88 \textsc{det} & 0.41\,/\,0.89 \textsc{det} & 0.02\,/\,0.95 \textsc{cat} & 0.01\,/\,0.86 \textsc{det} & RF/DT \\
+SYN Stealth Scan & 0.06\,/\,0.91 \textsc{cat} & 0.14\,/\,0.91 \textsc{cat} & 0.03\,/\,0.97 \textsc{cat} & 0.43\,/\,0.90 \textsc{det} & SVM \\
+Service Version Detection & 0.10\,/\,0.89 \textsc{det} & 0.13\,/\,0.90 \textsc{det} & 0.04\,/\,0.96 \textsc{cat} & 0.01\,/\,0.87 \textsc{det} & DT \\
+TCP Port Scan & 0.32\,/\,0.91 \textsc{cat} & 0.18\,/\,0.91 \textsc{cat} & 0.65\,/\,0.97 \textsc{cat} & 0.25\,/\,0.89 \textsc{det} & LR \\
+Vulnerability Scan & 0.13\,/\,0.92 \textsc{cat} & 0.17\,/\,0.92 \textsc{cat} & 0.20\,/\,0.97 \textsc{cat} & 0.26\,/\,0.91 \textsc{cat} & SVM \\
+\midrule
+Benign$^{*}$ & 0.98\,/\,0.98 \textsc{ok} & 0.88\,/\,0.88 \textsc{fa} & 0.54\,/\,0.54 \textsc{fa} & 0.41\,/\,0.41 \textsc{fa} & RF \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Mixed campaigns: 90 trials of four simultaneous attacks,
+         25 flows each, shuffled together.}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Model} & \textbf{Detected} & \textbf{Category} & \textbf{Exact} \\
+\midrule
+Random Forest & 1.000 & 0.932 & 0.564 \\
+Decision Tree & 1.000 & 0.923 & 0.560 \\
+Logistic Regression & 0.999 & 0.949 & 0.529 \\
+SVM & 1.000 & 0.920 & 0.560 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{finding}{The system does not fail silently}
+Across every mixed campaign, every model flagged at least 99.9\% of attack flows
+as malicious. No attack type with adequate test data is passed as normal
+traffic by the best model for it. Where the system is weak, it is weak at
+\emph{naming}, not at \emph{noticing}.
+\end{finding}
+
+\subsection{Which model for which attack}
+
+\begin{tightitem}
+  \item \textbf{Volumetric floods} (SYN, TCP, UDP, PSH-ACK, synonymous-IP) are
+        named exactly by all four models; they tie.
+  \item \textbf{Reconnaissance}: no model names scans reliably, but Logistic
+        Regression is best at recognising that traffic \emph{is} a scan --- the
+        right category on every scan type. Different models are best at naming
+        different scans, all at low absolute rates.
+  \item \textbf{Slowloris} is flagged but often misfiled: its long-lived,
+        near-idle connections resemble slow scans. The same effect runs the
+        other way --- Random Forest loses 8--11\,\% of every scan type to
+        Slowloris, which accounts for almost all cross-category error.
+  \item \textbf{False alarms} on benign traffic differ sharply: Random Forest
+        2\,\%, Decision Tree 12\,\%, Logistic Regression 46\,\%, SVM 59\,\% --- on only
+        12 unseen benign flows per model set, so indicative.
+\end{tightitem}
+
+\begin{finding}{Recommendation: Random Forest as the primary detector}
+Among the models that name attacks as well as the best one, Random Forest
+raises the fewest false alarms. Logistic Regression is a useful second opinion
+for the narrower question of whether traffic is a scan. Where the primary
+detector cannot reliably name an attack, the dashboard and simulation console
+respond at the category level, and report the category's severity range rather
+than a severity derived from an untrusted name.
+\end{finding}
+
+\subsection{Response guidance}
+
+For each attack type the system states what it is, why it matters for a
+charging network, and what the station owner, CSMS operator and network analyst
+should do --- held in \col{src/evaluation/response\_playbook.json}, shown on the
+dashboard and in the simulation console alongside every detection. These are
+standard defensive measures for each attack mechanism, adapted to OCPP and
+ISO~15118; they are operator guidance and were not themselves evaluated here.
+
+% ===========================================================================
 \section{Reproducibility}
 
 \begin{table}[h]
@@ -562,6 +679,8 @@ dataset.
 \col{src/reproduction/srcport\_control.py}               & The Finding 4 controlled measurement \\
 \col{src/reproduction/dataset\_manifest.py}              & Dataset fingerprint \\
 \col{src/models/arfadwin/train\_arfadwin.py}             & Prequential ARF + ADWIN, drift log with capture provenance \\
+\col{src/evaluation/attack\_test\_harness.py}            & Per-attack three-level tests, mixed campaigns, regression gates \\
+\col{src/evaluation/response\_playbook.json}             & Response guidance per attack and role \\
 \bottomrule
 \end{tabularx}
 \end{table}
