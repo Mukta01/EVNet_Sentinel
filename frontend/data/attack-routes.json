@@ -1,0 +1,533 @@
+{
+ "source": "src/reproduction/attack_routes.py",
+ "captures": {
+  "EVSE-A-Charging-Benign.csv": {
+   "benign": true
+  },
+  "EVSE-A-charging-Aggressive-scan.csv": {
+   "flows": 9999,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-icmp-flood.csv": {
+   "flows": 2,
+   "attributed": 0.5,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-icmp-fragmentation.csv": {
+   "flows": 11,
+   "attributed": 0.091,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-os-fingerprinting.csv": {
+   "flows": 4764,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-portscan.csv": {
+   "flows": 8117,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-push-ack-flood.csv": {
+   "flows": 65536,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-service-detection.csv": {
+   "flows": 3629,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-slowLoris-scan.csv": {
+   "flows": 1966,
+   "attributed": 0.999,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-syn-flood.csv": {
+   "flows": 65558,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-syn-stealth.csv": {
+   "flows": 8032,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-synonymous-ip.csv": {
+   "flows": 65548,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-tcp-flood.csv": {
+   "flows": 65547,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-udp-flood.csv": {
+   "flows": 7885,
+   "attributed": 0.997,
+   "sender": "rpi",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-charging-vulnerability-scan.csv": {
+   "flows": 9115,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-aggressive-scan.csv": {
+   "flows": 2333,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-benign.csv": {
+   "benign": true
+  },
+  "EVSE-A-idle-icmp-fragmentation.csv": {
+   "flows": 5,
+   "attributed": 0.2,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-os-fingerprinting.csv": {
+   "flows": 3617,
+   "attributed": 0.994,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-portscan.csv": {
+   "flows": 4975,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-service-detection.csv": {
+   "flows": 3512,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-slowloris-scan.csv": {
+   "flows": 2235,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-syn-flood.csv": {
+   "flows": 65549,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-syn-stealth-scan.csv": {
+   "flows": 7215,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-synonymous-ip.csv": {
+   "flows": 65545,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-tcp-flood.csv": {
+   "flows": 65540,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-udp-flood.csv": {
+   "flows": 8071,
+   "attributed": 1.0,
+   "sender": "rpi",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-A-idle-vulnerability-scan.csv": {
+   "flows": 3466,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-a",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-MaliciousEV-aggressive-scan.csv": {
+   "flows": 16361,
+   "attributed": 1.0,
+   "sender": "evcc",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 1.0
+   }
+  },
+  "EVSE-B-MaliciousEV-os-fingerprinting.csv": {
+   "flows": 18259,
+   "attributed": 1.0,
+   "sender": "evcc",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 1.0
+   }
+  },
+  "EVSE-B-MaliciousEV-port-scan.csv": {
+   "flows": 158013,
+   "attributed": 1.0,
+   "sender": "evcc",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 1.0
+   }
+  },
+  "EVSE-B-MaliciousEV-service-detection.csv": {
+   "flows": 87089,
+   "attributed": 1.0,
+   "sender": "evcc",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 1.0
+   }
+  },
+  "EVSE-B-MaliciousEV-syn-stealth-scan.csv": {
+   "flows": 228001,
+   "attributed": 1.0,
+   "sender": "evcc",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 1.0
+   }
+  },
+  "EVSE-B-MaliciousEV-vulnerability-scan.csv": {
+   "flows": 57058,
+   "attributed": 1.0,
+   "sender": "evcc",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 1.0
+   }
+  },
+  "EVSE-B-charging-aggressive-scan.csv": {
+   "flows": 37872,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 0.493,
+    "wifi": 0.507
+   }
+  },
+  "EVSE-B-charging-icmp-flood.csv": {
+   "flows": 30,
+   "attributed": 0.6,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 0.056,
+    "wifi": 0.944
+   }
+  },
+  "EVSE-B-charging-os-fingerprinting.csv": {
+   "flows": 67971,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 0.461,
+    "v2g": 0.539
+   }
+  },
+  "EVSE-B-charging-port-scan.csv": {
+   "flows": 177409,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 0.489,
+    "wifi": 0.511
+   }
+  },
+  "EVSE-B-charging-push-ack-flood.csv": {
+   "flows": 65559,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-charging-service-detection-scan.csv": {
+   "flows": 165171,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 0.511,
+    "wifi": 0.489
+   }
+  },
+  "EVSE-B-charging-syn-flood.csv": {
+   "flows": 65548,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 1.0
+   }
+  },
+  "EVSE-B-charging-syn-stealth.csv": {
+   "flows": 214065,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 0.455,
+    "wifi": 0.545
+   }
+  },
+  "EVSE-B-charging-synonymous-ip-flood.csv": {
+   "flows": 65546,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-charging-tcp-flood.csv": {
+   "flows": 65543,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-charging-udp-flood.csv": {
+   "flows": 8490,
+   "attributed": 0.998,
+   "sender": "rpi",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 0.993,
+    "v2g": 0.007
+   }
+  },
+  "EVSE-B-charging-vulnerability-scan.csv": {
+   "flows": 110121,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 0.494,
+    "v2g": 0.506
+   }
+  },
+  "EVSE-B-idle-aggressive-scan.csv": {
+   "flows": 35957,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-idle-icmp-flood.csv": {
+   "flows": 30,
+   "attributed": 0.6,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "v2g": 0.056,
+    "wifi": 0.944
+   }
+  },
+  "EVSE-B-idle-icmp-fragmentation.csv": {
+   "flows": 12,
+   "attributed": 0.083,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-idle-os-fingerprinting.csv": {
+   "flows": 45662,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-idle-port-scan.csv": {
+   "flows": 78145,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-idle-push-ack-flood.csv": {
+   "flows": 65559,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-idle-service-detection.csv": {
+   "flows": 33455,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-idle-syn-flood.csv": {
+   "flows": 65541,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-idle-syn-stealth-scan.csv": {
+   "flows": 73633,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-idle-synonymous-ip-flood.csv": {
+   "flows": 65546,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-idle-tcp-flood.csv": {
+   "flows": 65564,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-idle-udp-flood.csv": {
+   "flows": 8029,
+   "attributed": 0.999,
+   "sender": "rpi",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  },
+  "EVSE-B-idle-vulnerability-scan.csv": {
+   "flows": 51607,
+   "attributed": 1.0,
+   "sender": "kali",
+   "target": "evse-b",
+   "iface": {
+    "wifi": 1.0
+   }
+  }
+ }
+}

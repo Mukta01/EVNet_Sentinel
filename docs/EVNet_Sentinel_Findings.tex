@@ -15,6 +15,8 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{xcolor}
 \usepackage{booktabs}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
 \usepackage{tabularx}
 \usepackage{hyperref}
 \usepackage{microtype}
@@ -159,6 +161,58 @@ the reference implementation's 19-alias map. An earlier revision of this project
 depended on a pre-labelled private archive and could not rebuild the dataset from
 the public download; that step is now in version control.
 
+\subsection{Who attacks what}
+\label{sec:routes}
+
+The dataset's device table names the testbed hardware but not which device
+attacked which. Every flow record carries its source and destination MAC
+address, so the route of each capture can be read from the captures
+themselves (\col{src/reproduction/attack\_routes.py}).
+
+\begin{table}[h]
+\centering
+\caption{Attack routes in CICEVSE2024, from the MAC addresses in each of the
+         57 attack captures. In every capture outside the tiny ICMP files,
+         99--100\% of flows follow the listed route.}
+\begin{tabular}{llrl}
+\toprule
+\textbf{Attacker} & \textbf{Target} & \textbf{Captures} & \textbf{Attacks} \\
+\midrule
+Kali Linux PC (site wifi)       & EVSE-A & 24 & every type except UDP flood \\
+Kali Linux PC (site wifi)       & EVSE-B & 23 & every type except UDP flood and Slowloris \\
+Raspberry Pi (site wifi)        & EVSE-A, EVSE-B & 4 & UDP flood \\
+Compromised EV (ISO 15118 link) & EVSE-B & 6 & the six reconnaissance scans \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{finding}{Every attack targets a charging station}
+No capture targets the CSMS or the vehicle. Denial of service disrupts the
+CSMS only indirectly --- a flooded station cannot keep its OCPP link --- and
+that effect is not itself measured in the dataset. In six captures the
+\emph{vehicle} is the attacker, scanning EVSE-B through the charging cable.
+\end{finding}
+
+\noindent
+Traffic was recorded from a mirrored port on the testbed switch
+(\texttt{network toplogy\_updated.pdf} in the dataset). A detector trained on
+it is therefore a passive IDS: it observes a copy of the traffic and raises
+alerts; it does not sit in the path and cannot block. The project's
+simulation, landing page and response guidance are framed accordingly. Two
+details for reproducers: the UDP floods come from MAC
+\texttt{dc:a6:32:dc:27:d5}, one hex digit from the Readme's Raspberry Pi
+attacker (\texttt{\dots 25:d5}), which we treat as a typo in the Readme; and
+Slowloris was recorded against EVSE-A only.
+\repro{python3 src/reproduction/attack\_routes.py}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{fig_pipeline.pdf}
+\caption{Method at a glance. Numbers are read from the exported results; the
+         same diagram heads the project's \texttt{/docs} page.}
+\label{fig:pipeline}
+\end{figure}
+
 % ===========================================================================
 \section{Finding 1: The label is recoverable from a single timestamp column}
 
@@ -198,6 +252,16 @@ model. In our own pre-correction pipeline, $39.8\%$ of the Random Forest's total
 feature importance sat on those six columns.
 \end{finding}
 \repro{python3 src/reproduction/replay\_reference\_preprocessing.py --audit}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.62\textwidth]{fig_leak.pdf}
+\caption{The contribution in one chart, all as multiclass accuracy. A single
+         capture-timestamp column beats the published model; with the leak
+         removed the Random Forest scores $86.8\%$ accuracy and macro-$F_1$ $0.558$,
+         the honest figure because it weights every class equally.}
+\label{fig:leak}
+\end{figure}
 
 % ===========================================================================
 \section{Finding 2: Reconnaissance rests on two columns}
@@ -282,7 +346,7 @@ inflation mechanism entirely separate from the timestamp leak of Finding 1.
 
 \subsection{Drift events are capture-file seams}
 
-CICEVSE2024 is 59 packet captures concatenated end to end, and each join is an
+CICEVSE2024 is 59 packet captures concatenated end to end (58 appear in the training stream), and each join is an
 abrupt distribution change by construction. Running ADWIN prequentially over the
 full $1{,}921{,}182$-instance stream in capture order:
 
@@ -310,6 +374,18 @@ These events are not evidence that charging-station traffic evolves; they mark
 dataset assembly. This matters because the adaptivity of the online method is
 justified in the original work by the presence of concept drift.
 \end{finding}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{fig_drift.pdf}
+\caption{ADWIN drift alarms over the $1{,}921{,}182$-flow stream. Top band: the
+         58 capture files present in this stream, in order, coloured by attack
+         family (green volumetric, orange reconnaissance, grey low-rate, blue
+         benign); dashed lines are file seams. In capture order the alarms sit on
+         the seams and running accuracy stays near $100\%$; the same model on the
+         shuffled stream alarms 14 times and finishes at $55.9\%$.}
+\label{fig:drift}
+\end{figure}
 
 % ===========================================================================
 \section{Finding 4: \col{src\_port} is a residual fingerprint}
@@ -383,6 +459,7 @@ memorisation, not modelling.
 \centering
 \caption{Per-class $F_1$, mean over three seeds. ``Support'' is the total flow
          count across all partitions after deduplication.}
+\label{tab:perclass}
 \small
 \begin{tabular}{llrrrrr}
 \toprule
@@ -428,6 +505,65 @@ The four classes in the ``Other'' group are excluded from both group means and
 reported separately: three have fewer than 100 flows in the entire dataset, and
 Slowloris is a low-rate attack whose flows resemble neither group.
 
+\subsection{Where the errors go}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.78\textwidth]{fig_confusion_rf.pdf}
+\caption{Random Forest confusion matrix, each row normalised and averaged over
+         the three seeds (percentages; cells under $5\%$ unlabelled). Dashed lines
+         separate denial of service, reconnaissance and benign. The other three
+         models are on the dashboard's Findings tab.}
+\label{fig:confusion}
+\end{figure}
+
+\noindent
+The flood block of Figure~\ref{fig:confusion} is a clean diagonal. The scan block
+is not, and its errors have structure:
+
+\begin{tightitem}
+  \item \textbf{Scans collapse into one scan.} The Random Forest calls
+        $32$--$48\%$ of every other scan \emph{OS Fingerprinting}; Logistic
+        Regression instead absorbs them into \emph{TCP Port Scan}, which it then
+        ``names'' $66\%$ of the time. Which class becomes the sink is a model
+        artefact; that there is a sink is a property of the data.
+  \item \textbf{One confusion crosses the category line.} $8$--$11\%$ of every
+        scan is called Slowloris by the Random Forest ($3\%$ by Logistic
+        Regression). This is almost all of the error between reconnaissance and
+        denial of service, and is why Section~\ref{sec:per-attack} grades scans on
+        category rather than name.
+\end{tightitem}
+
+\subsection{Why the scans cannot be separated}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{fig_separability.pdf}
+\caption{For each feature, the share of the uncertainty about \emph{which}
+         attack a flow is that the feature removes on its own
+         ($I(X_j;Y)/H(Y)$), computed separately inside denial-of-service and
+         inside reconnaissance flows ($6{,}000$ held-out flows each, seed 42,
+         $k$-NN mutual-information estimator). Both panels share one axis.}
+\label{fig:separability}
+\end{figure}
+
+\begin{finding}{The ceiling is in the features, not the models}
+Inside denial of service, one inter-arrival-time feature
+(\col{src2dst\_mean\_piat\_ms}) settles $98\%$ of the question ``which attack is
+this?''. Inside reconnaissance the best feature settles $5\%$. No flow statistic
+separates the six \texttt{nmap} modes, so no model trained on these features can
+--- which is what Table~\ref{tab:perclass} and Figure~\ref{fig:confusion} show
+from the other side.
+\end{finding}
+
+\noindent
+This measure is model-free by design. Permutation importance on the Random
+Forest was tried first and reads near zero for \emph{every} scan feature: the
+features are redundant enough that shuffling any one leaves the prediction
+unchanged, which says nothing about whether they carry signal. Mutual information
+answers the question directly.
+\repro{python3 src/evaluation/export\_paper\_data.py \&\& python3 src/evaluation/make\_paper\_figures.py}
+
 \subsection{Effect of removing the leak}
 
 \begin{table}[h]
@@ -452,6 +588,7 @@ $0.9994$-versus-$0.3665$ gap was measuring.
 
 % ===========================================================================
 \section{Per-Attack Detection and Response}
+\label{sec:per-attack}
 
 The results above answer ``how good is each model''. An operator needs a
 different answer: \emph{for this attack, does the system catch it, and which
@@ -601,6 +738,7 @@ this was corrected, the models in that directory were trained on leaked features
 
 % ===========================================================================
 \section{Limitations and Future Work}
+\label{sec:limitations}
 
 \subsection{Acknowledged limitations}
 
@@ -618,6 +756,32 @@ this was corrected, the models in that directory were trained on leaked features
         CICEVSE2024 also provides hardware performance counters and power traces,
         which may separate the reconnaissance classes that flow-level features
         cannot.
+\end{tightitem}
+
+\subsection{Threats to validity}
+
+\begin{tightitem}
+  \item \textbf{Label noise from filename labelling (internal).} Every flow in a
+        capture inherits that capture's attack label. Background traffic recorded
+        during an attack --- heartbeats, DNS, the attacker's own housekeeping ---
+        is therefore labelled as the attack. Some of the reconnaissance confusion
+        may be such flows, which no detector could name correctly.
+  \item \textbf{Random split (internal).} Deduplication removes exact repeats
+        but not near-duplicates, and a random split can place near-identical
+        flows from one capture on both sides. The grouped split is implemented;
+        the headline numbers do not use it (Section~\ref{sec:limitations}).
+  \item \textbf{Resampled test pool (conclusion).} The attack harness draws its
+        30 trials from each seed's fixed held-out set, so trials are not
+        independent data; the confidence intervals describe sampling variation,
+        not generalisation. Only 81 benign flows exist, so false-alarm rates are
+        indicative.
+  \item \textbf{One testbed (external).} Two stations, one CSMS, and attacks
+        generated with standard tools at their default settings. A real attacker
+        who paces or disguises a scan changes exactly the timing features
+        Figure~\ref{fig:separability} shows the detector relies on.
+  \item \textbf{Untested responses (construct).} The response guidance is
+        standard defensive practice mapped to OCPP; its effectiveness was not
+        measured here.
 \end{tightitem}
 
 \subsection{Planned: a sequence-model comparator}
@@ -681,6 +845,9 @@ dataset.
 \col{src/models/arfadwin/train\_arfadwin.py}             & Prequential ARF + ADWIN, drift log with capture provenance \\
 \col{src/evaluation/attack\_test\_harness.py}            & Per-attack three-level tests, mixed campaigns, regression gates \\
 \col{src/evaluation/response\_playbook.json}             & Response guidance per attack and role \\
+\col{src/evaluation/export\_paper\_data.py}              & Confusion matrices, feature separability, drift timeline (\texttt{frontend/data/paper.json}) \\
+\col{src/evaluation/make\_paper\_figures.py}             & Every figure in this document, from the same JSON as the dashboard \\
+\col{src/reproduction/attack\_routes.py}                 & Attacker and target of every capture, from its MAC addresses \\
 \bottomrule
 \end{tabularx}
 \end{table}
