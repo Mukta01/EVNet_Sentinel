@@ -1,0 +1,2739 @@
+{
+ "generated": "2026-09-29T05:58:10+00:00",
+ "testedAt": "2026-09-29T05:56:06+00:00",
+ "config": {
+  "trials": 30,
+  "batch": 50,
+  "seed": 42,
+  "modelSeeds": [
+   42,
+   1337,
+   2024
+  ],
+  "reliableThreshold": 0.9,
+  "gates": {
+   "volumetric_exact": 0.95,
+   "attack_detected": 0.95,
+   "recon_category": 0.85
+  }
+ },
+ "models": [
+  "RandomForest",
+  "DecisionTree",
+  "LogisticRegression",
+  "SVM"
+ ],
+ "modelLabels": {
+  "RandomForest": "Random Forest",
+  "DecisionTree": "Decision Tree",
+  "LogisticRegression": "Logistic Regression",
+  "SVM": "SVM"
+ },
+ "roles": {
+  "owner": "Station owner / site operator",
+  "csms": "CSMS operator",
+  "analyst": "Network analyst"
+ },
+ "takeaways": [
+  {
+   "tone": "good",
+   "headline": "No attack slipped through as normal traffic.",
+   "detail": "Across 90 mixed campaigns of four simultaneous attacks, every model flagged at least 99.9% of attack flows as malicious."
+  },
+  {
+   "tone": "good",
+   "headline": "Floods are named exactly: 5 of 5 volumetric floods identified at 99% or better.",
+   "detail": "Flood traffic has a distinct signature in packet sizes, TCP flags and timing, so the detector can say precisely which flood it is."
+  },
+  {
+   "tone": "caution",
+   "headline": "Scans are recognised as scans, but not always named.",
+   "detail": "Reconnaissance is placed in the right category 96% of the time, but the exact scan type only 34% (best model for each). The six nmap modes send nearly identical traffic \u2014 respond to a scan as a scan."
+  },
+  {
+   "tone": "caution",
+   "headline": "When a scan is mistaken for something else, it is almost always Slowloris Scan.",
+   "detail": "With Random Forest, 6 of 6 scan types lose 8%-11% of their flows to Slowloris Scan, a slow denial-of-service attack. Both hold long-lived, near-idle connections, so at flow level they look alike. This single confusion is almost all of the error between categories."
+  },
+  {
+   "tone": "warning",
+   "headline": "SVM and Logistic Regression raise too many false alarms on normal traffic.",
+   "detail": "Share of normal flows flagged as attacks: SVM 59%, Logistic Regression 46%. Random Forest is the quietest at 2%. Only 12 unseen normal flows exist per model set, so treat these rates as indicative."
+  },
+  {
+   "tone": "neutral",
+   "headline": "Recommended primary detector: Random Forest.",
+   "detail": "It names well-sampled attacks 58% of the time on average, level with Decision Tree, and raises the fewest false alarms (2% of normal flows). To decide whether traffic is a scan at all, Logistic Regression is stronger (best on 6 of 6 scan types), so it is a useful second opinion."
+  }
+ ],
+ "campaign": {
+  "trials": 90,
+  "attacksPerCampaign": 4,
+  "flowsPerAttack": 25,
+  "summary": {
+   "RandomForest": {
+    "detected": 1.0,
+    "category": 0.9316,
+    "exact": 0.5643
+   },
+   "DecisionTree": {
+    "detected": 1.0,
+    "category": 0.9234,
+    "exact": 0.5597
+   },
+   "LogisticRegression": {
+    "detected": 0.9994,
+    "category": 0.949,
+    "exact": 0.529
+   },
+   "SVM": {
+    "detected": 0.9996,
+    "category": 0.92,
+    "exact": 0.5598
+   }
+  }
+ },
+ "passed": true,
+ "gateFailures": [],
+ "attacks": [
+  {
+   "class": "SynonymousIP_Flood",
+   "category": "dos",
+   "support": 38511,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 1.0,
+     "categoryCI": 0.0,
+     "exact": 1.0,
+     "exactCI": 0.0,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "SYN_Flood",
+       "category": "dos",
+       "share": 0.0001
+      },
+      {
+       "label": "TCP_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 1.0,
+     "categoryCI": 0.0,
+     "exact": 0.9998,
+     "exactCI": 0.0004,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.0
+      },
+      {
+       "label": "SYN_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "TCP_Flood",
+       "category": "dos",
+       "share": 0.0
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 0.9998,
+     "detectedCI": 0.0004,
+     "category": 0.9998,
+     "categoryCI": 0.0004,
+     "exact": 0.9998,
+     "exactCI": 0.0004,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.0001
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0001
+      },
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.0
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 0.9998,
+     "detectedCI": 0.0004,
+     "category": 0.9998,
+     "categoryCI": 0.0004,
+     "exact": 0.9998,
+     "exactCI": 0.0004,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.0001
+      },
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.0001
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0001
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "RandomForest",
+    "DecisionTree",
+    "LogisticRegression",
+    "SVM"
+   ],
+   "bestModel": "RandomForest",
+   "bestVerdict": "identified",
+   "bestCategoryModel": "RandomForest",
+   "label": "SynonymousIP Flood",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.9999,
+     "std": 0.0
+    },
+    "DecisionTree": {
+     "f1": 0.9999,
+     "std": 0.0
+    },
+    "LogisticRegression": {
+     "f1": 0.9911,
+     "std": 0.0001
+    },
+    "SVM": {
+     "f1": 0.9921,
+     "std": 0.0001
+    }
+   },
+   "response": {
+    "severity": "high",
+    "what": "Floods the target with packets whose source address is forged to match the target's own address, so the victim ends up replying to itself.",
+    "categorySummary": "Someone is trying to overwhelm a charging station or the management system so it stops responding.",
+    "impact": "Stations lose their OCPP link to the CSMS: heartbeats stop, sessions cannot be authorised or billed, and remote control (start, stop, reset, price updates) fails. Drivers see a station that will not start a charge.",
+    "actions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Drop any inbound packet whose source address equals its destination, and apply anti-spoofing ingress filtering (BCP 38 / unicast reverse-path forwarding).",
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "uncertainty": null
+   }
+  },
+  {
+   "class": "PSHACK_Flood",
+   "category": "dos",
+   "support": 29393,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 1.0,
+     "categoryCI": 0.0,
+     "exact": 0.9998,
+     "exactCI": 0.0004,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "UDP_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "SYN_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.0
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 1.0,
+     "categoryCI": 0.0,
+     "exact": 1.0,
+     "exactCI": 0.0,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "SynonymousIP_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.0
+      },
+      {
+       "label": "UDP_Flood",
+       "category": "dos",
+       "share": 0.0
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 1.0,
+     "categoryCI": 0.0,
+     "exact": 1.0,
+     "exactCI": 0.0,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.0001
+      },
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.0
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 0.9998,
+     "detectedCI": 0.0004,
+     "category": 0.9998,
+     "categoryCI": 0.0004,
+     "exact": 0.9996,
+     "exactCI": 0.0006,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.0001
+      },
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.0
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "RandomForest",
+    "DecisionTree",
+    "LogisticRegression",
+    "SVM"
+   ],
+   "bestModel": "RandomForest",
+   "bestVerdict": "identified",
+   "bestCategoryModel": "DecisionTree",
+   "label": "PSHACK Flood",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.9999,
+     "std": 0.0
+    },
+    "DecisionTree": {
+     "f1": 0.9999,
+     "std": 0.0
+    },
+    "LogisticRegression": {
+     "f1": 0.9999,
+     "std": 0.0
+    },
+    "SVM": {
+     "f1": 0.9999,
+     "std": 0.0
+    }
+   },
+   "response": {
+    "severity": "high",
+    "what": "Floods the target with TCP packets carrying PUSH and ACK flags that do not belong to any real connection, forcing it to process each one.",
+    "categorySummary": "Someone is trying to overwhelm a charging station or the management system so it stops responding.",
+    "impact": "Stations lose their OCPP link to the CSMS: heartbeats stop, sessions cannot be authorised or billed, and remote control (start, stop, reset, price updates) fails. Drivers see a station that will not start a charge.",
+    "actions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Use a stateful firewall that drops TCP segments not belonging to a tracked connection.",
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "uncertainty": null
+   }
+  },
+  {
+   "class": "SYN_Flood",
+   "category": "dos",
+   "support": 38922,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9998,
+     "categoryCI": 0.0004,
+     "exact": 0.9996,
+     "exactCI": 0.0006,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "SynonymousIP_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "TCP_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.0
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 1.0,
+     "categoryCI": 0.0,
+     "exact": 1.0,
+     "exactCI": 0.0,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.0
+      },
+      {
+       "label": "SynonymousIP_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "UDP_Flood",
+       "category": "dos",
+       "share": 0.0
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 1.0,
+     "categoryCI": 0.0,
+     "exact": 0.9818,
+     "exactCI": 0.0035,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "SynonymousIP_Flood",
+       "category": "dos",
+       "share": 0.0176
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0001
+      },
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.0001
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9998,
+     "categoryCI": 0.0004,
+     "exact": 0.9864,
+     "exactCI": 0.0031,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "SynonymousIP_Flood",
+       "category": "dos",
+       "share": 0.0156
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0001
+      },
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.0001
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "RandomForest",
+    "DecisionTree"
+   ],
+   "bestModel": "RandomForest",
+   "bestVerdict": "identified",
+   "bestCategoryModel": "DecisionTree",
+   "label": "SYN Flood",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.9999,
+     "std": 0.0
+    },
+    "DecisionTree": {
+     "f1": 0.9999,
+     "std": 0.0
+    },
+    "LogisticRegression": {
+     "f1": 0.991,
+     "std": 0.0001
+    },
+    "SVM": {
+     "f1": 0.992,
+     "std": 0.0001
+    }
+   },
+   "response": {
+    "severity": "high",
+    "what": "Floods the target with TCP connection requests (SYN packets) that are never completed, filling the table of half-open connections so real stations cannot connect.",
+    "categorySummary": "Someone is trying to overwhelm a charging station or the management system so it stops responding.",
+    "impact": "Stations lose their OCPP link to the CSMS: heartbeats stop, sessions cannot be authorised or billed, and remote control (start, stop, reset, price updates) fails. Drivers see a station that will not start a charge.",
+    "actions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Expect OCPP reconnect storms once the flood ends; stagger station reconnection if the platform supports it.",
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Enable SYN cookies on the CSMS host (net.ipv4.tcp_syncookies=1) and shorten the SYN-RECEIVED timeout.",
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "uncertainty": null
+   }
+  },
+  {
+   "class": "TCP_Flood",
+   "category": "dos",
+   "support": 38444,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 1.0,
+     "categoryCI": 0.0,
+     "exact": 0.9996,
+     "exactCI": 0.0006,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "SynonymousIP_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "PSHACK_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "SYN_Flood",
+       "category": "dos",
+       "share": 0.0
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 1.0,
+     "categoryCI": 0.0,
+     "exact": 0.9998,
+     "exactCI": 0.0004,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "SynonymousIP_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "UDP_Flood",
+       "category": "dos",
+       "share": 0.0
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 1.0,
+     "categoryCI": 0.0,
+     "exact": 1.0,
+     "exactCI": 0.0,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.0001
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0001
+      },
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.0
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 1.0,
+     "categoryCI": 0.0,
+     "exact": 1.0,
+     "exactCI": 0.0,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.0001
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0001
+      },
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.0
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "RandomForest",
+    "DecisionTree",
+    "LogisticRegression",
+    "SVM"
+   ],
+   "bestModel": "RandomForest",
+   "bestVerdict": "identified",
+   "bestCategoryModel": "LogisticRegression",
+   "label": "TCP Flood",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.9999,
+     "std": 0.0
+    },
+    "DecisionTree": {
+     "f1": 0.9999,
+     "std": 0.0
+    },
+    "LogisticRegression": {
+     "f1": 0.9999,
+     "std": 0.0
+    },
+    "SVM": {
+     "f1": 0.9999,
+     "std": 0.0
+    }
+   },
+   "response": {
+    "severity": "high",
+    "what": "Floods the target with established-looking TCP traffic to exhaust bandwidth and connection-handling capacity.",
+    "categorySummary": "Someone is trying to overwhelm a charging station or the management system so it stops responding.",
+    "impact": "Stations lose their OCPP link to the CSMS: heartbeats stop, sessions cannot be authorised or billed, and remote control (start, stop, reset, price updates) fails. Drivers see a station that will not start a charge.",
+    "actions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Cap concurrent connections per source address and drop traffic from sources exceeding it.",
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "uncertainty": null
+   }
+  },
+  {
+   "class": "UDP_Flood",
+   "category": "dos",
+   "support": 4811,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9998,
+     "categoryCI": 0.0004,
+     "exact": 0.9993,
+     "exactCI": 0.0007,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0002
+      },
+      {
+       "label": "TCP_Flood",
+       "category": "dos",
+       "share": 0.0001
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.0001
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9998,
+     "categoryCI": 0.0004,
+     "exact": 0.9996,
+     "exactCI": 0.0006,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "TCP_Flood",
+       "category": "dos",
+       "share": 0.0003
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.0002
+      },
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.0001
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 0.9993,
+     "detectedCI": 0.0007,
+     "category": 0.9991,
+     "categoryCI": 0.0009,
+     "exact": 0.9987,
+     "exactCI": 0.001,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.0003
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0002
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.0001
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9996,
+     "categoryCI": 0.0006,
+     "exact": 0.9991,
+     "exactCI": 0.0009,
+     "verdict": "identified",
+     "confusedWith": [
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0003
+      },
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.0001
+      },
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.0001
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "RandomForest",
+    "DecisionTree",
+    "LogisticRegression",
+    "SVM"
+   ],
+   "bestModel": "RandomForest",
+   "bestVerdict": "identified",
+   "bestCategoryModel": "DecisionTree",
+   "label": "UDP Flood",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.9994,
+     "std": 0.0001
+    },
+    "DecisionTree": {
+     "f1": 0.9991,
+     "std": 0.0
+    },
+    "LogisticRegression": {
+     "f1": 0.9995,
+     "std": 0.0002
+    },
+    "SVM": {
+     "f1": 0.9995,
+     "std": 0.0001
+    }
+   },
+   "response": {
+    "severity": "high",
+    "what": "Floods the target with UDP datagrams to saturate its link.",
+    "categorySummary": "Someone is trying to overwhelm a charging station or the management system so it stops responding.",
+    "impact": "Stations lose their OCPP link to the CSMS: heartbeats stop, sessions cannot be authorised or billed, and remote control (start, stop, reset, price updates) fails. Drivers see a station that will not start a charge.",
+    "actions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "OCPP runs over TCP. Charging stations need very little UDP (DNS, NTP) \u2014 rate-limit or drop all other inbound UDP to them.",
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "uncertainty": null
+   }
+  },
+  {
+   "class": "Slowloris_Scan",
+   "category": "dos",
+   "support": 408,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.8193,
+     "categoryCI": 0.012,
+     "exact": 0.8193,
+     "exactCI": 0.012,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.0858
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.0343
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.0204
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.7049,
+     "categoryCI": 0.0125,
+     "exact": 0.7038,
+     "exactCI": 0.0125,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.1422
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.0596
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.0302
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 0.9982,
+     "detectedCI": 0.0012,
+     "category": 0.6398,
+     "categoryCI": 0.0139,
+     "exact": 0.5247,
+     "exactCI": 0.0228,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.2892
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.1119
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.0458
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 0.996,
+     "detectedCI": 0.0017,
+     "category": 0.7858,
+     "categoryCI": 0.0136,
+     "exact": 0.7029,
+     "exactCI": 0.0198,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.1005
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0842
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.0629
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "RandomForest"
+   ],
+   "bestModel": "RandomForest",
+   "bestVerdict": "detected",
+   "bestCategoryModel": "RandomForest",
+   "label": "Slowloris Scan",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.1908,
+     "std": 0.0057
+    },
+    "DecisionTree": {
+     "f1": 0.1661,
+     "std": 0.0118
+    },
+    "LogisticRegression": {
+     "f1": 0.283,
+     "std": 0.0444
+    },
+    "SVM": {
+     "f1": 0.1455,
+     "std": 0.0263
+    }
+   },
+   "response": {
+    "severity": "high",
+    "what": "Opens many connections to a web server and keeps each one alive by sending a request extremely slowly, until the server has no connections left for real clients. OCPP-J runs over WebSocket, which starts as an HTTP request, so the CSMS endpoint is exposed to this.",
+    "categorySummary": "Someone is trying to overwhelm a charging station or the management system so it stops responding.",
+    "impact": "Stations lose their OCPP link to the CSMS: heartbeats stop, sessions cannot be authorised or billed, and remote control (start, stop, reset, price updates) fails. Drivers see a station that will not start a charge.",
+    "actions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Put the OCPP WebSocket endpoint behind a reverse proxy with short header and body timeouts and a per-address connection cap.",
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Look for many long-lived, near-idle connections from a single source \u2014 that pattern, not volume, is the signature.",
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "uncertainty": null
+   }
+  },
+  {
+   "class": "ICMP_Flood",
+   "category": "dos",
+   "support": 5,
+   "lowSupport": true,
+   "batch": 5,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.7422,
+     "categoryCI": 0.0512,
+     "exact": 0.7422,
+     "exactCI": 0.0512,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.2
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.0667
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.7267,
+     "categoryCI": 0.0538,
+     "exact": 0.7267,
+     "exactCI": 0.0538,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.2
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.0667
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 0.5556,
+     "detectedCI": 0.0675,
+     "category": 0.5556,
+     "categoryCI": 0.0675,
+     "exact": 0.4867,
+     "exactCI": 0.0591,
+     "verdict": "missed",
+     "confusedWith": [
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.4667
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0667
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 0.5133,
+     "detectedCI": 0.065,
+     "category": 0.5133,
+     "categoryCI": 0.065,
+     "exact": 0.44,
+     "exactCI": 0.0582,
+     "verdict": "missed",
+     "confusedWith": [
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.4667
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0667
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "RandomForest"
+   ],
+   "bestModel": "RandomForest",
+   "bestVerdict": "detected",
+   "bestCategoryModel": "RandomForest",
+   "label": "ICMP Flood",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.6605,
+     "std": 0.0915
+    },
+    "DecisionTree": {
+     "f1": 0.6382,
+     "std": 0.0953
+    },
+    "LogisticRegression": {
+     "f1": 0.2158,
+     "std": 0.1634
+    },
+    "SVM": {
+     "f1": 0.1776,
+     "std": 0.1171
+    }
+   },
+   "response": {
+    "severity": "medium",
+    "what": "Floods the target with ICMP echo (ping) requests.",
+    "categorySummary": "Someone is trying to overwhelm a charging station or the management system so it stops responding.",
+    "impact": "Stations lose their OCPP link to the CSMS: heartbeats stop, sessions cannot be authorised or billed, and remote control (start, stop, reset, price updates) fails. Drivers see a station that will not start a charge.",
+    "actions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Rate-limit ICMP echo at the edge; charging stations do not need to answer ping from outside their segment.",
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "uncertainty": null
+   }
+  },
+  {
+   "class": "ICMP_Fragmentation",
+   "category": "dos",
+   "support": 4,
+   "lowSupport": true,
+   "batch": 4,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.8056,
+     "categoryCI": 0.047,
+     "exact": 0.4861,
+     "exactCI": 0.0607,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "UDP_Flood",
+       "category": "dos",
+       "share": 0.1667
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.0833
+      },
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.0833
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.8083,
+     "categoryCI": 0.0502,
+     "exact": 0.4028,
+     "exactCI": 0.0674,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "UDP_Flood",
+       "category": "dos",
+       "share": 0.25
+      },
+      {
+       "label": "TCP_Flood",
+       "category": "dos",
+       "share": 0.1667
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.0833
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 0.8111,
+     "detectedCI": 0.0492,
+     "category": 0.8111,
+     "categoryCI": 0.0492,
+     "exact": 0.5833,
+     "exactCI": 0.0747,
+     "verdict": "missed",
+     "confusedWith": [
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.1667
+      },
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.1667
+      },
+      {
+       "label": "SYN_Flood",
+       "category": "dos",
+       "share": 0.0833
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 0.8194,
+     "detectedCI": 0.0424,
+     "category": 0.8194,
+     "categoryCI": 0.0424,
+     "exact": 0.4639,
+     "exactCI": 0.0836,
+     "verdict": "missed",
+     "confusedWith": [
+      {
+       "label": "Benign",
+       "category": "benign",
+       "share": 0.1667
+      },
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.1667
+      },
+      {
+       "label": "SYN_Flood",
+       "category": "dos",
+       "share": 0.1667
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "LogisticRegression"
+   ],
+   "bestModel": "LogisticRegression",
+   "bestVerdict": "missed",
+   "bestCategoryModel": "SVM",
+   "label": "ICMP Fragmentation",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.439,
+     "std": 0.1693
+    },
+    "DecisionTree": {
+     "f1": 0.4222,
+     "std": 0.1912
+    },
+    "LogisticRegression": {
+     "f1": 0.0952,
+     "std": 0.1095
+    },
+    "SVM": {
+     "f1": 0.0936,
+     "std": 0.0914
+    }
+   },
+   "response": {
+    "severity": "medium",
+    "what": "Sends fragmented ICMP packets that force the target to spend memory and CPU reassembling them.",
+    "categorySummary": "Someone is trying to overwhelm a charging station or the management system so it stops responding.",
+    "impact": "Stations lose their OCPP link to the CSMS: heartbeats stop, sessions cannot be authorised or billed, and remote control (start, stop, reset, price updates) fails. Drivers see a station that will not start a charge.",
+    "actions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Drop fragmented ICMP at the edge and set conservative reassembly limits on exposed hosts.",
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Confirm stations are configured for OCPP offline operation, so they keep charging and queue transactions locally while the CSMS link is down.",
+      "Check the station display and local logs: a station that has lost its CSMS link should be visibly flagged to drivers rather than failing silently."
+     ],
+     "csms": [
+      "Watch for stations dropping heartbeats together; a burst of simultaneous disconnects points at the network, not at individual stations.",
+      "Enforce per-connection and per-source rate limits on the OCPP WebSocket endpoint, ideally at a reverse proxy in front of the CSMS.",
+      "Hold off remote resets of affected stations until the flood stops \u2014 a reset during an attack just adds reconnect load."
+     ],
+     "analyst": [
+      "Identify the source address or addresses and block them at the edge firewall.",
+      "Enable upstream DDoS scrubbing or ISP-level filtering if the volume exceeds what the local link can absorb.",
+      "Capture a short packet sample for the incident record before blocking, so the attack can be characterised later."
+     ]
+    },
+    "uncertainty": null
+   }
+  },
+  {
+   "class": "TCP_Port_Scan",
+   "category": "recon",
+   "support": 5268,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9093,
+     "categoryCI": 0.0079,
+     "exact": 0.3227,
+     "exactCI": 0.0128,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.3547
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.0871
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.0721
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9082,
+     "categoryCI": 0.0086,
+     "exact": 0.1838,
+     "exactCI": 0.0129,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.336
+      },
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.1353
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.0996
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9702,
+     "categoryCI": 0.0049,
+     "exact": 0.6496,
+     "exactCI": 0.0385,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.141
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.1154
+      },
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.0391
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 0.9998,
+     "detectedCI": 0.0004,
+     "category": 0.8936,
+     "categoryCI": 0.0101,
+     "exact": 0.2549,
+     "exactCI": 0.0753,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.424
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.2166
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.104
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "LogisticRegression"
+   ],
+   "bestModel": "LogisticRegression",
+   "bestVerdict": "category",
+   "bestCategoryModel": "LogisticRegression",
+   "label": "TCP Port Scan",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.2654,
+     "std": 0.0095
+    },
+    "DecisionTree": {
+     "f1": 0.2017,
+     "std": 0.0125
+    },
+    "LogisticRegression": {
+     "f1": 0.2779,
+     "std": 0.0298
+    },
+    "SVM": {
+     "f1": 0.1005,
+     "std": 0.1421
+    }
+   },
+   "response": {
+    "severity": "medium",
+    "what": "Probes a range of ports to find which ones are open.",
+    "categorySummary": "Someone is mapping the charging network \u2014 finding which devices exist, which ports are open, and what software they run. Nothing is broken yet, but this is usually the step before an attack.",
+    "impact": "No direct outage. The risk is what comes next: an attacker who knows the firmware version and open services can target a known vulnerability in the station or the CSMS.",
+    "actions": {
+     "owner": [
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "Compare the scanned ports against what each station is supposed to expose; any unexpected open port is the finding.",
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "uncertainty": "The detector reliably recognises that a scan is happening but often cannot tell which nmap mode it is \u2014 they emit nearly identical traffic. Respond to it as reconnaissance; do not wait for the exact scan type."
+   }
+  },
+  {
+   "class": "SYN_Stealth_Scan",
+   "category": "recon",
+   "support": 5215,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9136,
+     "categoryCI": 0.0084,
+     "exact": 0.0649,
+     "exactCI": 0.0075,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.3709
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.3004
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.0848
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9071,
+     "categoryCI": 0.0085,
+     "exact": 0.1431,
+     "exactCI": 0.0108,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.3497
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.1725
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.0907
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 0.9998,
+     "detectedCI": 0.0004,
+     "category": 0.9696,
+     "categoryCI": 0.0046,
+     "exact": 0.0342,
+     "exactCI": 0.0121,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.6509
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.1589
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.1085
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.8998,
+     "categoryCI": 0.0093,
+     "exact": 0.428,
+     "exactCI": 0.0767,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.2486
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.2189
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.1021
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "SVM"
+   ],
+   "bestModel": "SVM",
+   "bestVerdict": "detected",
+   "bestCategoryModel": "LogisticRegression",
+   "label": "SYN Stealth Scan",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.1053,
+     "std": 0.0028
+    },
+    "DecisionTree": {
+     "f1": 0.1746,
+     "std": 0.0141
+    },
+    "LogisticRegression": {
+     "f1": 0.042,
+     "std": 0.0594
+    },
+    "SVM": {
+     "f1": 0.1831,
+     "std": 0.1306
+    }
+   },
+   "response": {
+    "severity": "medium",
+    "what": "A port scan that sends connection requests but never completes them, to avoid appearing in application logs.",
+    "categorySummary": "Someone is mapping the charging network \u2014 finding which devices exist, which ports are open, and what software they run. Nothing is broken yet, but this is usually the step before an attack.",
+    "impact": "No direct outage. The risk is what comes next: an attacker who knows the firmware version and open services can target a known vulnerability in the station or the CSMS.",
+    "actions": {
+     "owner": [
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "Application logs will show nothing for this one \u2014 rely on firewall and IDS logs to see its extent.",
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "uncertainty": "The detector reliably recognises that a scan is happening but often cannot tell which nmap mode it is \u2014 they emit nearly identical traffic. Respond to it as reconnaissance; do not wait for the exact scan type."
+   }
+  },
+  {
+   "class": "OS_Fingerprinting",
+   "category": "recon",
+   "support": 4155,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.8809,
+     "categoryCI": 0.0091,
+     "exact": 0.4062,
+     "exactCI": 0.0131,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.2172
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.1332
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.1126
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.8864,
+     "categoryCI": 0.0109,
+     "exact": 0.4102,
+     "exactCI": 0.012,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.1318
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.1267
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.1117
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 0.9996,
+     "detectedCI": 0.0006,
+     "category": 0.9529,
+     "categoryCI": 0.0055,
+     "exact": 0.022,
+     "exactCI": 0.0061,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.6913
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.1087
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.102
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 0.9998,
+     "detectedCI": 0.0004,
+     "category": 0.8636,
+     "categoryCI": 0.0104,
+     "exact": 0.0144,
+     "exactCI": 0.0035,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.4288
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.2494
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.1611
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "RandomForest",
+    "DecisionTree"
+   ],
+   "bestModel": "RandomForest",
+   "bestVerdict": "detected",
+   "bestCategoryModel": "LogisticRegression",
+   "label": "OS Fingerprinting",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.2227,
+     "std": 0.0039
+    },
+    "DecisionTree": {
+     "f1": 0.2273,
+     "std": 0.0031
+    },
+    "LogisticRegression": {
+     "f1": 0.039,
+     "std": 0.0364
+    },
+    "SVM": {
+     "f1": 0.0225,
+     "std": 0.0087
+    }
+   },
+   "response": {
+    "severity": "medium",
+    "what": "Sends crafted packets and studies the replies to work out the target's operating system.",
+    "categorySummary": "Someone is mapping the charging network \u2014 finding which devices exist, which ports are open, and what software they run. Nothing is broken yet, but this is usually the step before an attack.",
+    "impact": "No direct outage. The risk is what comes next: an attacker who knows the firmware version and open services can target a known vulnerability in the station or the CSMS.",
+    "actions": {
+     "owner": [
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "Knowing the OS narrows which exploits apply \u2014 confirm the station's OS is patched.",
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "uncertainty": "The detector reliably recognises that a scan is happening but often cannot tell which nmap mode it is \u2014 they emit nearly identical traffic. Respond to it as reconnaissance; do not wait for the exact scan type."
+   }
+  },
+  {
+   "class": "Vulnerability_Scan",
+   "category": "recon",
+   "support": 5850,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9207,
+     "categoryCI": 0.0077,
+     "exact": 0.1336,
+     "exactCI": 0.0107,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.3147
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.3142
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.0827
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.9231,
+     "categoryCI": 0.0082,
+     "exact": 0.17,
+     "exactCI": 0.0119,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.3
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.1787
+      },
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.1266
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 0.9996,
+     "detectedCI": 0.0006,
+     "category": 0.9702,
+     "categoryCI": 0.0051,
+     "exact": 0.1967,
+     "exactCI": 0.019,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.5958
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.1052
+      },
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.04
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 0.9993,
+     "detectedCI": 0.0007,
+     "category": 0.9058,
+     "categoryCI": 0.0085,
+     "exact": 0.2642,
+     "exactCI": 0.0453,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.4018
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.2294
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.0976
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "SVM"
+   ],
+   "bestModel": "SVM",
+   "bestVerdict": "category",
+   "bestCategoryModel": "LogisticRegression",
+   "label": "Vulnerability Scan",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.2043,
+     "std": 0.0127
+    },
+    "DecisionTree": {
+     "f1": 0.2301,
+     "std": 0.0041
+    },
+    "LogisticRegression": {
+     "f1": 0.215,
+     "std": 0.0395
+    },
+    "SVM": {
+     "f1": 0.2006,
+     "std": 0.1173
+    }
+   },
+   "response": {
+    "severity": "critical",
+    "what": "Actively tests the target for known exploitable weaknesses. This is the closest reconnaissance gets to an attack.",
+    "categorySummary": "Someone is mapping the charging network \u2014 finding which devices exist, which ports are open, and what software they run. Nothing is broken yet, but this is usually the step before an attack.",
+    "impact": "No direct outage. The risk is what comes next: an attacker who knows the firmware version and open services can target a known vulnerability in the station or the CSMS.",
+    "actions": {
+     "owner": [
+      "Contact the station vendor: confirm the firmware has no known unpatched vulnerabilities.",
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Audit the scanned stations' configuration and credentials; rotate them if there is any doubt.",
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "Treat as an active incident. Isolate the source immediately and review the target hosts for signs of compromise.",
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "uncertainty": "The detector reliably recognises that a scan is happening but often cannot tell which nmap mode it is \u2014 they emit nearly identical traffic. Respond to it as reconnaissance; do not wait for the exact scan type."
+   }
+  },
+  {
+   "class": "Aggressive_Scan",
+   "category": "recon",
+   "support": 4172,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.8951,
+     "categoryCI": 0.0087,
+     "exact": 0.1182,
+     "exactCI": 0.0099,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.4765
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.1789
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.1036
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.8998,
+     "categoryCI": 0.0096,
+     "exact": 0.1478,
+     "exactCI": 0.011,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.4257
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.1037
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.1016
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 0.9929,
+     "detectedCI": 0.0026,
+     "category": 0.9396,
+     "categoryCI": 0.0077,
+     "exact": 0.0933,
+     "exactCI": 0.0243,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.6552
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.1371
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.0321
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 0.9929,
+     "detectedCI": 0.0027,
+     "category": 0.8453,
+     "categoryCI": 0.0123,
+     "exact": 0.0222,
+     "exactCI": 0.0051,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.4114
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.2293
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.1724
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "DecisionTree"
+   ],
+   "bestModel": "DecisionTree",
+   "bestVerdict": "detected",
+   "bestCategoryModel": "LogisticRegression",
+   "label": "Aggressive Scan",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.1453,
+     "std": 0.0048
+    },
+    "DecisionTree": {
+     "f1": 0.1787,
+     "std": 0.007
+    },
+    "LogisticRegression": {
+     "f1": 0.0811,
+     "std": 0.0605
+    },
+    "SVM": {
+     "f1": 0.0406,
+     "std": 0.0235
+    }
+   },
+   "response": {
+    "severity": "high",
+    "what": "nmap's -A mode: port scan, service versions, OS detection and default scripts together. Loud, fast and thorough.",
+    "categorySummary": "Someone is mapping the charging network \u2014 finding which devices exist, which ports are open, and what software they run. Nothing is broken yet, but this is usually the step before an attack.",
+    "impact": "No direct outage. The risk is what comes next: an attacker who knows the firmware version and open services can target a known vulnerability in the station or the CSMS.",
+    "actions": {
+     "owner": [
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "An aggressive scan returns a complete picture of the target in one pass; treat the scanned hosts as fully mapped.",
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "uncertainty": "The detector reliably recognises that a scan is happening but often cannot tell which nmap mode it is \u2014 they emit nearly identical traffic. Respond to it as reconnaissance; do not wait for the exact scan type."
+   }
+  },
+  {
+   "class": "Service_Version_Detection",
+   "category": "recon",
+   "support": 4550,
+   "lowSupport": false,
+   "batch": 50,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.8944,
+     "categoryCI": 0.0098,
+     "exact": 0.0984,
+     "exactCI": 0.009,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.4203
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.2139
+      },
+      {
+       "label": "Slowloris_Scan",
+       "category": "dos",
+       "share": 0.105
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 1.0,
+     "detectedCI": 0.0,
+     "category": 0.8958,
+     "categoryCI": 0.01,
+     "exact": 0.132,
+     "exactCI": 0.0099,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.3806
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.1252
+      },
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.1104
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 0.9993,
+     "detectedCI": 0.0007,
+     "category": 0.964,
+     "categoryCI": 0.0058,
+     "exact": 0.038,
+     "exactCI": 0.0053,
+     "verdict": "category",
+     "confusedWith": [
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.6719
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.1264
+      },
+      {
+       "label": "Aggressive_Scan",
+       "category": "recon",
+       "share": 0.0968
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 0.9998,
+     "detectedCI": 0.0004,
+     "category": 0.8678,
+     "categoryCI": 0.012,
+     "exact": 0.0102,
+     "exactCI": 0.0032,
+     "verdict": "detected",
+     "confusedWith": [
+      {
+       "label": "SYN_Stealth_Scan",
+       "category": "recon",
+       "share": 0.4163
+      },
+      {
+       "label": "TCP_Port_Scan",
+       "category": "recon",
+       "share": 0.2388
+      },
+      {
+       "label": "Vulnerability_Scan",
+       "category": "recon",
+       "share": 0.2009
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "DecisionTree"
+   ],
+   "bestModel": "DecisionTree",
+   "bestVerdict": "detected",
+   "bestCategoryModel": "LogisticRegression",
+   "label": "Service Version Detection",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.1561,
+     "std": 0.0145
+    },
+    "DecisionTree": {
+     "f1": 0.1741,
+     "std": 0.0065
+    },
+    "LogisticRegression": {
+     "f1": 0.0762,
+     "std": 0.0102
+    },
+    "SVM": {
+     "f1": 0.0266,
+     "std": 0.0246
+    }
+   },
+   "response": {
+    "severity": "medium",
+    "what": "Connects to open ports and asks each service what software and version it is running.",
+    "categorySummary": "Someone is mapping the charging network \u2014 finding which devices exist, which ports are open, and what software they run. Nothing is broken yet, but this is usually the step before an attack.",
+    "impact": "No direct outage. The risk is what comes next: an attacker who knows the firmware version and open services can target a known vulnerability in the station or the CSMS.",
+    "actions": {
+     "owner": [
+      "Remove version banners from station services where the vendor allows it.",
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "Check the versions that were exposed against known vulnerabilities.",
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "categoryActions": {
+     "owner": [
+      "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+     ],
+     "csms": [
+      "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
+      "Review recent configuration changes and authorisation attempts from the stations that were scanned."
+     ],
+     "analyst": [
+      "Find the scanning device. In this testbed that was either a host on the station wifi or a compromised vehicle on the charging cable \u2014 they call for different containment.",
+      "Put charging stations on an isolated network segment that only permits traffic to the CSMS.",
+      "Raise monitoring on the scanned hosts: a follow-up exploitation attempt is the thing to catch."
+     ]
+    },
+    "uncertainty": "The detector reliably recognises that a scan is happening but often cannot tell which nmap mode it is \u2014 they emit nearly identical traffic. Respond to it as reconnaissance; do not wait for the exact scan type."
+   }
+  },
+  {
+   "class": "Benign",
+   "category": "benign",
+   "support": 12,
+   "lowSupport": true,
+   "batch": 12,
+   "trials": 90,
+   "models": {
+    "RandomForest": {
+     "detected": 0.9769,
+     "detectedCI": 0.011,
+     "category": 0.9769,
+     "categoryCI": 0.011,
+     "exact": 0.9769,
+     "exactCI": 0.011,
+     "verdict": "clean",
+     "confusedWith": [
+      {
+       "label": "UDP_Flood",
+       "category": "dos",
+       "share": 0.0278
+      }
+     ]
+    },
+    "DecisionTree": {
+     "detected": 0.8843,
+     "detectedCI": 0.0211,
+     "category": 0.8843,
+     "categoryCI": 0.0211,
+     "exact": 0.8843,
+     "exactCI": 0.0211,
+     "verdict": "false-alarm",
+     "confusedWith": [
+      {
+       "label": "OS_Fingerprinting",
+       "category": "recon",
+       "share": 0.0278
+      },
+      {
+       "label": "SYN_Flood",
+       "category": "dos",
+       "share": 0.0278
+      },
+      {
+       "label": "Service_Version_Detection",
+       "category": "recon",
+       "share": 0.0278
+      }
+     ]
+    },
+    "LogisticRegression": {
+     "detected": 0.5417,
+     "detectedCI": 0.0834,
+     "category": 0.5417,
+     "categoryCI": 0.0834,
+     "exact": 0.5417,
+     "exactCI": 0.0834,
+     "verdict": "false-alarm",
+     "confusedWith": [
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.3333
+      },
+      {
+       "label": "Service_Version_Detection",
+       "category": "recon",
+       "share": 0.0556
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0278
+      }
+     ]
+    },
+    "SVM": {
+     "detected": 0.413,
+     "detectedCI": 0.0611,
+     "category": 0.413,
+     "categoryCI": 0.0611,
+     "exact": 0.413,
+     "exactCI": 0.0611,
+     "verdict": "false-alarm",
+     "confusedWith": [
+      {
+       "label": "ICMP_Flood",
+       "category": "dos",
+       "share": 0.4722
+      },
+      {
+       "label": "ICMP_Fragmentation",
+       "category": "dos",
+       "share": 0.0278
+      },
+      {
+       "label": "SYN_Flood",
+       "category": "dos",
+       "share": 0.0278
+      }
+     ]
+    }
+   },
+   "bestTied": [
+    "RandomForest"
+   ],
+   "bestModel": "RandomForest",
+   "bestVerdict": "clean",
+   "bestCategoryModel": "RandomForest",
+   "label": "Benign",
+   "f1": {
+    "RandomForest": {
+     "f1": 0.9855,
+     "std": 0.0205
+    },
+    "DecisionTree": {
+     "f1": 0.9407,
+     "std": 0.0224
+    },
+    "LogisticRegression": {
+     "f1": 0.2255,
+     "std": 0.1605
+    },
+    "SVM": {
+     "f1": 0.1916,
+     "std": 0.126
+    }
+   },
+   "response": {
+    "severity": "none",
+    "what": "Normal charging-network traffic.",
+    "categorySummary": "Ordinary OCPP and charging traffic.",
+    "impact": "None.",
+    "actions": {
+     "owner": [],
+     "csms": [],
+     "analyst": []
+    },
+    "categoryActions": {
+     "owner": [],
+     "csms": [],
+     "analyst": []
+    },
+    "uncertainty": null
+   }
+  }
+ ]
+}

@@ -75,3 +75,6 @@ saved_models/arf-full/
 *.synctex.gz
 *.fls
 *.fdb_latexmk
+
+# Per-seed models from run_experiments.py (read by the attack harness)
+saved_models/multiseed/

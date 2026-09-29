@@ -1,9 +1,9 @@
 {
-  "generated": "2026-09-08T07:13:31+00:00",
+  "generated": "2026-09-29T05:57:04+00:00",
   "provenance": "Real held-out flows from the CICEVSE2024 test split. Every verdict is the actual output of the corresponding trained model, computed at export time. Nothing is generated or estimated.",
   "source": {
-    "dataDir": "data/processed_v2/extended-nosrcport",
-    "modelsDir": "saved_models/leakfree-nosrcport",
+    "dataDir": "data/multiseed/seed-42",
+    "modelsDir": "saved_models/multiseed/seed-42",
     "testRows": 179723,
     "sampled": 139
   },
@@ -116,19 +116,19 @@
           "confidence": 0.2037
         },
         "DecisionTree": {
-          "label": "TCP_Port_Scan",
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.2174
+          "confidence": 0.1955
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": true,
-          "confidence": 0.6017
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5126
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
-          "correct": true,
-          "confidence": 0.2598
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.182
         }
       }
     },
@@ -222,13 +222,13 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Benign",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Benign",
+          "correct": true,
           "confidence": 0.5
         }
       }
@@ -325,12 +325,12 @@
         "SVM": {
           "label": "Vulnerability_Scan",
           "correct": false,
-          "confidence": 0.69
+          "confidence": 0.5033
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.3166
+          "confidence": 0.1904
         }
       }
     },
@@ -426,12 +426,12 @@
         "SVM": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9999
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9998
+          "confidence": 0.9991
         }
       }
     },
@@ -522,17 +522,17 @@
         "DecisionTree": {
           "label": "Vulnerability_Scan",
           "correct": true,
-          "confidence": 0.5676
+          "confidence": 0.5983
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": true,
-          "confidence": 0.585
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5025
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
-          "correct": true,
-          "confidence": 0.2495
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.1763
         }
       }
     },
@@ -621,19 +621,19 @@
           "confidence": 0.1859
         },
         "DecisionTree": {
-          "label": "Service_Version_Detection",
+          "label": "Aggressive_Scan",
           "correct": false,
-          "confidence": 0.1909
+          "confidence": 0.1859
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.566
+          "confidence": 0.5189
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2389
+          "confidence": 0.1801
         }
       }
     },
@@ -727,14 +727,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 1.0
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9998
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.4999
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9991
         }
       }
     },
@@ -823,9 +823,9 @@
           "confidence": 0.4442
         },
         "DecisionTree": {
-          "label": "ICMP_Fragmentation",
-          "correct": true,
-          "confidence": 0.9972
+          "label": "UDP_Flood",
+          "correct": false,
+          "confidence": 1.0
         },
         "SVM": {
           "label": "ICMP_Flood",
@@ -835,7 +835,7 @@
         "LogisticRegression": {
           "label": "ICMP_Flood",
           "correct": false,
-          "confidence": 0.2
+          "confidence": 0.3893
         }
       }
     },
@@ -931,12 +931,12 @@
         "SVM": {
           "label": "SYN_Flood",
           "correct": true,
-          "confidence": 0.9994
+          "confidence": 0.9987
         },
         "LogisticRegression": {
           "label": "SYN_Flood",
           "correct": true,
-          "confidence": 0.9997
+          "confidence": 0.9983
         }
       }
     },
@@ -1030,13 +1030,13 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Benign",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Benign",
+          "correct": true,
           "confidence": 0.5
         }
       }
@@ -1133,12 +1133,12 @@
         "SVM": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.978
+          "confidence": 0.9391
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9918
+          "confidence": 0.9868
         }
       }
     },
@@ -1335,12 +1335,12 @@
         "SVM": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.9998
+          "confidence": 0.8837
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5671
+          "confidence": 0.366
         }
       }
     },
@@ -1431,17 +1431,17 @@
         "DecisionTree": {
           "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.1839
+          "confidence": 0.1774
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": false,
-          "confidence": 0.5698
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.52
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
-          "correct": false,
-          "confidence": 0.2347
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.1802
         }
       }
     },
@@ -1638,12 +1638,12 @@
         "SVM": {
           "label": "TCP_Flood",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9975
         },
         "LogisticRegression": {
           "label": "TCP_Flood",
           "correct": true,
-          "confidence": 0.9965
+          "confidence": 0.9926
         }
       }
     },
@@ -1739,12 +1739,12 @@
         "SVM": {
           "label": "TCP_Flood",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9972
         },
         "LogisticRegression": {
           "label": "TCP_Flood",
           "correct": true,
-          "confidence": 0.9959
+          "confidence": 0.9913
         }
       }
     },
@@ -1835,17 +1835,17 @@
         "DecisionTree": {
           "label": "ICMP_Fragmentation",
           "correct": true,
-          "confidence": 0.9999
+          "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "ICMP_Fragmentation",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.5
+          "label": "ICMP_Fragmentation",
+          "correct": true,
+          "confidence": 0.9596
         }
       }
     },
@@ -2136,17 +2136,17 @@
           "confidence": 0.3075
         },
         "DecisionTree": {
-          "label": "ICMP_Fragmentation",
-          "correct": true,
-          "confidence": 0.9999
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
+          "label": "Benign",
           "correct": false,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
+          "label": "Benign",
           "correct": false,
           "confidence": 0.3333
         }
@@ -2242,14 +2242,14 @@
           "confidence": 0.1949
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5801
+          "confidence": 0.517
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.246
+          "confidence": 0.1816
         }
       }
     },
@@ -2340,17 +2340,17 @@
         "DecisionTree": {
           "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.1685
+          "confidence": 0.1671
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5422
+          "confidence": 0.5174
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2272
+          "confidence": 0.1777
         }
       }
     },
@@ -2441,17 +2441,17 @@
         "DecisionTree": {
           "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.1953
+          "confidence": 0.1907
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5816
+          "confidence": 0.5174
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2443
+          "confidence": 0.1818
         }
       }
     },
@@ -2742,19 +2742,19 @@
           "confidence": 0.2428
         },
         "DecisionTree": {
-          "label": "Service_Version_Detection",
+          "label": "Aggressive_Scan",
           "correct": false,
-          "confidence": 0.3087
+          "confidence": 0.2212
         },
         "SVM": {
-          "label": "TCP_Port_Scan",
-          "correct": true,
-          "confidence": 0.5561
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.5326
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
-          "correct": false,
-          "confidence": 0.1912
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.1679
         }
       }
     },
@@ -2845,17 +2845,17 @@
         "DecisionTree": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.2167
+          "confidence": 0.2183
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.6048
+          "confidence": 0.5121
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2615
+          "confidence": 0.1823
         }
       }
     },
@@ -3052,12 +3052,12 @@
         "SVM": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5885
+          "confidence": 0.5164
         },
         "LogisticRegression": {
           "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.2171
+          "confidence": 0.1736
         }
       }
     },
@@ -3153,12 +3153,12 @@
         "SVM": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9999
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.5002
+          "confidence": 0.9991
         }
       }
     },
@@ -3247,19 +3247,19 @@
           "confidence": 0.187
         },
         "DecisionTree": {
-          "label": "Aggressive_Scan",
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.1859
+          "confidence": 0.1924
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5876
+          "confidence": 0.5163
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2487
+          "confidence": 0.1824
         }
       }
     },
@@ -3353,14 +3353,14 @@
           "confidence": 0.1969
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5669
+          "confidence": 0.5197
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2373
+          "confidence": 0.1805
         }
       }
     },
@@ -3552,17 +3552,17 @@
         "DecisionTree": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.2038
+          "confidence": 0.2035
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.6073
+          "confidence": 0.5119
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2628
+          "confidence": 0.1828
         }
       }
     },
@@ -3658,12 +3658,12 @@
         "SVM": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9999
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9998
+          "confidence": 0.9991
         }
       }
     },
@@ -3858,14 +3858,14 @@
           "confidence": 0.1932
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5737
+          "confidence": 0.5191
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2373
+          "confidence": 0.1808
         }
       }
     },
@@ -3956,17 +3956,17 @@
         "DecisionTree": {
           "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.1712
+          "confidence": 0.1708
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": false,
-          "confidence": 0.5189
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.5273
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
-          "correct": false,
-          "confidence": 0.2216
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.1758
         }
       }
     },
@@ -4057,17 +4057,17 @@
         "DecisionTree": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.228
+          "confidence": 0.2265
         },
         "SVM": {
           "label": "Vulnerability_Scan",
           "correct": false,
-          "confidence": 0.6307
+          "confidence": 0.5003
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.2772
+          "confidence": 0.184
         }
       }
     },
@@ -4161,14 +4161,14 @@
           "confidence": 0.1788
         },
         "SVM": {
-          "label": "TCP_Port_Scan",
+          "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.654
+          "confidence": 0.5016
         },
         "LogisticRegression": {
-          "label": "SYN_Stealth_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.1789
+          "confidence": 0.1631
         }
       }
     },
@@ -4363,14 +4363,14 @@
           "confidence": 0.2025
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.6012
+          "confidence": 0.5132
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2589
+          "confidence": 0.1828
         }
       }
     },
@@ -4471,7 +4471,7 @@
         "LogisticRegression": {
           "label": "SYN_Flood",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9997
         }
       }
     },
@@ -4567,12 +4567,12 @@
         "SVM": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.6872
+          "confidence": 0.548
         },
         "LogisticRegression": {
-          "label": "SYN_Stealth_Scan",
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.1954
+          "confidence": 0.1671
         }
       }
     },
@@ -4663,17 +4663,17 @@
         "DecisionTree": {
           "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.2319
+          "confidence": 0.2924
         },
         "SVM": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.9998
+          "confidence": 0.8826
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5644
+          "confidence": 0.3641
         }
       }
     },
@@ -4767,14 +4767,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Slowloris_Scan",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.3333
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.5
         }
       }
     },
@@ -4870,12 +4870,12 @@
         "SVM": {
           "label": "Vulnerability_Scan",
           "correct": false,
-          "confidence": 0.6868
+          "confidence": 0.5037
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.3141
+          "confidence": 0.1893
         }
       }
     },
@@ -4969,14 +4969,14 @@
           "confidence": 0.1952
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": false,
-          "confidence": 0.5654
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.5191
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
-          "correct": false,
-          "confidence": 0.2383
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.1802
         }
       }
     },
@@ -5173,12 +5173,12 @@
         "SVM": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9568
+          "confidence": 0.9115
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9779
+          "confidence": 0.9676
         }
       }
     },
@@ -5272,14 +5272,14 @@
           "confidence": 0.2698
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5899
+          "confidence": 0.5152
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2522
+          "confidence": 0.1821
         }
       }
     },
@@ -5373,14 +5373,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Slowloris_Scan",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.3333
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.5
         }
       }
     },
@@ -5471,17 +5471,17 @@
         "DecisionTree": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.2038
+          "confidence": 0.2035
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": false,
-          "confidence": 0.6085
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.5117
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
-          "correct": false,
-          "confidence": 0.2634
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.1829
         }
       }
     },
@@ -5575,13 +5575,13 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Benign",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Benign",
+          "correct": true,
           "confidence": 0.5
         }
       }
@@ -5673,17 +5673,17 @@
         "DecisionTree": {
           "label": "Aggressive_Scan",
           "correct": false,
-          "confidence": 0.196
+          "confidence": 0.1952
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5645
+          "confidence": 0.5178
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
-          "correct": false,
-          "confidence": 0.23
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.1792
         }
       }
     },
@@ -5779,12 +5779,12 @@
         "SVM": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.9998
+          "confidence": 0.8822
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5632
+          "confidence": 0.3633
         }
       }
     },
@@ -5875,7 +5875,7 @@
         "DecisionTree": {
           "label": "ICMP_Flood",
           "correct": true,
-          "confidence": 0.9993
+          "confidence": 1.0
         },
         "SVM": {
           "label": "ICMP_Flood",
@@ -5885,7 +5885,7 @@
         "LogisticRegression": {
           "label": "ICMP_Flood",
           "correct": true,
-          "confidence": 0.3333
+          "confidence": 0.4994
         }
       }
     },
@@ -5981,12 +5981,12 @@
         "SVM": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9999
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9998
+          "confidence": 0.9991
         }
       }
     },
@@ -6080,14 +6080,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 1.0
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.8983
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.4379
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.5154
         }
       }
     },
@@ -6181,14 +6181,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 1.0
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9997
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.5
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9991
         }
       }
     },
@@ -6383,14 +6383,14 @@
           "confidence": 0.3691
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": true,
-          "confidence": 0.5357
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.504
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2242
+          "confidence": 0.177
         }
       }
     },
@@ -6686,14 +6686,14 @@
           "confidence": 0.2016
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5805
+          "confidence": 0.5166
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.247
+          "confidence": 0.1813
         }
       }
     },
@@ -6794,7 +6794,7 @@
         "LogisticRegression": {
           "label": "SYN_Flood",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9997
         }
       }
     },
@@ -6890,12 +6890,12 @@
         "SVM": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.896
+          "confidence": 0.8865
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9433
+          "confidence": 0.9471
         }
       }
     },
@@ -6986,7 +6986,7 @@
         "DecisionTree": {
           "label": "Benign",
           "correct": true,
-          "confidence": 0.9948
+          "confidence": 1.0
         },
         "SVM": {
           "label": "ICMP_Flood",
@@ -6996,7 +6996,7 @@
         "LogisticRegression": {
           "label": "ICMP_Flood",
           "correct": false,
-          "confidence": 0.3296
+          "confidence": 0.3184
         }
       }
     },
@@ -7090,14 +7090,14 @@
           "confidence": 0.2138
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": true,
-          "confidence": 0.5578
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5193
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
-          "correct": true,
-          "confidence": 0.2352
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.1784
         }
       }
     },
@@ -7191,14 +7191,14 @@
           "confidence": 0.3673
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": true,
-          "confidence": 0.5569
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.5061
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2291
+          "confidence": 0.1787
         }
       }
     },
@@ -7289,17 +7289,17 @@
         "DecisionTree": {
           "label": "SYN_Stealth_Scan",
           "correct": true,
-          "confidence": 0.2038
+          "confidence": 0.2035
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.6093
+          "confidence": 0.5114
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.264
+          "confidence": 0.1827
         }
       }
     },
@@ -7390,17 +7390,17 @@
         "DecisionTree": {
           "label": "OS_Fingerprinting",
           "correct": true,
-          "confidence": 0.1937
+          "confidence": 0.1877
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5613
+          "confidence": 0.5201
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
-          "correct": true,
-          "confidence": 0.237
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.18
         }
       }
     },
@@ -7496,12 +7496,12 @@
         "SVM": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9999
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9998
+          "confidence": 0.9991
         }
       }
     },
@@ -7597,12 +7597,12 @@
         "SVM": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9397
+          "confidence": 0.9078
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9655
+          "confidence": 0.9626
         }
       }
     },
@@ -7698,12 +7698,12 @@
         "SVM": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.9998
+          "confidence": 0.8816
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5614
+          "confidence": 0.3622
         }
       }
     },
@@ -7797,14 +7797,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 1.0
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9998
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.5
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9991
         }
       }
     },
@@ -7895,17 +7895,17 @@
         "DecisionTree": {
           "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.1937
+          "confidence": 0.1877
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5657
+          "confidence": 0.5193
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2382
+          "confidence": 0.1803
         }
       }
     },
@@ -7999,14 +7999,14 @@
           "confidence": 0.3673
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5632
+          "confidence": 0.5054
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2309
+          "confidence": 0.1793
         }
       }
     },
@@ -8095,19 +8095,19 @@
           "confidence": 0.347
         },
         "DecisionTree": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Flood",
           "correct": false,
-          "confidence": 0.6276
+          "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
+          "label": "SYN_Flood",
           "correct": false,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.25
+          "label": "ICMP_Fragmentation",
+          "correct": true,
+          "confidence": 0.3333
         }
       }
     },
@@ -8196,19 +8196,19 @@
           "confidence": 0.1886
         },
         "DecisionTree": {
-          "label": "Aggressive_Scan",
-          "correct": false,
-          "confidence": 0.1859
+          "label": "OS_Fingerprinting",
+          "correct": true,
+          "confidence": 0.1924
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5894
+          "confidence": 0.516
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2496
+          "confidence": 0.1825
         }
       }
     },
@@ -8302,14 +8302,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Benign",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.5
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -8405,12 +8405,12 @@
         "SVM": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.9998
+          "confidence": 0.882
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5628
+          "confidence": 0.363
         }
       }
     },
@@ -8506,12 +8506,12 @@
         "SVM": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9813
+          "confidence": 0.9327
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9947
+          "confidence": 0.9906
         }
       }
     },
@@ -8605,14 +8605,14 @@
           "confidence": 0.2317
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5677
+          "confidence": 0.5078
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
-          "correct": true,
-          "confidence": 0.2332
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.1799
         }
       }
     },
@@ -8706,14 +8706,14 @@
           "confidence": 0.1986
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5782
+          "confidence": 0.5164
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2465
+          "confidence": 0.1804
         }
       }
     },
@@ -8807,14 +8807,14 @@
           "confidence": 0.1986
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5851
+          "confidence": 0.5152
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2504
+          "confidence": 0.1808
         }
       }
     },
@@ -8908,14 +8908,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Benign",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.5
+          "label": "Benign",
+          "correct": true,
+          "confidence": 0.4999
         }
       }
     },
@@ -9110,14 +9110,14 @@
           "confidence": 0.4622
         },
         "SVM": {
-          "label": "TCP_Port_Scan",
-          "correct": false,
-          "confidence": 0.5475
+          "label": "Vulnerability_Scan",
+          "correct": true,
+          "confidence": 0.5017
         },
         "LogisticRegression": {
-          "label": "SYN_Stealth_Scan",
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.2314
+          "confidence": 0.189
         }
       }
     },
@@ -9211,14 +9211,14 @@
           "confidence": 0.2986
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.565
+          "confidence": 0.5075
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2324
+          "confidence": 0.1796
         }
       }
     },
@@ -9516,12 +9516,12 @@
         "SVM": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5431
+          "confidence": 0.5335
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2112
+          "confidence": 0.1721
         }
       }
     },
@@ -9615,14 +9615,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 1.0
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9998
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.5
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9991
         }
       }
     },
@@ -9716,14 +9716,14 @@
           "confidence": 0.1883
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": true,
-          "confidence": 0.5545
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5217
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2336
+          "confidence": 0.1793
         }
       }
     },
@@ -9819,12 +9819,12 @@
         "SVM": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9515
+          "confidence": 0.9069
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9731
+          "confidence": 0.9614
         }
       }
     },
@@ -9920,12 +9920,12 @@
         "SVM": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9414
+          "confidence": 0.9115
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9745
+          "confidence": 0.9737
         }
       }
     },
@@ -10016,17 +10016,17 @@
         "DecisionTree": {
           "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.2996
+          "confidence": 1.0
         },
         "SVM": {
           "label": "TCP_Port_Scan",
           "correct": true,
-          "confidence": 0.5101
+          "confidence": 0.5214
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
-          "correct": false,
-          "confidence": 0.2261
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.175
         }
       }
     },
@@ -10120,14 +10120,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 1.0
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9994
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.513
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.999
         }
       }
     },
@@ -10223,12 +10223,12 @@
         "SVM": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 0.9998
+          "confidence": 0.8823
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 0.5637
+          "confidence": 0.3636
         }
       }
     },
@@ -10322,14 +10322,14 @@
           "confidence": 0.2986
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5673
+          "confidence": 0.5077
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2331
+          "confidence": 0.1798
         }
       }
     },
@@ -10524,13 +10524,13 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": true,
+          "label": "Benign",
+          "correct": false,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": true,
+          "label": "Benign",
+          "correct": false,
           "confidence": 0.2
         }
       }
@@ -10625,14 +10625,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": true,
+          "label": "Benign",
+          "correct": false,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": true,
-          "confidence": 0.2
+          "label": "Benign",
+          "correct": false,
+          "confidence": 0.201
         }
       }
     },
@@ -10829,12 +10829,12 @@
         "SVM": {
           "label": "Vulnerability_Scan",
           "correct": false,
-          "confidence": 0.6843
+          "confidence": 0.5033
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.3124
+          "confidence": 0.1895
         }
       }
     },
@@ -10930,12 +10930,12 @@
         "SVM": {
           "label": "Vulnerability_Scan",
           "correct": false,
-          "confidence": 0.5914
+          "confidence": 0.5296
         },
         "LogisticRegression": {
           "label": "Vulnerability_Scan",
           "correct": false,
-          "confidence": 0.4178
+          "confidence": 0.4016
         }
       }
     },
@@ -11029,14 +11029,14 @@
           "confidence": 0.3691
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5453
+          "confidence": 0.5051
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2269
+          "confidence": 0.1778
         }
       }
     },
@@ -11130,14 +11130,14 @@
           "confidence": 0.4536
         },
         "SVM": {
-          "label": "TCP_Port_Scan",
+          "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.595
+          "confidence": 0.5268
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.1736
+          "confidence": 0.1628
         }
       }
     },
@@ -11231,14 +11231,14 @@
           "confidence": 0.2283
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.584
+          "confidence": 0.5146
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2499
+          "confidence": 0.1802
         }
       }
     },
@@ -11334,12 +11334,12 @@
         "SVM": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9612
+          "confidence": 0.9247
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9819
+          "confidence": 0.9746
         }
       }
     },
@@ -11435,12 +11435,12 @@
         "SVM": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9919
+          "confidence": 0.9822
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9847
+          "confidence": 0.9793
         }
       }
     },
@@ -11536,12 +11536,12 @@
         "SVM": {
           "label": "Vulnerability_Scan",
           "correct": true,
-          "confidence": 0.661
+          "confidence": 0.5035
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
-          "correct": true,
-          "confidence": 0.2955
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.1854
         }
       }
     },
@@ -11632,17 +11632,17 @@
         "DecisionTree": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.1944
+          "confidence": 0.1955
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5939
+          "confidence": 0.5138
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2554
+          "confidence": 0.1813
         }
       }
     },
@@ -11743,7 +11743,7 @@
         "LogisticRegression": {
           "label": "PSHACK_Flood",
           "correct": true,
-          "confidence": 0.9998
+          "confidence": 1.0
         }
       }
     },
@@ -11832,19 +11832,19 @@
           "confidence": 0.2158
         },
         "DecisionTree": {
-          "label": "SYN_Stealth_Scan",
-          "correct": false,
-          "confidence": 0.2531
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.2295
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": false,
-          "confidence": 0.613
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.5103
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
-          "correct": false,
-          "confidence": 0.2663
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.1825
         }
       }
     },
@@ -11938,13 +11938,13 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": true,
+          "label": "Benign",
+          "correct": false,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": true,
+          "label": "Benign",
+          "correct": false,
           "confidence": 0.25
         }
       }
@@ -12034,9 +12034,9 @@
           "confidence": 0.67
         },
         "DecisionTree": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.9958
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
         },
         "SVM": {
           "label": "ICMP_Flood",
@@ -12046,7 +12046,7 @@
         "LogisticRegression": {
           "label": "ICMP_Flood",
           "correct": false,
-          "confidence": 0.3298
+          "confidence": 0.3191
         }
       }
     },
@@ -12140,14 +12140,14 @@
           "confidence": 0.1947
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5785
+          "confidence": 0.517
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2457
+          "confidence": 0.1812
         }
       }
     },
@@ -12243,12 +12243,12 @@
         "SVM": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.979
+          "confidence": 0.9423
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.992
+          "confidence": 0.9873
         }
       }
     },
@@ -12544,14 +12544,14 @@
           "confidence": 0.4536
         },
         "SVM": {
-          "label": "TCP_Port_Scan",
+          "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5693
+          "confidence": 0.5197
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
-          "correct": true,
-          "confidence": 0.1934
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.1682
         }
       }
     },
@@ -12645,14 +12645,14 @@
           "confidence": 0.3673
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": false,
-          "confidence": 0.5468
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.5073
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2262
+          "confidence": 0.1778
         }
       }
     },
@@ -12748,12 +12748,12 @@
         "SVM": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5735
+          "confidence": 0.5366
         },
         "LogisticRegression": {
-          "label": "OS_Fingerprinting",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2047
+          "confidence": 0.1701
         }
       }
     },
@@ -12854,7 +12854,7 @@
         "LogisticRegression": {
           "label": "SYN_Flood",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9997
         }
       }
     },
@@ -12945,17 +12945,17 @@
         "DecisionTree": {
           "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.1937
+          "confidence": 0.1877
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5711
+          "confidence": 0.5185
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2407
+          "confidence": 0.1808
         }
       }
     },
@@ -13147,17 +13147,17 @@
         "DecisionTree": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 0.6762
+          "confidence": 0.6732
         },
         "SVM": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 0.9998
+          "confidence": 0.8813
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 0.5604
+          "confidence": 0.3616
         }
       }
     },
@@ -13251,14 +13251,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Slowloris_Scan",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.3333
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.4964
         }
       }
     },
@@ -13352,14 +13352,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Benign",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.5
+          "label": "Benign",
+          "correct": true,
+          "confidence": 0.4996
         }
       }
     },
@@ -13450,17 +13450,17 @@
         "DecisionTree": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2427
+          "confidence": 0.2623
         },
         "SVM": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5835
+          "confidence": 0.5118
         },
         "LogisticRegression": {
           "label": "OS_Fingerprinting",
           "correct": true,
-          "confidence": 0.2165
+          "confidence": 0.1758
         }
       }
     },
@@ -13556,12 +13556,12 @@
         "SVM": {
           "label": "SYN_Flood",
           "correct": true,
-          "confidence": 0.9993
+          "confidence": 0.9984
         },
         "LogisticRegression": {
           "label": "SYN_Flood",
           "correct": true,
-          "confidence": 0.9996
+          "confidence": 0.9979
         }
       }
     },
@@ -13655,13 +13655,13 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": true,
+          "label": "Benign",
+          "correct": false,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": true,
+          "label": "Benign",
+          "correct": false,
           "confidence": 0.2
         }
       }
@@ -13756,14 +13756,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Benign",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.5
+          "label": "Benign",
+          "correct": true,
+          "confidence": 0.4997
         }
       }
     },
@@ -13852,19 +13852,19 @@
           "confidence": 0.2
         },
         "DecisionTree": {
-          "label": "Slowloris_Scan",
+          "label": "Vulnerability_Scan",
           "correct": false,
-          "confidence": 0.9179
+          "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
+          "label": "SYN_Flood",
           "correct": false,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
+          "label": "TCP_Flood",
           "correct": false,
-          "confidence": 1.0
+          "confidence": 0.6396
         }
       }
     },
@@ -13955,17 +13955,17 @@
         "DecisionTree": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.2167
+          "confidence": 0.2183
         },
         "SVM": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.6023
+          "confidence": 0.5128
         },
         "LogisticRegression": {
-          "label": "Vulnerability_Scan",
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.2599
+          "confidence": 0.1825
         }
       }
     },
@@ -14059,14 +14059,14 @@
           "confidence": 1.0
         },
         "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
+          "label": "Slowloris_Scan",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 0.3333
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.4995
         }
       }
     }
