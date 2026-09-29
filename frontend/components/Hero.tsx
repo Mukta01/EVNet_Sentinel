@@ -7,10 +7,15 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, Shield } from "lucide-react";
 import DotField from "./DotField";
 import ParticleText from "./ParticleText";
+import HeroPlayground from "./hero/HeroPlayground";
+import type { DemoAttack } from "./hero/BeatTheSentinel";
+import type { HeroTuning } from "./hero/TuneDetector";
+
+export type HeroStat = { value: string; label: string; sub: string };
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Hero() {
+export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]; tuning: HeroTuning; stats: HeroStat[] }) {
   const sectionRef = useRef<HTMLElement>(null);
 
   const subRef = useRef<HTMLParagraphElement>(null);
@@ -45,13 +50,6 @@ export default function Hero() {
 
     return () => ctx.revert();
   }, []);
-
-  const stats = [
-    { value: "99.13%", label: "Binary Detection Accuracy", sub: "ARF + ADWIN" },
-    { value: "<5ms", label: "Inference Latency", sub: "Per-instance" },
-    { value: "4", label: "Static ML Models", sub: "RF · SVM · LR · DT" },
-    { value: "Live", label: "WebSocket Alerts", sub: "Real-time stream" },
-  ];
 
   return (
     <section
@@ -111,10 +109,10 @@ export default function Hero() {
             scatter={180}
             gatherDuration={1600}
             stagger={420}
-            pointerRepel={40}
+            pointerRepel={0}
             repelRadius={120}
             idleDrift={0.7}
-            trigger="hover"
+            trigger="mount"
             fontSize="clamp(3rem, 9vw, 8rem)"
             fontWeight={900}
             fontFamily="inherit"
@@ -128,23 +126,20 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed font-light"
+          className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light"
         >
-          Real-time ML-based intrusion detection for EV charging infrastructure.
-          Reproducing state-of-the-art research with an interactive live-alert dashboard.
+          Machine-learning intrusion detection for EV charging networks — tested attack by
+          attack, with the data leak in the published results removed. Try to beat it.
         </motion.p>
 
-        {/* Terminal-style one-liner */}
+        {/* Hands-on: fire a real held-out flow at the detector */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.45 }}
-          className="inline-flex items-center space-x-3 bg-[#0a0f1a] border border-white/[0.06] rounded-xl px-5 py-3 mb-16 font-mono text-sm"
+          className="mb-12"
         >
-          <span className="text-emerald-400">$</span>
-          <span className="text-gray-300">python -m sentinel_ids.core</span>
-          <span className="text-gray-600">--mode live --model arf-adwin</span>
-          <span className="w-2 h-5 bg-emerald-400 cursor-blink" />
+          <HeroPlayground attacks={attacks} tuning={tuning} />
         </motion.div>
       </div>
 
