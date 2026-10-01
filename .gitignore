@@ -29,6 +29,8 @@ data/raw/*
 
 # OS specific files
 .DS_Store
+*.lnk
+Thumbs.db
 
 # Ignore IDE specific folders
 .vscode/
