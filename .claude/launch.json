@@ -4,9 +4,26 @@
     {
       "name": "evnet-frontend",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "cwd": "frontend",
       "port": 3000
+    },
+    {
+      "name": "evnet-frontend-prod",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "exec",
+        "--",
+        "next",
+        "start",
+        "-p",
+        "3100"
+      ],
+      "cwd": "frontend",
+      "port": 3100
     }
   ]
 }

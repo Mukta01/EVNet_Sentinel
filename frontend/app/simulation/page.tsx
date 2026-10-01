@@ -41,6 +41,14 @@ export default async function SimulationPage() {
     ]),
   );
 
+  // Who really sent each capture's attack traffic, from the raw MAC addresses.
+  const routes = JSON.parse(
+    await fs.readFile(path.join(process.cwd(), "data", "attack-routes.json"), "utf8"),
+  );
+  const senders = Object.fromEntries(
+    Object.entries(routes.captures).map(([file, r]: [string, any]) => [file, r.sender ?? null]),
+  );
+
   // When the detector cannot trust the exact name, severity must not come from
   // that name either — report the range across the whole category instead.
   const categorySeverity: Record<string, string[]> = {};
@@ -58,15 +66,16 @@ export default async function SimulationPage() {
           </h1>
           <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-slate-400">
             The topology is the CICEVSE2024 testbed, transcribed from the dataset&rsquo;s own device
-            table. Every packet is a held-out flow and every verdict is a real model output — so when
-            a reconnaissance scan slips past, that is the detector genuinely failing, not a scripted
-            beat.
+            table. Every packet is a held-out flow, sent from the device that really sent it to the
+            charging station it really targeted, and every verdict is a real model output. Sentinel
+            watches a mirrored copy of the switch traffic, as the dataset was recorded: it raises
+            alerts, it does not block.
           </p>
           <p className="mt-2 max-w-3xl text-[13px] leading-relaxed text-slate-500">
             {sim.benignNote}
           </p>
         </header>
-        <SimulationConsole sim={sim as never} responses={responses} roles={insights.roles} categorySeverity={categorySeverity} />
+        <SimulationConsole sim={sim as never} responses={responses} roles={insights.roles} categorySeverity={categorySeverity} senders={senders} />
       </div>
       <Footer />
     </main>
