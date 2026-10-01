@@ -65,6 +65,7 @@ flowchart LR
 Detailed documentation has been separated into the `docs/` directory for better maintainability:
 
 - 🏛️ [**Architecture Details**](./docs/ARCHITECTURE.md)
+- ▶️ [**Running the servers**](./docs/RUNNING.md): website, prediction API, demo route
 - ⚙️ [**Setup & Installation**](./docs/SETUP.md)
 - 📚 [**Reference Papers Index**](./docs/papers.md)
 - 📊 [**Dataset Feature Engineering**](./docs/dataset_feature_engineering.md)
