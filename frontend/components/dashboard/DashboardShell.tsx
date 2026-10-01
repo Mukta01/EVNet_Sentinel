@@ -4,6 +4,10 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import AttackInsights from "./AttackInsights";
 import ClassSeparation from "./ClassSeparation";
+import ConfusionExplorer from "./ConfusionExplorer";
+import DriftTimeline from "./DriftTimeline";
+import FeatureSeparability from "./FeatureSeparability";
+import LeakSummary from "./LeakSummary";
 import DriftAlignment from "./DriftAlignment";
 import FingerprintAblation from "./FingerprintAblation";
 import InferenceReplay, { type Flow } from "./InferenceReplay";
@@ -29,14 +33,17 @@ export default function DashboardShell({
   findings,
   simulation,
   insights,
+  paper,
 }: {
   findings: Findings;
   simulation: Simulation;
   insights: Findings;
+  paper: Findings;
 }) {
   const [tab, setTab] = useState<TabId>("findings");
 
   const dataset = findings.dataset;
+  const forest = findings.models.find((m: { name: string }) => m.name === "RandomForest") ?? findings.models[0];
   const environment = findings.environment;
 
   const provenance: { term: string; value: string }[] = [
@@ -111,11 +118,22 @@ export default function DashboardShell({
         </div>
       ) : tab === "findings" ? (
         <div className="space-y-20 pt-12">
+          <LeakSummary
+            paperAccuracy={findings.paperReported.accuracy}
+            probeAccuracy={findings.singleColumnProbe[0].accuracy}
+            corrected={{
+              model: "Random Forest",
+              accuracy: forest.accuracy,
+              macroF1: forest.macro_f1,
+            }}
+          />
           <ClassSeparation
             rows={findings.perClass as { class: string; group: Family; support: number; models: Record<string, { f1: number; std: number }> }[]}
             models={findings.models.map((m: { name: string }) => m.name)}
             control={findings.supportControl}
           />
+          <ConfusionExplorer confusion={paper.confusion} seeds={paper.seeds} />
+          <FeatureSeparability importance={paper.importance} />
           <ModelTable models={findings.models} seeds={findings.seeds} />
           <LeakEvidence
             probes={findings.singleColumnProbe}
@@ -123,6 +141,13 @@ export default function DashboardShell({
             paperAccuracy={findings.paperReported.accuracy}
           />
           <FingerprintAblation rows={findings.fingerprintAblation} />
+          <DriftTimeline
+            drift={paper.drift}
+            groups={Object.fromEntries(
+              findings.perClass.map((r: { class: string; group: string }) => [r.class, r.group]),
+            )}
+            withinHundred={findings.drift.withinHundred}
+          />
           <DriftAlignment
             drift={findings.drift}
             streamOrder={findings.streamOrder}

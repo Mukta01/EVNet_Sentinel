@@ -1,3 +1,18 @@
 {
-  "buildPath": "comp"
+  "buildPath": "comp",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gray-on-color",
+        "value": "*",
+        "files": [
+          "frontend/components/hero/BeatTheSentinel.tsx"
+        ],
+        "createdAt": "2026-09-29T09:54:28.392Z",
+        "reason": "Claude triage: the flagged 'silent' badge uses text-slate-50 (near-white) on a 25% slate tint; the rule matches the slate class name, not low contrast"
+      }
+    ]
+  }
 }

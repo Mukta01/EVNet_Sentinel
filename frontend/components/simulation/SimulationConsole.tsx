@@ -1,11 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Pause, Play, Radio, Square } from "lucide-react";
+import { ListChecks, Pause, Play, Radio, Square } from "lucide-react";
 import TopologyCanvas, { groupTone, type Packet } from "./TopologyCanvas";
-import { LAUNCH_POINTS, nodeById, pathForFlow, type NodeId } from "./topology";
+import { SENDERS, nodeById, routeFor, type NodeId, type Sender } from "./topology";
 import { FAMILY, MODEL_LABEL, prettyClass } from "../dashboard/theme";
 import ResponsePanel, { type ResponseMap } from "./ResponsePanel";
+import IncidentLog, { type Incident } from "./IncidentLog";
 
 type Verdict = {
   label: string; group: string; correct: boolean;
@@ -56,11 +57,31 @@ const GROUP_TITLE: Record<string, string> = {
 
 const EMIT_MS = { slow: 900, normal: 420, fast: 160 };
 
+/**
+ * Scripted multi-stage runs. Each opens with normal traffic, so the log also
+ * records whether the detector raises false alarms before anything happens.
+ */
+const CAMPAIGNS = [
+  { id: "kill-chain", label: "Recon → exploit → flood",
+    steps: ["OS_Fingerprinting", "Service_Version_Detection", "Vulnerability_Scan", "SYN_Flood"] },
+  { id: "flood-barrage", label: "Flood barrage",
+    steps: ["SYN_Flood", "UDP_Flood", "ICMP_Flood", "PSHACK_Flood", "TCP_Flood"] },
+  { id: "low-and-slow", label: "Low and slow",
+    steps: ["SYN_Stealth_Scan", "TCP_Port_Scan", "Slowloris_Scan"] },
+  { id: "full-sweep", label: "Every attack type", steps: [] as string[] },
+];
+/** Flows the detector must see before a campaign moves to its next stage. */
+const STAGE_FLOWS = 10;
+
+type Campaign = { id: string; steps: string[]; stage: number };
+
 export default function SimulationConsole({
-  sim, responses, roles, categorySeverity,
+  sim, responses, roles, categorySeverity, senders,
 }: {
   sim: Sim; responses: ResponseMap; roles: Record<string, string>;
   categorySeverity: Record<string, string[]>;
+  /** capture file -> the device that sent its attack traffic (attack_routes.py) */
+  senders: Record<string, Sender | null>;
 }) {
   const byId = useMemo(() => new Map(sim.flows.map((f) => [f.id, f])), [sim.flows]);
   const modelIndex = useMemo(
@@ -86,17 +107,21 @@ export default function SimulationConsole({
   );
 
   const [attackClass, setAttackClass] = useState<string>("TCP_Port_Scan");
-  const [launchPoint, setLaunchPoint] = useState(LAUNCH_POINTS[0].id);
+  const [source, setSource] = useState<Sender | "all">("all");
+  const [liveSender, setLiveSender] = useState<Sender | null>(null);
   const [stationState, setStationState] = useState<"idle" | "charging">("charging");
   const [model, setModel] = useState(sim.models[0]);
   const [speed, setSpeed] = useState<keyof typeof EMIT_MS>("normal");
   const [attacking, setAttacking] = useState(false);
   const [streaming, setStreaming] = useState(true);
   const [selectedNode, setSelectedNode] = useState<NodeId | null>(null);
-  const [tapPulse, setTapPulse] = useState<{ caught: boolean; at: number } | null>(null);
+  const [tapPulse, setTapPulse] = useState<{ flagged: boolean; at: number } | null>(null);
   const [feed, setFeed] = useState<{ flow: Flow; verdict: Verdict }[]>([]);
   const [tally, setTally] = useState({ seen: 0, caught: 0 });
   const [current, setCurrent] = useState<Flow | null>(null);
+  const [campaignId, setCampaignId] = useState(CAMPAIGNS[0].id);
+  const [campaign, setCampaign] = useState<Campaign | null>(null);
+  const [incidents, setIncidents] = useState<Incident[]>([]);
 
   const packets = useRef<Packet[]>([]);
   const packetFlow = useRef<Map<number, Flow>>(new Map());
@@ -106,16 +131,38 @@ export default function SimulationConsole({
   useEffect(() => { modelRef.current = model; }, [model]);
   const verdictForRef = useRef(verdictFor);
   useEffect(() => { verdictForRef.current = verdictFor; }, [verdictFor]);
+  const campaignRef = useRef(campaign);
+  useEffect(() => { campaignRef.current = campaign; }, [campaign]);
+  const stageSeen = useRef(0);
 
-  const benignPool = sim.byClass["Benign"] ?? [];
+  // During a campaign the stage decides what is on the wire.
+  const activeClass = campaign ? campaign.steps[campaign.stage] : attackClass;
+  const activeIsAttack = attacking && activeClass !== "Benign";
+
+  const benignPool = useMemo(() => sim.byClass["Benign"] ?? [], [sim.byClass]);
   const attackPool = useMemo(() => {
-    const pool = sim.byClass[attackClass] ?? [];
+    let pool = sim.byClass[activeClass] ?? [];
+    // Only real recordings: filtering by sender never invents a route.
+    if (source !== "all") {
+      const bySender = pool.filter((id) => senders[byId.get(id)?.capture ?? ""] === source);
+      if (bySender.length) pool = bySender;
+    }
     if (stationState === "idle") {
       const filtered = pool.filter((id) => byId.get(id)?.state === "idle");
       if (filtered.length) return filtered;
     }
     return pool;
-  }, [sim.byClass, attackClass, stationState, byId]);
+  }, [sim.byClass, activeClass, stationState, byId, source, senders]);
+
+  // Which devices actually sent this attack in the recordings, with flow counts.
+  const recordedSenders = useMemo(() => {
+    const counts = new Map<Sender, number>();
+    for (const id of sim.byClass[attackClass] ?? []) {
+      const s = senders[byId.get(id)?.capture ?? ""];
+      if (s) counts.set(s, (counts.get(s) ?? 0) + 1);
+    }
+    return [...counts.entries()];
+  }, [sim.byClass, attackClass, senders, byId]);
 
   const reset = useCallback(() => {
     packets.current = [];
@@ -127,10 +174,9 @@ export default function SimulationConsole({
   // Emit packets on a cadence. Benign loops while idle; launching swaps the pool.
   useEffect(() => {
     if (!streaming) return;
-    const pool = attacking ? attackPool : benignPool;
+    const pool = activeIsAttack ? attackPool : benignPool;
     if (!pool.length) return;
 
-    const launch = LAUNCH_POINTS.find((l) => l.id === launchPoint)!;
     const id = setInterval(() => {
       if (packets.current.length > 26) return; // keep the wire legible
       const flowId = pool[cursor.current % pool.length];
@@ -139,9 +185,13 @@ export default function SimulationConsole({
       if (!flow) return;
       const key = nextKey.current++;
       packetFlow.current.set(key, flow);
+      const sender = activeIsAttack ? senders[flow.capture] ?? "kali" : null;
+      const route = routeFor(flow.evse, sender, activeIsAttack);
+      if (sender) setLiveSender(sender);
       packets.current.push({
         key,
-        pathD: pathForFlow(flow.evse, flow.state, launch.path, attacking),
+        pathD: route.pathD,
+        target: route.target,
         startedAt: performance.now(),
         duration: 0, // filled from real path length on the first frame
         progress: 0,
@@ -151,7 +201,7 @@ export default function SimulationConsole({
       });
     }, EMIT_MS[speed]);
     return () => clearInterval(id);
-  }, [streaming, attacking, attackPool, benignPool, byId, launchPoint, speed]);
+  }, [streaming, activeIsAttack, attackPool, benignPool, byId, speed, senders]);
 
   const handleTap = useCallback((key: number) => {
     const flow = packetFlow.current.get(key);
@@ -162,11 +212,48 @@ export default function SimulationConsole({
     const packet = packets.current.find((p) => p.key === key);
     if (packet) packet.caught = verdict.correct;
 
-    setTapPulse({ caught: verdict.correct, at: Date.now() });
+    setTapPulse({ flagged: verdict.label !== "Benign", at: Date.now() });
     setCurrent(flow);
     setFeed((prev) => [{ flow, verdict }, ...prev].slice(0, 40));
     setTally((prev) => ({ seen: prev.seen + 1, caught: prev.caught + (verdict.correct ? 1 : 0) }));
     packetFlow.current.delete(key);
+
+    // Log it: one incident per (model, true attack), in order of first sighting.
+    const name = modelRef.current;
+    const trueCat = categoryOf(flow.trueGroup);
+    const calledCat = categoryOf(verdict.group);
+    setIncidents((prev) => {
+      const at = prev.findIndex((r) => r.model === name && r.label === flow.trueLabel);
+      const base: Incident = at >= 0 ? prev[at] : {
+        model: name, label: flow.trueLabel, category: trueCat,
+        firstSeen: new Date().toLocaleTimeString([], { hour12: false }),
+        seen: 0, flagged: 0, exact: 0, sameCategory: 0, calls: {},
+      };
+      const next: Incident = {
+        ...base,
+        seen: base.seen + 1,
+        flagged: base.flagged + (verdict.label !== "Benign" ? 1 : 0),
+        exact: base.exact + (verdict.label === flow.trueLabel ? 1 : 0),
+        sameCategory: base.sameCategory + (calledCat === trueCat ? 1 : 0),
+        calls: { ...base.calls, [verdict.label]: (base.calls[verdict.label] ?? 0) + 1 },
+      };
+      return at >= 0 ? prev.map((r, i) => (i === at ? next : r)) : [...prev, next];
+    });
+
+    // Advance the campaign once this stage's traffic has been judged.
+    const run = campaignRef.current;
+    if (run && flow.trueLabel === run.steps[run.stage]) {
+      stageSeen.current += 1;
+      if (stageSeen.current >= STAGE_FLOWS) {
+        stageSeen.current = 0;
+        const done = run.stage + 1 >= run.steps.length;
+        const nextRun = done ? null : { ...run, stage: run.stage + 1 };
+        campaignRef.current = nextRun;
+        setCampaign(nextRun);
+        cursor.current = 0;
+        if (done) setAttacking(false);
+      }
+    }
   }, []);
 
   const rate = tally.seen ? tally.caught / tally.seen : null;
@@ -174,10 +261,21 @@ export default function SimulationConsole({
   const latestArf = feed.find((f) => f.verdict.runningAccuracy !== undefined)?.verdict;
   const selected = selectedNode ? nodeById(selectedNode) : null;
 
-  const launchAttack = () => { reset(); setAttacking(true); setStreaming(true); };
-  const stopAttack = () => { reset(); setAttacking(false); setStreaming(true); };
+  const launchAttack = () => { reset(); setCampaign(null); setAttacking(true); setStreaming(true); };
+  const stopAttack = () => { reset(); setCampaign(null); setAttacking(false); setStreaming(true); };
+  const runCampaign = () => {
+    const preset = CAMPAIGNS.find((c) => c.id === campaignId)!;
+    const steps = (preset.steps.length ? preset.steps : attackClasses).filter((c) => sim.byClass[c]?.length);
+    reset();
+    stageSeen.current = 0;
+    setCampaign({ id: preset.id, steps: ["Benign", ...steps], stage: 0 });
+    setAttacking(true);
+    setStreaming(true);
+  };
+  const campaignLabel = campaign ? CAMPAIGNS.find((c) => c.id === campaign.id)?.label : null;
 
   return (
+    <div className="space-y-4">
     <div className="grid gap-4 lg:grid-cols-[15rem_minmax(0,1fr)_17rem]">
       {/* ── attack control ─────────────────────────────────── */}
       <aside className="space-y-4">
@@ -203,29 +301,73 @@ export default function SimulationConsole({
             {(sim.byClass[attackClass] ?? []).length} held-out flows available
           </p>
 
-          <label className="mt-4 block text-[11px] text-slate-500" htmlFor="launch-from">Launch from</label>
+          <label className="mt-4 block text-[11px] text-slate-500" htmlFor="sent-from">Sent from (as recorded)</label>
           <select
-            id="launch-from" value={launchPoint}
-            onChange={(e) => setLaunchPoint(e.target.value)}
+            id="sent-from" value={recordedSenders.some(([k]) => k === source) ? source : "all"}
+            onChange={(e) => { setSource(e.target.value as Sender | "all"); if (attacking) reset(); }}
             className="mt-1.5 w-full rounded-md border border-white/10 bg-[#0B1220] px-2.5 py-2 text-[13px] text-slate-100 focus-visible:outline-2 focus-visible:outline-emerald-400"
           >
-            {LAUNCH_POINTS.map((l) => <option key={l.id} value={l.id}>{l.label}</option>)}
+            <option value="all">Every recorded sender</option>
+            {recordedSenders.map(([k, n]) => <option key={k} value={k}>{SENDERS[k].label} · {n} flows</option>)}
           </select>
           <p className="mt-1.5 text-[11px] leading-snug text-slate-500">
-            {LAUNCH_POINTS.find((l) => l.id === launchPoint)?.note}
+            {recordedSenders.length === 1
+              ? `Only ever sent by the ${SENDERS[recordedSenders[0][0]].label}, ${SENDERS[recordedSenders[0][0]].note}.`
+              : "Each packet travels from the device that really sent it to the station it really hit."}
           </p>
 
           <button
-            onClick={attacking ? stopAttack : launchAttack}
+            onClick={attacking && !campaign ? stopAttack : launchAttack}
             className={`mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium ring-1 ring-inset transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 ${
-              attacking
+              attacking && !campaign
                 ? "bg-rose-500/12 text-rose-300 ring-rose-500/25 hover:bg-rose-500/20"
                 : "bg-emerald-500/12 text-emerald-300 ring-emerald-500/25 hover:bg-emerald-500/20"
             }`}
           >
-            {attacking ? <><Square className="h-3.5 w-3.5" aria-hidden />Stop attack</>
+            {attacking && !campaign ? <><Square className="h-3.5 w-3.5" aria-hidden />Stop attack</>
                        : <><Radio className="h-4 w-4" aria-hidden />Launch attack</>}
           </button>
+        </Panel>
+
+        <Panel title="Campaign">
+          <label className="block text-[11px] text-slate-500" htmlFor="campaign">Scripted sequence</label>
+          <select
+            id="campaign" value={campaignId} onChange={(e) => setCampaignId(e.target.value)}
+            disabled={!!campaign}
+            className="mt-1.5 w-full rounded-md border border-white/10 bg-[#0B1220] px-2.5 py-2 text-[13px] text-slate-100 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-emerald-400"
+          >
+            {CAMPAIGNS.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
+          </select>
+          {campaign ? (
+            <>
+              <ol className="mt-3 space-y-1">
+                {campaign.steps.map((step, i) => (
+                  <li key={step} className={`flex items-center gap-2 text-[11.5px] ${
+                    i === campaign.stage ? "text-slate-100" : i < campaign.stage ? "text-slate-500 line-through decoration-slate-600" : "text-slate-500"
+                  }`}>
+                    <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${
+                      i === campaign.stage ? "bg-emerald-400" : i < campaign.stage ? "bg-slate-600" : "bg-slate-700"
+                    }`} />
+                    {step === "Benign" ? "Normal traffic (baseline)" : prettyClass(step)}
+                  </li>
+                ))}
+              </ol>
+              <button onClick={stopAttack}
+                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md bg-rose-500/12 px-3 py-2 text-sm font-medium text-rose-300 ring-1 ring-inset ring-rose-500/25 hover:bg-rose-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400">
+                <Square className="h-3.5 w-3.5" aria-hidden />Stop campaign
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="mt-1.5 text-[11px] leading-snug text-slate-500">
+                Normal traffic first, then each attack for {STAGE_FLOWS} judged flows. Results collect in the incident log.
+              </p>
+              <button onClick={runCampaign}
+                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md bg-sky-500/12 px-3 py-2 text-sm font-medium text-sky-300 ring-1 ring-inset ring-sky-500/25 hover:bg-sky-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400">
+                <ListChecks className="h-4 w-4" aria-hidden />Run campaign
+              </button>
+            </>
+          )}
         </Panel>
 
         <Panel title="Station state">
@@ -274,13 +416,16 @@ export default function SimulationConsole({
               CICEVSE2024 testbed
             </span>
             <span className="font-mono text-[11px] tabular-nums text-slate-500">
-              {attacking ? `${prettyClass(attackClass)} in flight` : "benign heartbeat · looping 12 held-out flows"}
+              {campaign
+                ? `${campaignLabel} · stage ${campaign.stage + 1}/${campaign.steps.length} · ${activeClass === "Benign" ? "baseline" : prettyClass(activeClass)}`
+                : attacking ? `${prettyClass(attackClass)} · ${liveSender ? SENDERS[liveSender].label : "attacker"} → charging station`
+                : "benign heartbeat · looping 12 held-out flows"}
             </span>
           </div>
           <TopologyCanvas
             packets={packets} onTap={handleTap}
             selected={selectedNode} onSelect={setSelectedNode}
-            tapPulse={tapPulse} running={streaming}
+            tapPulse={tapPulse} running={streaming} sender={attacking ? liveSender : null}
           />
         </div>
 
@@ -305,7 +450,8 @@ export default function SimulationConsole({
           </div>
         )}
 
-        <FlowInspector flow={current} model={model} spec={sim.featureSpec} verdictFor={verdictFor} />
+        <FlowInspector flow={current} model={model} spec={sim.featureSpec} verdictFor={verdictFor}
+          sender={current && current.trueLabel !== "Benign" ? senders[current.capture] ?? null : null} />
         <ResponsePanel
           truth={current?.trueLabel ?? null}
           predicted={current ? verdictFor(current, model)?.label ?? null : null}
@@ -383,6 +529,8 @@ export default function SimulationConsole({
         </Panel>
       </aside>
     </div>
+    <IncidentLog incidents={incidents} onClear={() => setIncidents([])} />
+    </div>
   );
 }
 
@@ -414,10 +562,11 @@ function GroupChip({ group, tiny, className = "" }: { group: string; tiny?: bool
 }
 
 function FlowInspector({
-  flow, model, spec, verdictFor,
+  flow, model, spec, verdictFor, sender,
 }: {
   flow: Flow | null; model: string; spec: FeatureSpec[];
   verdictFor: (flow: Flow, name: string) => Verdict | undefined;
+  sender: Sender | null;
 }) {
   const verdict = flow ? verdictFor(flow, model) : undefined;
   return (
@@ -427,7 +576,7 @@ function FlowInspector({
           Flow inspector — packet at the tap
         </h3>
         {flow && <span className="font-mono text-[10px] tabular-nums text-slate-600">
-          flow #{flow.id} · {flow.evse} · {flow.state}
+          flow #{flow.id} · {sender ? `${SENDERS[sender].label} → ` : ""}{flow.evse} · {flow.state}
         </span>}
       </div>
 
