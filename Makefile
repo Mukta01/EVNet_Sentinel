@@ -1,4 +1,4 @@
-.PHONY: data-fetch data-process data data-reference data-grouped replay-reference attack-test insights figures setup test run help
+.PHONY: data-fetch data-process data data-reference data-grouped replay-reference attack-test insights figures setup test run api web web-dev help
 
 PYTHON ?= python3
 RAW_DIR ?= data/raw
@@ -17,7 +17,10 @@ help:
 	@echo "  make figures           - rebuild paper.json, hero.json and every figure in docs/figures"
 	@echo "  make setup             - Install requirements"
 	@echo "  make test              - Run pytest"
-	@echo "  make run               - Run FastAPI backend locally"
+	@echo "  make web               - Build and serve the website for a demo (http://localhost:3100)"
+	@echo "  make web-dev           - Website with live reload while editing (http://localhost:3000)"
+	@echo "  make api               - Prediction API on the corrected models (http://localhost:8000)"
+	@echo "  make run               - Prediction API on whatever is in saved_models/ (legacy; see docs/RUNNING.md)"
 	@echo ""
 	@echo "Override RAW_DIR / OUT_DIR to point at a different dataset copy, e.g."
 	@echo "  make data-process RAW_DIR='datasets/CICEVSE2024_Dataset' OUT_DIR=data/processed_v2"
@@ -68,3 +71,20 @@ test:
 
 run:
 	uvicorn src.api.main:app --reload
+
+# The corrected (leak-free) models from run_experiments.py. saved_models/ itself
+# holds older artifacts, including a scaler fitted on the leaked timestamp
+# columns, so the API is pointed at the multiseed set instead. See docs/RUNNING.md.
+API_SEED ?= 42
+api:
+	MODELS_DIR=saved_models/multiseed/seed-$(API_SEED) \
+	SCALER_PATH=data/multiseed/seed-$(API_SEED)/StandardScaler.pkl \
+	$(PYTHON) -m uvicorn src.api.main:app --port 8000
+
+# Production build: what the demo should run. Dev mode shares the build folder
+# and can serve stale pages after edits (see docs/RUNNING.md, Troubleshooting).
+web:
+	cd frontend && npm run build && npx next start -p 3100
+
+web-dev:
+	cd frontend && npm run dev
