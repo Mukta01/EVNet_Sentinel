@@ -1,6 +1,9 @@
 # Running EVNet Sentinel
 
 How to start every server in this project, for development or a demo.
+The same runbook, with stop procedures, is maintained as LaTeX in
+[`EVNet_Sentinel_Runbook.tex`](./EVNet_Sentinel_Runbook.tex) ([PDF](./EVNet_Sentinel_Runbook.pdf)).
+Keep the two in step when a command or port changes.
 
 ## What there is to run
 

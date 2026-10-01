@@ -1,0 +1,285 @@
+% ============================================================================
+%  EVNet Sentinel — Runbook: starting and stopping every server
+%
+%  Maintained alongside docs/RUNNING.md (same content, Markdown). When a
+%  command, port or prerequisite changes, update both.
+%
+%  Build:  pdflatex EVNet_Sentinel_Runbook.tex   (run twice for references)
+% ============================================================================
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{caption}
+\usepackage{fancyvrb}
+
+\definecolor{primary}{HTML}{1E40AF}
+\definecolor{secondary}{HTML}{0D9488}
+\definecolor{darkgray}{HTML}{374151}
+\definecolor{alertred}{HTML}{B91C1C}
+
+\hypersetup{colorlinks=true, linkcolor=primary, urlcolor=secondary,
+            pdftitle={EVNet Sentinel --- Runbook}, pdfauthor={EVNet Sentinel Team}}
+
+% Commands are typeset verbatim in a light frame so they can be copied exactly.
+\DefineVerbatimEnvironment{cmd}{Verbatim}%
+  {frame=single, framesep=2mm, rulecolor=\color{darkgray!40}, fontsize=\small, xleftmargin=1mm}
+\newcommand{\fpath}[1]{\texttt{\small #1}}
+\newcommand{\port}[1]{\textbf{\texttt{#1}}}
+
+\newenvironment{caution}[1]
+  {\par\medskip\noindent\textcolor{alertred}{\rule{\textwidth}{0.8pt}}\par\nobreak
+   \smallskip\noindent\textbf{\textcolor{alertred}{#1}}\par\nobreak\smallskip}
+  {\par\smallskip\noindent\textcolor{alertred}{\rule{\textwidth}{0.8pt}}\par\medskip}
+
+% Paths and commands cannot hyphenate; let lines stretch instead of overflowing.
+\sloppy
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries\textcolor{primary}{EVNet Sentinel --- Runbook}}\\[0.4em]
+{\large Starting and stopping every server}\\[0.3em]
+{\small\textcolor{darkgray}{Run all commands from the repository root unless a step says otherwise.}}
+\end{center}
+
+\tableofcontents
+\bigskip
+
+% ===========================================================================
+\section{What there is to run}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{lllX}
+\toprule
+\textbf{Server} & \textbf{Start} & \textbf{Address} & \textbf{Needs} \\
+\midrule
+Website (demo)         & \texttt{make web}     & \port{localhost:3100} & Node.js only \\
+Website (live reload)  & \texttt{make web-dev} & \port{localhost:3000} & Node.js only \\
+Prediction API         & \texttt{make api}     & \port{localhost:8000} & Python and the trained models \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The website and the API are independent. \textbf{The website does not call the
+API}: it reads results already exported to \fpath{frontend/data/*.json}, so it
+runs on a fresh clone with no dataset and no Python. The API classifies one
+network flow per request. No database or other service needs to be running.
+
+% ===========================================================================
+\section{One-time setup}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Tool} & \textbf{Version} \\
+\midrule
+Node.js   & 20.9 or newer (developed on 26.4) \\
+Python    & 3.10 or newer (developed on 3.13) \\
+GNU Make  & any \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{cmd}
+make setup                    # Python packages (requirements.txt)
+cd frontend && npm install    # website packages
+cd ..
+\end{cmd}
+
+% ===========================================================================
+\section{Website}
+
+\subsection{Start}
+
+For a demo, use the production build. It is faster, and it always shows the
+latest code.
+
+\begin{cmd}
+make web
+\end{cmd}
+
+This runs \texttt{npm run build}, then \texttt{next start -p 3100}. The build
+takes about 30 seconds; wait for \texttt{Ready}, then open
+\url{http://localhost:3100}.
+
+While editing the frontend, use live reload instead:
+
+\begin{cmd}
+make web-dev
+\end{cmd}
+
+\subsection{Demo route}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Page} & \textbf{What to show} \\
+\midrule
+\url{http://localhost:3100}            & \emph{Beat the Sentinel}: drag an attack onto a station. \emph{Tune the detector}: drag the confidence bar. Then scroll the Mumbai story. \\
+\url{http://localhost:3100/simulation} & Pick an attack, choose \emph{Sent from}, launch; or run a campaign and read the incident log. \\
+\url{http://localhost:3100/dashboard}  & \emph{Attack insights} tab; the confusion matrix and drift timeline on \emph{Findings}. \\
+\url{http://localhost:3100/docs}       & The ``Method at a glance'' pipeline and the architecture. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Stop}
+
+Press \texttt{Ctrl+C} in the terminal running it. If that terminal is gone, stop
+whatever holds the port:
+
+\begin{cmd}
+lsof -ti:3100 | xargs kill      # production website
+lsof -ti:3000 | xargs kill      # live-reload website
+\end{cmd}
+
+% ===========================================================================
+\section{Prediction API}
+
+\subsection{Start}
+
+\begin{cmd}
+make api
+\end{cmd}
+
+This serves the \textbf{corrected (leak-free) models} produced by
+\fpath{src/evaluation/run\_experiments.py} --- Random Forest, Decision Tree,
+Logistic Regression and SVM from \fpath{saved\_models/multiseed/seed-42/} --- with
+that run's scaler. It is ready in about 10 seconds. For another training seed:
+\texttt{make api API\_SEED=1337} (or \texttt{2024}).
+
+\subsection{Check that it works}
+
+\begin{cmd}
+curl http://localhost:8000/
+\end{cmd}
+
+The reply lists \texttt{models\_loaded} and should contain
+\texttt{"scaler\_loaded": true}. Classify a real held-out flow:
+
+\begin{cmd}
+curl -X POST http://localhost:8000/predict \
+     -H "Content-Type: application/json" \
+     -d @docs/examples/predict_syn_flood.json
+\end{cmd}
+
+Expected: \texttt{\{"prediction\_class":"SYN\_Flood","status":"success"\}}. The
+second sample, \fpath{predict\_port\_scan.json}, returns \texttt{Slowloris\_Scan}.
+That is the scan confusion described in the findings, not a fault. Interactive
+API documentation is at \url{http://localhost:8000/docs}.
+
+A request names its model and sends the 60 flow features. Always pass
+\texttt{model\_name} (one of those listed by \texttt{GET /}): the default,
+\texttt{arfadwin\_model}, does not exist. Missing features are filled with 0, so
+send all 60 for a meaningful answer.
+
+\subsection{Stop}
+
+Press \texttt{Ctrl+C}, or:
+
+\begin{cmd}
+lsof -ti:8000 | xargs kill
+\end{cmd}
+
+\subsection{First run on a fresh clone}
+\label{sec:first-run}
+
+The model files are not in git. Generate them once. This takes about 9 minutes
+and needs the raw CICEVSE2024 captures:
+
+\begin{cmd}
+python3 src/evaluation/run_experiments.py --raw-dir <raw-captures> \
+        --feature-set extended --seeds 42 1337 2024
+\end{cmd}
+
+This writes \fpath{saved\_models/multiseed/} and \fpath{data/multiseed/}, which
+\texttt{make api} reads.
+
+\begin{caution}{Do not use \texttt{make run} or the Docker image for a demo}
+Both load the older artifacts in the root of \fpath{saved\_models/}, including a
+scaler fitted \emph{with} the six leaked timestamp columns. Requests carrying the
+corrected 60 features then fail with ``Feature names seen at fit time, yet now
+missing: bidirectional\_first\_seen\_ms\ldots''. Use \texttt{make api}.
+\end{caution}
+
+% ===========================================================================
+\section{Everything at once}
+
+\subsection{Start}
+
+Two terminals:
+
+\begin{cmd}
+make web      # terminal 1: website on :3100
+make api      # terminal 2: API on :8000
+\end{cmd}
+
+\subsection{Stop}
+
+\texttt{Ctrl+C} in each terminal, or all servers at once:
+
+\begin{cmd}
+for p in 3000 3100 8000; do lsof -ti:$p | xargs kill 2>/dev/null; done
+\end{cmd}
+
+\subsection{Confirm nothing is left running}
+
+\begin{cmd}
+lsof -iTCP:3000 -iTCP:3100 -iTCP:8000 -sTCP:LISTEN
+\end{cmd}
+
+No output means every server is stopped.
+
+% ===========================================================================
+\section{Refreshing what the website shows}
+
+The website's numbers come from committed JSON in \fpath{frontend/data/}. These
+commands are only needed after retraining or changing the evaluation; each needs
+the local models and data above. Run \texttt{make web} again afterwards.
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Command} & \textbf{Regenerates} \\
+\midrule
+\texttt{make insights} & Per-attack tests and the \emph{Attack insights} tab (\fpath{insights.json}) \\
+\texttt{make figures}  & Confusion, separability, drift (\fpath{paper.json}); the hero's tuning data (\fpath{hero.json}); paper figures in \fpath{docs/figures/} \\
+\fpath{src/evaluation/export\_dashboard\_data.py}   & Findings and replay (\fpath{findings.json}, \fpath{simulation.json}) \\
+\fpath{src/evaluation/export\_simulation\_data.py}  & The simulation console's flow pool (\fpath{network-sim.json}) \\
+\fpath{src/reproduction/attack\_routes.py}          & Attacker and target of every capture (\fpath{attack-routes.json}); needs the raw captures \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+% ===========================================================================
+\section{Troubleshooting}
+
+\begin{center}
+\small
+\begin{tabularx}{\textwidth}{XX}
+\toprule
+\textbf{Symptom} & \textbf{Fix} \\
+\midrule
+``Port 3100 is in use'' (or 3000, 8000) & A previous server is still running: \texttt{lsof -ti:3100 | xargs kill}. \\
+Website shows old content after an edit & Dev and production share one build folder. Stop the server and run \texttt{make web}. \\
+API: ``No models are loaded'' & Models missing: run \fpath{run\_experiments.py} (Section~\ref{sec:first-run}). \\
+API: ``Model \ldots{} not found'' & Pass a \texttt{model\_name} listed by \texttt{GET /}. \\
+API: ``\ldots\_seen\_ms'' missing & Started with \texttt{make run}; use \texttt{make api}. \\
+\texttt{npm} complains about Node & Install Node.js 20.9 or newer. \\
+Landing story does not animate & The viewer's system has \emph{Reduce motion} on; the page shows the story as text by design. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\end{document}
