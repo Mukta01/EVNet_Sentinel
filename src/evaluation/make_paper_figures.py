@@ -50,24 +50,24 @@ def fig_pipeline(findings, insights, out):
     ds, seeds, cfg = findings["dataset"], findings["seeds"], insights["config"]
     stages = [
         ("Capture", "CICEVSE2024\ntwo stations", f"{ds['n_classes']} classes"),
-        ("Remove leakage", "drop timestamps\n+ src_port", f"{ds['rows_after_dedup']:,} flows"),
+        ("Remove\nleakage", "drop timestamps\n+ src_port", f"{ds['rows_after_dedup']:,} flows"),
         ("Split", "70/15/15\nstratified", f"{len(seeds)} seeds"),
         ("Detect", "4 static models\n+ ARF/ADWIN", f"{ds['n_features']} features"),
-        ("Test per attack", "detected,\ncategory, named", f"{cfg['trials']}x{cfg['batch']} flows"),
+        ("Test per\nattack", "detected,\ncategory, named", f"{cfg['trials']}x{cfg['batch']} flows"),
         ("Respond", "owner, CSMS,\nanalyst", "14 attack types"),
     ]
-    fig, ax = plt.subplots(figsize=(7.0, 1.35))
+    fig, ax = plt.subplots(figsize=(7.0, 1.55))
     ax.set_xlim(0, len(stages))
     ax.set_ylim(0, 1)
     ax.axis("off")
     for i, (title, body, number) in enumerate(stages):
-        ax.add_patch(FancyBboxPatch((i + 0.06, 0.06), 0.8, 0.88, boxstyle="round,pad=0,rounding_size=0.04",
+        ax.add_patch(FancyBboxPatch((i + 0.04, 0.06), 0.88, 0.88, boxstyle="round,pad=0,rounding_size=0.04",
                                     fc="#F8FAFC", ec="#94A3B8", lw=0.6))
-        ax.text(i + 0.46, 0.8, title, ha="center", va="center", fontweight="bold", fontsize=7.4)
-        ax.text(i + 0.46, 0.5, body, ha="center", va="center", fontsize=6.2, color="#334155", linespacing=1.3)
-        ax.text(i + 0.46, 0.17, number, ha="center", va="center", fontsize=6.2, color=NEUTRAL)
+        ax.text(i + 0.48, 0.79, title, ha="center", va="center", fontweight="bold", fontsize=7.4, linespacing=1.0)
+        ax.text(i + 0.48, 0.47, body, ha="center", va="center", fontsize=5.9, color="#334155", linespacing=1.3)
+        ax.text(i + 0.48, 0.17, number, ha="center", va="center", fontsize=6.2, color=NEUTRAL)
         if i < len(stages) - 1:
-            ax.add_patch(FancyArrowPatch((i + 0.87, 0.5), (i + 1.05, 0.5), arrowstyle="-|>",
+            ax.add_patch(FancyArrowPatch((i + 0.93, 0.5), (i + 1.03, 0.5), arrowstyle="-|>",
                                          mutation_scale=7, color="#64748B", lw=0.7))
     fig.savefig(out, bbox_inches="tight")
     plt.close(fig)
