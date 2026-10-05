@@ -3,7 +3,8 @@
 How to start every server in this project, for development or a demo.
 The same runbook, with stop procedures, is maintained as LaTeX in
 [`EVNet_Sentinel_Runbook.tex`](./EVNet_Sentinel_Runbook.tex) ([PDF](./EVNet_Sentinel_Runbook.pdf)).
-Keep the two in step when a command or port changes.
+Keep the two in step when a command or port changes. For the demo-day walkthrough, see
+[`DEMO_SCRIPT.md`](./DEMO_SCRIPT.md).
 
 ## What there is to run
 
@@ -12,6 +13,7 @@ Keep the two in step when a command or port changes.
 | **Website**: landing page, dashboard, simulation, docs | `make web` | http://localhost:3100 | Node.js only |
 | Website with live reload (while editing) | `make web-dev` | http://localhost:3000 | Node.js only |
 | **Prediction API** (FastAPI) | `make api` | http://localhost:8000 | Python, plus the trained models |
+| Animated diagrams (pipeline, API call) | `make diagrams` | http://localhost:8765 | Python only |
 
 The two are independent. **The website does not call the API**: it reads results
 that are already exported to `frontend/data/*.json`, so it runs on a fresh clone

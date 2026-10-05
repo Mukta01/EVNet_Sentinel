@@ -78,3 +78,6 @@ saved_models/arf-full/
 
 # Per-seed models from run_experiments.py (read by the attack harness)
 saved_models/multiseed/
+
+# Archify working folders (candidates, receipts); published diagrams live in docs/diagrams/
+.archify/
