@@ -1,4 +1,4 @@
-.PHONY: data-fetch data-process data data-reference data-grouped replay-reference attack-test insights figures setup test run api web web-dev help
+.PHONY: diagrams data-fetch data-process data data-reference data-grouped replay-reference attack-test insights figures setup test run api web web-dev help
 
 PYTHON ?= python3
 RAW_DIR ?= data/raw
@@ -18,6 +18,7 @@ help:
 	@echo "  make setup             - Install requirements"
 	@echo "  make test              - Run pytest"
 	@echo "  make web               - Build and serve the website for a demo (http://localhost:3100)"
+	@echo "  make diagrams          - Serve the animated architecture diagrams (http://localhost:8765)"
 	@echo "  make web-dev           - Website with live reload while editing (http://localhost:3000)"
 	@echo "  make api               - Prediction API on the corrected models (http://localhost:8000)"
 	@echo "  make run               - Prediction API on whatever is in saved_models/ (legacy; see docs/RUNNING.md)"
@@ -88,3 +89,7 @@ web:
 
 web-dev:
 	cd frontend && npm run dev
+
+# Archify diagrams of the pipeline and the API (docs/diagrams). Plain static files.
+diagrams:
+	$(PYTHON) -m http.server 8765 --directory docs/diagrams
