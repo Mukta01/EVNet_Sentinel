@@ -38,6 +38,14 @@
 \newcommand{\col}[1]{\texttt{\small #1}}
 % Left-aligned flexible column: justified text in narrow table cells spreads badly.
 \newcolumntype{L}{>{\raggedright\arraybackslash}X}
+% Start a new, centred row of authors (IEEEtran otherwise spreads five authors unevenly).
+\makeatletter
+\newcommand{\linebreakand}{%
+  \end{@IEEEauthorhalign}
+  \hfill\mbox{}\par
+  \mbox{}\hfill\begin{@IEEEauthorhalign}
+}
+\makeatother
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 
@@ -63,7 +71,7 @@ Mumbai, India \\
 \textit{Vidyalankar Institute of Technology}\\
 Mumbai, India \\
 24102A0021}
-\and
+\linebreakand
 \IEEEauthorblockN{Neha Chavhan}
 \IEEEauthorblockA{\textit{Dept.\ of Computer Engineering} \\
 \textit{Vidyalankar Institute of Technology}\\
