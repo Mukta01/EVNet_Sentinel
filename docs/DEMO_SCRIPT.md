@@ -53,6 +53,73 @@ This must show `"scaler_loaded": true` and four models.
 
 > Do not run `make run`. It loads an old scaler that was fitted with the leaked timestamp columns, and every prediction fails.
 
+### Optional: one public link with ngrok
+
+Use this if the professor or anyone else should open the demo on their own device. The free ngrok plan gives one public domain, so a single link routes by path:
+
+| Path | Goes to |
+|---|---|
+| `/` (and `/dashboard`, `/simulation`) | website, :3100 |
+| `/api/` | prediction API, :8000 |
+| `/diagrams/` | Archify diagrams, :8765 |
+
+**1. Create the routing file once.** Save it as `~/ngrok-demo.yml`, outside the repo. Replace the domain with your own: it's shown on the ngrok dashboard under *Domains*.
+
+```yaml
+version: "3"
+endpoints:
+  - name: website
+    url: https://sphere-dust-sandlot.ngrok-free.dev
+    upstream: { url: 3100 }
+    traffic_policy:
+      on_http_request:
+        - expressions: ["req.url.path.startsWith('/api/')"]
+          actions:
+            - type: url-rewrite
+              config: { from: "^(https?://[^/]+)/api/(.*)$", to: "$1/$2" }
+            - type: forward-internal
+              config: { url: "https://api.internal" }
+        - expressions: ["req.url.path.startsWith('/diagrams/')"]
+          actions:
+            - type: url-rewrite
+              config: { from: "^(https?://[^/]+)/diagrams/(.*)$", to: "$1/$2" }
+            - type: forward-internal
+              config: { url: "https://diagrams.internal" }
+  - name: api
+    url: https://api.internal
+    upstream: { url: 8000 }
+  - name: diagrams
+    url: https://diagrams.internal
+    upstream: { url: 8765 }
+```
+
+**2. Start ngrok** in a fifth tab, after the three servers are up. It loads your normal ngrok config (which holds your login token) plus the routing file.
+
+```bash
+ngrok start --all --config "$HOME/Library/Application Support/ngrok/ngrok.yml" --config ~/ngrok-demo.yml
+```
+
+**3. Check it from the terminal.** This should return `SYN_Flood`:
+
+```bash
+curl -s -H "ngrok-skip-browser-warning: 1" -X POST https://<your-domain>/api/predict -H "Content-Type: application/json" -d @docs/examples/predict_syn_flood.json
+```
+
+Then open these links in a browser:
+
+| Page | Link |
+|---|---|
+| Website | `https://<your-domain>/` |
+| Dashboard | `https://<your-domain>/dashboard` |
+| Pipeline diagram | `https://<your-domain>/diagrams/ml-pipeline.html` |
+| API-call diagram | `https://<your-domain>/diagrams/predict-api.html` |
+
+Notes:
+- **Warning page:** first-time visitors see an ngrok page and click **Visit Site** once.
+- **Swagger UI:** works only locally, at http://localhost:8000/docs.
+- **The link is public:** anyone who has it can reach the site and the API while ngrok runs. Stop ngrok after the demo.
+- **Website only?** `ngrok http 3100` is enough.
+
 ---
 
 ## 1. The problem and our claim (Shardul, 2 min)
@@ -233,7 +300,7 @@ All five are in `docs/figures/` and in paper v2. Each is drawn by `make_paper_fi
 Stop every server in its tab with `Ctrl+C`. If a port stays busy:
 
 ```bash
-lsof -ti:3100,8000,8765 | xargs kill
+pkill -f "ngrok start"; lsof -ti:3100,8000,8765 | xargs kill
 ```
 
 ```bash
