@@ -253,6 +253,11 @@ All five are in `docs/figures/` and in paper v2. Each is drawn by `make_paper_fi
 4. **Simulation:**
    - Pick an attack and choose **Sent from** (Kali PC, Raspberry Pi or a malicious EV). Packets travel to the station that was really attacked in the dataset.
    - Run a **campaign** and show the incident log.
+   - **Containment (simulated):** launch a SYN flood and watch **Site status & containment**.
+     - The level goes Safe → Elevated → **Network not safe**, and Sentinel recommends quarantining the Kali PC.
+     - Click **Approve quarantine**. The attacker is marked QUARANTINED, its packets turn grey and stop at the access point, and the site returns to Safe after 10 quiet flows.
+     - Then run the *Low and slow* campaign: scans also make the site "not safe", but no quarantine is recommended, because scans are named correctly only 34% of the time.
+     - Say: "Sentinel stays passive. It recommends; an operator approves a switch block on that one device; the chargers and CSMS can never be quarantined." The rules are in `frontend/data/containment-policy.json`, and `tests/test_containment.py` checks them on real held-out flows.
 
 ### Shruti: dashboard (Data Viz & Testing), 3 min
 **Findings tab**, top to bottom:

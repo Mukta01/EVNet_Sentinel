@@ -76,3 +76,14 @@ export function routeFor(evse: string, sender: Sender | null, attacking: boolean
 
 /** Where the tap sits: the point on a path closest to Sentinel's centre. */
 export const TAP_POINT = { x: 320, y: 238 };
+
+/**
+ * Where a quarantined device's traffic stops: at the access point / switch
+ * port, before it reaches the tap. Simulated containment only — Sentinel
+ * itself is passive; an operator-approved switch ACL does the blocking.
+ */
+export const BLOCKED_PATHS: Record<Sender, string> = {
+  kali: "M525,170 Q525,224 488,234",
+  rpi: "M525,170 Q525,224 488,234",
+  evcc: "M503,328 L503,300 Q503,262 480,256",
+};
