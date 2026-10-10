@@ -1,0 +1,15 @@
+{
+  "source": "src/response/containment.py",
+  "note": "Simulated containment. Sentinel is a passive mirror-port IDS; quarantine here models a switch ACL an operator would approve. Read by the Python policy (tests) and the simulation console, so both apply the same rules.",
+  "window": 20,
+  "minFlows": 10,
+  "elevatedShare": 0.25,
+  "unsafeShare": 0.6,
+  "cooldownFlows": 10,
+  "quarantine": {
+    "categories": ["dos"],
+    "minConfidence": 0.9,
+    "minDetections": 5
+  },
+  "protected": ["evse-a", "evse-b", "local-csms", "remote-csms"]
+}

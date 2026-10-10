@@ -17,6 +17,8 @@ export type Packet = {
   /** set at the tap: did the detector classify this flow correctly */
   caught: boolean | null;
   fired: boolean;
+  /** dropped at the switch by a quarantine: never reaches the tap or a station */
+  blocked?: boolean;
   /** the station an attack packet was aimed at, flashed when it arrives */
   target: NodeId | null;
   /** fraction of the path where it passes Sentinel, measured on first frame */
@@ -36,6 +38,8 @@ type Props = {
   running: boolean;
   /** the device sending the current attack, from the recording */
   sender: Sender | null;
+  /** devices an operator has quarantined (simulated switch ACL) */
+  quarantined?: string[];
 };
 
 const NODE_TONE: Record<TopoNode["kind"], string> = {
@@ -53,7 +57,7 @@ const NODE_TONE: Record<TopoNode["kind"], string> = {
  * on a timer that merely looks synchronised.
  */
 export default function TopologyCanvas({
-  packets, onTap, selected, onSelect, tapPulse, running, sender,
+  packets, onTap, selected, onSelect, tapPulse, running, sender, quarantined = [],
 }: Props) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const measureRef = useRef<SVGPathElement | null>(null);
@@ -62,7 +66,7 @@ export default function TopologyCanvas({
   // render itself reads no refs and no clocks.
   const [snap, setSnap] = useState<{
     now: number; wall: number;
-    dots: { key: number; x: number; y: number; progress: number; tone: string; caught: boolean | null }[];
+    dots: { key: number; x: number; y: number; progress: number; tone: string; caught: boolean | null; blocked?: boolean }[];
     hits: Partial<Record<NodeId, number>>;
   }>({ now: 0, wall: 0, dots: [], hits: {} });
 
@@ -126,12 +130,12 @@ export default function TopologyCanvas({
         }
         if (p.tapAt === undefined) p.tapAt = tapOf(p.pathD);
         p.progress = (now - p.startedAt) / p.duration;
-        if (!p.fired && p.progress >= p.tapAt) {
+        if (!p.fired && !p.blocked && p.progress >= p.tapAt) {
           p.fired = true;
           onTap(p.key);
         }
         if (p.progress >= 1) {
-          if (p.target) hits.current[p.target] = now;
+          if (p.target && !p.blocked) hits.current[p.target] = now;
           list.splice(i, 1);
         }
       }
@@ -140,7 +144,7 @@ export default function TopologyCanvas({
         wall: Date.now(),
         dots: list.map((p) => {
           const pt = pointAt(p.pathD, p.progress);
-          return { key: p.key, x: pt.x, y: pt.y, progress: p.progress, tone: p.tone, caught: p.caught };
+          return { key: p.key, x: pt.x, y: pt.y, progress: p.progress, tone: p.tone, caught: p.caught, blocked: p.blocked };
         }),
         hits: { ...hits.current },
       });
@@ -201,6 +205,8 @@ export default function TopologyCanvas({
         const isSelected = selected === n.id;
         const hitAge = snap.hits[n.id] ? snap.now - snap.hits[n.id]! : Infinity;
         const compromised = n.id === "evcc" && sender === "evcc";
+        const blockedNode = (n.id === "attacker" && quarantined.some((q) => q === "kali" || q === "rpi"))
+          || (n.id === "evcc" && quarantined.includes("evcc"));
         return (
           <g
             key={n.id}
@@ -216,7 +222,7 @@ export default function TopologyCanvas({
             <rect
               x={n.x} y={n.y} width={n.w} height={n.h} rx="4"
               fill={isSentinel ? "rgba(34,197,94,0.13)" : "rgba(255,255,255,0.028)"}
-              stroke={compromised ? "#F43F5E" : isSelected ? tone : isSentinel ? tone : "rgba(255,255,255,0.16)"}
+              stroke={blockedNode ? "#94A3B8" : compromised ? "#F43F5E" : isSelected ? tone : isSentinel ? tone : "rgba(255,255,255,0.16)"}
               strokeWidth={isSentinel ? 2 : isSelected || compromised ? 1.8 : 1}
               strokeDasharray={n.kind === "attacker" || compromised ? "5 4" : undefined}
               filter={isSentinel && pulsing ? "url(#tapGlow)" : undefined}
@@ -235,6 +241,10 @@ export default function TopologyCanvas({
                   </text>
                 )}
               </>
+            )}
+            {blockedNode && (
+              <text x={n.x + n.w - 6} y={n.y - 6} textAnchor="end" fontSize="9" fontWeight={700}
+                fill="#CBD5E1" fontFamily="ui-monospace, monospace">QUARANTINED</text>
             )}
             {hitAge < 520 && (
               <rect x={n.x - 4} y={n.y - 4} width={n.w + 8} height={n.h + 8} rx="6" fill="rgba(244,63,94,0.08)"
@@ -259,7 +269,7 @@ export default function TopologyCanvas({
         <circle
           key={p.key} cx={p.x} cy={p.y}
           r={p.caught === null ? 3.6 : 4.4}
-          fill={p.caught === null ? p.tone : p.caught ? "#22C55E" : "#F59E0B"}
+          fill={p.blocked ? "#64748B" : p.caught === null ? p.tone : p.caught ? "#22C55E" : "#F59E0B"}
           opacity={p.progress > 0.94 ? Math.max(0, (1 - p.progress) / 0.06) : 1}
         />
       ))}

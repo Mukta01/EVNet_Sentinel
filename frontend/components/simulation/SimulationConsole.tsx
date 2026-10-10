@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ListChecks, Pause, Play, Radio, Square } from "lucide-react";
 import TopologyCanvas, { groupTone, type Packet } from "./TopologyCanvas";
-import { SENDERS, nodeById, routeFor, type NodeId, type Sender } from "./topology";
+import { BLOCKED_PATHS, SENDERS, nodeById, routeFor, type NodeId, type Sender } from "./topology";
 import { FAMILY, MODEL_LABEL, prettyClass } from "../dashboard/theme";
 import ResponsePanel, { type ResponseMap } from "./ResponsePanel";
 import IncidentLog, { type Incident } from "./IncidentLog";
+import ContainmentPanel, { type ContainmentEvent } from "./ContainmentPanel";
+import { approve, initialState, observe, release, type SiteState } from "@/lib/containment";
 
 type Verdict = {
   label: string; group: string; correct: boolean;
@@ -122,6 +124,12 @@ export default function SimulationConsole({
   const [campaignId, setCampaignId] = useState(CAMPAIGNS[0].id);
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [incidents, setIncidents] = useState<Incident[]>([]);
+  // Site threat level and simulated, operator-approved quarantine.
+  const [site, setSite] = useState<SiteState>(initialState);
+  const [blocked, setBlocked] = useState<Record<string, number>>({});
+  const [siteEvents, setSiteEvents] = useState<ContainmentEvent[]>([]);
+  // Read inside the emit loop and the tap handler, which are stable callbacks.
+  const siteRef = useRef<SiteState>(initialState);
 
   const packets = useRef<Packet[]>([]);
   const packetFlow = useRef<Map<number, Flow>>(new Map());
@@ -171,6 +179,21 @@ export default function SimulationConsole({
     setFeed([]); setTally({ seen: 0, caught: 0 }); setCurrent(null); setTapPulse(null);
   }, []);
 
+  /** Advance the campaign once this stage's traffic has been judged (or blocked). */
+  const advanceCampaign = useCallback((label: string) => {
+    const run = campaignRef.current;
+    if (!run || label !== run.steps[run.stage]) return;
+    stageSeen.current += 1;
+    if (stageSeen.current < STAGE_FLOWS) return;
+    stageSeen.current = 0;
+    const done = run.stage + 1 >= run.steps.length;
+    const nextRun = done ? null : { ...run, stage: run.stage + 1 };
+    campaignRef.current = nextRun;
+    setCampaign(nextRun);
+    cursor.current = 0;
+    if (done) setAttacking(false);
+  }, []);
+
   // Emit packets on a cadence. Benign loops while idle; launching swaps the pool.
   useEffect(() => {
     if (!streaming) return;
@@ -186,6 +209,27 @@ export default function SimulationConsole({
       const key = nextKey.current++;
       packetFlow.current.set(key, flow);
       const sender = activeIsAttack ? senders[flow.capture] ?? "kali" : null;
+      if (sender && siteRef.current.quarantined.includes(sender)) {
+        // Quarantined: the switch drops it before the tap. Normal traffic keeps
+        // flowing, so the site can cool down.
+        packets.current.push({
+          key: nextKey.current++, pathD: BLOCKED_PATHS[sender], target: null,
+          startedAt: performance.now(), duration: 0, progress: 0,
+          tone: groupTone(flow.trueGroup), caught: null, fired: false, blocked: true,
+        });
+        setBlocked((b) => ({ ...b, [sender]: (b[sender] ?? 0) + 1 }));
+        advanceCampaign(flow.trueLabel);
+        const benign = byId.get(benignPool[cursor.current % Math.max(1, benignPool.length)]);
+        if (!benign) return;
+        const bkey = nextKey.current++;
+        packetFlow.current.set(bkey, benign);
+        packets.current.push({
+          key: bkey, pathD: routeFor(benign.evse, null, false).pathD, target: null,
+          startedAt: performance.now(), duration: 0, progress: 0,
+          tone: groupTone(benign.trueGroup), caught: null, fired: false,
+        });
+        return;
+      }
       const route = routeFor(flow.evse, sender, activeIsAttack);
       if (sender) setLiveSender(sender);
       packets.current.push({
@@ -201,7 +245,32 @@ export default function SimulationConsole({
       });
     }, EMIT_MS[speed]);
     return () => clearInterval(id);
-  }, [streaming, activeIsAttack, attackPool, benignPool, byId, speed, senders]);
+  }, [streaming, activeIsAttack, attackPool, benignPool, byId, speed, senders, advanceCampaign]);
+
+  const stamp = () => new Date().toLocaleTimeString([], { hour12: false });
+  const nameOf = (x: string) => SENDERS[x as Sender]?.label ?? x;
+  const logSite = useCallback((e: ContainmentEvent[]) => {
+    if (e.length) setSiteEvents((prev) => [...e, ...prev].slice(0, 30));
+  }, []);
+  /** Single place the site state changes, so events are logged from the transition itself. */
+  const updateSite = useCallback((next: SiteState, extra: ContainmentEvent[] = []) => {
+    const prev = siteRef.current;
+    const at = new Date().toLocaleTimeString([], { hour12: false });
+    const add: ContainmentEvent[] = [...extra];
+    if (next.level !== prev.level) add.push({ at, kind: "level", text: `Site ${prev.level} → ${next.level}` });
+    if (next.recommendation && next.recommendation !== prev.recommendation)
+      add.push({ at, kind: "recommend", text: `Quarantine recommended: ${SENDERS[next.recommendation as Sender]?.label ?? next.recommendation}` });
+    siteRef.current = next;
+    setSite(next);
+    logSite(add);
+  }, [logSite]);
+
+  const approveQuarantine = (sender: string) =>
+    updateSite(approve(siteRef.current, sender),
+      [{ at: stamp(), kind: "quarantine", text: `Operator approved quarantine: ${nameOf(sender)}` }]);
+  const releaseQuarantine = (sender: string) =>
+    updateSite(release(siteRef.current, sender),
+      [{ at: stamp(), kind: "release", text: `Released: ${nameOf(sender)}` }]);
 
   const handleTap = useCallback((key: number) => {
     const flow = packetFlow.current.get(key);
@@ -240,21 +309,17 @@ export default function SimulationConsole({
       return at >= 0 ? prev.map((r, i) => (i === at ? next : r)) : [...prev, next];
     });
 
-    // Advance the campaign once this stage's traffic has been judged.
-    const run = campaignRef.current;
-    if (run && flow.trueLabel === run.steps[run.stage]) {
-      stageSeen.current += 1;
-      if (stageSeen.current >= STAGE_FLOWS) {
-        stageSeen.current = 0;
-        const done = run.stage + 1 >= run.steps.length;
-        const nextRun = done ? null : { ...run, stage: run.stage + 1 };
-        campaignRef.current = nextRun;
-        setCampaign(nextRun);
-        cursor.current = 0;
-        if (done) setAttacking(false);
-      }
-    }
-  }, []);
+    // Feed the site threat level. The sender is the device the flow came from.
+    const sender = flow.trueLabel !== "Benign" ? senders[flow.capture] ?? null : null;
+    updateSite(observe(siteRef.current, {
+      flagged: verdict.label !== "Benign",
+      category: calledCat as "dos" | "recon" | "benign",
+      confidence: verdict.confidence,
+      sender,
+    }));
+
+    advanceCampaign(flow.trueLabel);
+  }, [senders, advanceCampaign, updateSite]);
 
   const rate = tally.seen ? tally.caught / tally.seen : null;
   const isOnline = sim.onlineModels.includes(model);
@@ -426,8 +491,12 @@ export default function SimulationConsole({
             packets={packets} onTap={handleTap}
             selected={selectedNode} onSelect={setSelectedNode}
             tapPulse={tapPulse} running={streaming} sender={attacking ? liveSender : null}
+            quarantined={site.quarantined}
           />
         </div>
+
+        <ContainmentPanel state={site} blocked={blocked} events={siteEvents}
+          onApprove={approveQuarantine} onRelease={releaseQuarantine} />
 
         {selected && (
           <div className="rounded-lg border border-white/8 bg-white/[0.02] p-4">
