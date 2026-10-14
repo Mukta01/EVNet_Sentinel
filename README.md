@@ -1,110 +1,198 @@
 <div align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=250&section=header&text=EVNet%20Sentinel&fontSize=80&animation=fadeIn&fontAlignY=35&desc=Intrusion%20Detection%20for%20Electric%20Vehicle%20Charging%20Networks&descAlignY=60&descAlign=50" alt="EVNet Sentinel Banner" />
-  
-  <p align="center">
-    <b>A robust, real-time Intrusion Detection System (IDS) for Electric Vehicle Charging Station (EVCS) networks.</b>
+
+  <p><b>We audited a published 98.4% intrusion detector for EV charging stations, found it was reading timestamps,<br/>and rebuilt it honestly: leak-free benchmarks, per-attack testing, and a working web system.</b></p>
+
+  <p>
+    <img src="https://img.shields.io/badge/macro--F1-0.558%20%C2%B1%200.008-22c55e?style=for-the-badge" alt="Macro-F1" />
+    <img src="https://img.shields.io/badge/tests-71%20passing-22c55e?style=for-the-badge&logo=pytest&logoColor=white" alt="Tests" />
+    <img src="https://img.shields.io/badge/dataset-CICEVSE2024-0ea5e9?style=for-the-badge" alt="Dataset" />
+    <img src="https://img.shields.io/badge/license-Apache%202.0-64748b?style=for-the-badge" alt="License" />
+  </p>
+  <p>
+    <img src="https://img.shields.io/badge/Python-3.13-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
+    <img src="https://img.shields.io/badge/scikit--learn-1.8-F7931E?style=flat-square&logo=scikitlearn&logoColor=white" alt="scikit-learn" />
+    <img src="https://img.shields.io/badge/River-online%20ML-0f766e?style=flat-square" alt="River" />
+    <img src="https://img.shields.io/badge/FastAPI-API-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />
+    <img src="https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=nextdotjs&logoColor=white" alt="Next.js" />
+    <img src="https://img.shields.io/github/stars/Mukta01/EVNet_Sentinel?style=flat-square&color=yellow" alt="Stars" />
   </p>
 
-  <p align="center">
-    <a href="https://github.com/Mukta01/EVNet_Sentinel/stargazers"><img src="https://img.shields.io/github/stars/Mukta01/EVNet_Sentinel?style=for-the-badge&color=yellow" alt="Stars" /></a>
-    <a href="https://github.com/Mukta01/EVNet_Sentinel/network/members"><img src="https://img.shields.io/github/forks/Mukta01/EVNet_Sentinel?style=for-the-badge&color=orange" alt="Forks" /></a>
-    <a href="https://github.com/Mukta01/EVNet_Sentinel/issues"><img src="https://img.shields.io/github/issues/Mukta01/EVNet_Sentinel?style=for-the-badge&color=red" alt="Issues" /></a>
-    <img src="https://img.shields.io/badge/Python-FastAPI-blue?style=for-the-badge&logo=python" alt="Python" />
-    <img src="https://img.shields.io/badge/Next.js-React-black?style=for-the-badge&logo=next.js" alt="Next.js" />
+  <p>
+    <a href="#quick-start"><b>Quick start</b></a> ·
+    <a href="#what-we-found"><b>What we found</b></a> ·
+    <a href="#see-it"><b>Screenshots</b></a> ·
+    <a href="#results"><b>Results</b></a> ·
+    <a href="#documentation"><b>Docs</b></a> ·
+    <a href="#team"><b>Team</b></a>
   </p>
 </div>
 
 ---
 
-## ⚡ Overview
+## 🧭 In one minute
 
-EVNet Sentinel reproduces and benchmarks the methods from Makhmudov et al. (2025) using the CICEVSE2024 dataset. It utilizes a combination of static Machine Learning classifiers and Online Learning (ARF + ADWIN) to detect anomalous network traffic in near real-time. 
+| | |
+|---|---|
+| ❓ **The question** | Makhmudov et al. (2025) report **98.4%** accuracy for an online detector (Adaptive Random Forest + ADWIN) on CICEVSE2024. Does that number measure attack detection? |
+| 🔍 **The answer** | Mostly not. **One timestamp column alone scores 99.76%**, because each attack was recorded in its own file at its own time. |
+| ✅ **The honest number** | With the leaks removed: **macro-F1 0.558 ± 0.008** (Random Forest, 3 seeds). Floods are near-perfect; network scans are not. |
+| 🛠️ **What we built** | A per-attack test harness, a prediction API, simulated containment, and a website that shows every result live. |
 
-Beyond the research, this project introduces a stunning, interactive Next.js dashboard as a modern engineering and HCI contribution!
+<a id="what-we-found"></a>
 
-## 🚀 Features
+## 🔍 What we found
 
-- 🧠 **Hybrid ML Pipeline**: Compare Static models (RF, SVM, LR, DT) evaluated on **14-class multiclass** targets against Adaptive Online models.
-- 🐳 **Robust Deployment**: Single-stage Docker container featuring dynamic multi-model registry loading and fault tolerance.
-- ⚡ **Real-Time Detection**: WebSocket integration for instant anomaly alerts.
-- 📊 **Interactive Dashboard**: Next.js-powered visualisations and live confusion matrices.
-- 🛡️ **Cybersecurity-First**: Designed specifically for EVCS infrastructure vulnerabilities.
+<table>
+<tr>
+<td width="50%" valign="top">
 
-## 🏗️ Architecture
+**1 · Timestamp leak**<br/>
+`bidirectional_first_seen_ms` alone recovers the 15-class label with **0.9976** accuracy, above the published 0.9840.
+
+**2 · The useful feature was dropped**<br/>
+The published pipeline removes `dst_port`, the feature that *defines* a port scan, and keeps the timestamps.
+
+**3 · Stream order inflates accuracy**<br/>
+In capture order the label changes only 54 times in 1.92M flows. "Repeat the last label" scores **0.99997**; shuffled, ARF drops to **0.5585**.
+
+</td>
+<td width="50%" valign="top">
+
+**4 · Drift alarms are file seams**<br/>
+**42 of 43** ADWIN alarms fall within 100 flows of a join between capture files (p < 0.0005).
+
+**5 · `src_port` is a fingerprint**<br/>
+Ephemeral ports band per capture; removing it costs the Decision Tree twice what it costs Random Forest.
+
+**➜ After correction**<br/>
+Floods: **F1 ≥ 0.999**. The six nmap scans: **0.10 to 0.27**. Mutual information shows the best feature explains **98%** of DoS type but only **5%** of scan type: the limit is in the data.
+
+</td>
+</tr>
+</table>
+
+<a id="see-it"></a>
+
+## 🖼️ See it
+
+<table>
+<tr>
+<td width="50%"><img src="docs/images/dashboard.jpg" alt="Results dashboard" /><br/><sub><b>Dashboard</b>: the leak in three numbers</sub></td>
+<td width="50%"><img src="docs/images/simulation-quarantine.jpg" alt="Simulation with quarantine" /><br/><sub><b>Simulation</b>: site goes "not safe", attacker quarantined</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/images/confusion-matrix.jpg" alt="Confusion matrix" /><br/><sub><b>Confusion explorer</b>: floods on the diagonal, scans smeared</sub></td>
+<td width="50%"><img src="docs/images/attack-insights.jpg" alt="Attack insights" /><br/><sub><b>Attack insights</b>: what an operator should take away</sub></td>
+</tr>
+</table>
+
+<a id="quick-start"></a>
+
+## ⚡ Quick start
+
+```bash
+make setup && (cd frontend && npm install)   # once
+
+make web        # 🌐 website   → http://localhost:3100
+make api        # ⚙️  API       → http://localhost:8000   (needs locally trained models)
+make diagrams   # 🗺️  diagrams  → http://localhost:8765
+make test       # 🧪 71 tests
+```
+
+| Page | Try this |
+|---|---|
+| **`/`** | Drag an attack onto a charging station in *Beat the Sentinel*; move the slider in *Tune the detector*; scroll the testbed story |
+| **`/simulation`** | Launch a SYN flood, watch the site turn **Network not safe**, then approve the quarantine |
+| **`/dashboard`** | *Findings* (the evidence) · *Attack insights* (per-attack results and response guidance) · *Live inference* |
+| **`/docs`** | Method at a glance and the architecture |
+
+More detail, stopping servers, and sharing a public link with ngrok: **[docs/RUNNING.md](./docs/RUNNING.md)**.
+
+## ✨ Features
+
+| | Feature | What it does |
+|---|---|---|
+| 🔍 | **Leakage audit** | Five findings, each reproduced by its own script in `src/reproduction/` |
+| 📊 | **Corrected benchmarks** | 4 static models + ARF/ADWIN, 15 classes, 3 seeds, macro-F1 |
+| 🎯 | **Attack test harness** | Every attack × every model: detected / right category / named exactly, with regression gates |
+| 🛡️ | **Simulated containment** | Threat level Safe → Elevated → Not safe; operator-approved quarantine of the attacking device only |
+| 🌐 | **Web front end** | Landing page, simulation console, dashboard, all built from exported results |
+| ⚙️ | **Prediction API** | `POST /predict` classifies one flow with any corrected model |
+
+## 🏗️ How it fits together
 
 ```mermaid
 flowchart LR
-    A[CICEVSE2024 Dataset] -->|Simulated Stream| B(FastAPI Backend)
-    B -->|Pre-processing| C{ML Engine}
-    C -->|Static Models| D[RF, SVM, DT, LR]
-    C -->|Online Learning| E[ARF + ADWIN]
-    D -->|Serialized .pkl| M[(Dynamic Model Registry)]
-    E -->|Serialized .pkl| M
-    M --> F[Results API]
-    F <-->|WebSockets & REST| G[Next.js Dashboard]
-    
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style G fill:#bbf,stroke:#333,stroke-width:2px
+    A[CICEVSE2024 captures] --> B[preprocess.py<br/>drop leaks · dedup · split · scale]
+    B --> C[run_experiments.py<br/>4 models × 3 seeds]
+    B --> D[ARF + ADWIN<br/>streaming]
+    C --> M[(saved_models)]
+    M --> H[Attack test harness]
+    C --> R[(evaluation_results)]
+    D --> R
+    H --> R
+    M --> API[FastAPI :8000]
+    R -->|export_*.py| J[(frontend/data)]
+    J --> W[Website :3100]
+    J --> P[Paper figures]
 ```
 
-## 📁 Directory Structure
+> The website reads the exported JSON and never calls the API, so it runs on a fresh clone with no dataset. Animated, source-linked versions of this diagram are in [`docs/diagrams/`](./docs/diagrams/).
 
-- `data/raw/`: Stores the original, unmodified dataset files.
-- `data/processed/`: Contains the centralized, cleaned datasets (e.g., `X_train.csv`, `X_test.csv`). All models load data from here to prevent data leakage.
-- `src/data_prep/`: Centralized scripts for data cleaning and preprocessing.
-- `src/models/`: Dedicated subdirectories for each individual model (`svm`, `log_reg`, `random_forest`, `decision_tree`, `arfadwin`).
-- `src/evaluation/`: Unified scripts to evaluate model performance and metrics.
-- `src/api/`: Backend REST API endpoints for model serving.
-- `web/`: Dedicated web dashboard UI codebase.
-- `predictions/`: Shared folder where each model saves its prediction outputs as CSV files for standardized evaluation.
-- `saved_models/`: Shared folder for serialized model weights (`.pkl` / `.joblib`) to be consumed by the web UI and API.
-- `docs/`: Project documentation and specifications.
+<a id="results"></a>
+
+## 📈 Results
+
+| Model | Macro-F1 (3 seeds) | Accuracy | False alarms | |
+|---|---|---|---|---|
+| 🥇 **Random Forest** | **0.558 ± 0.008** | 0.868 | **2%** | recommended detector |
+| Decision Tree | 0.557 ± 0.010 | 0.868 | 12% | |
+| Logistic Regression | 0.436 ± 0.017 | 0.863 | 46% | best second opinion on scans |
+| SVM | 0.411 ± 0.017 | 0.862 | 59% | |
+
+Every model reaches about 0.86 accuracy, which is why macro-F1 is the headline. Sources: [`MULTISEED_RESULTS.md`](./evaluation_results/multiseed/MULTISEED_RESULTS.md) · [`attack_tests.json`](./evaluation_results/attack_tests.json) · [guide to the results folder](./evaluation_results/README.md).
+
+> [!WARNING]
+> `evaluation_results/rf_evaluation_summary.md` and `SVM_evaluation_summary.md` predate the correction (their 0.9994 came from the timestamps). They are kept only as the "before".
+
+<a id="documentation"></a>
 
 ## 📚 Documentation
 
-Detailed documentation has been separated into the `docs/` directory for better maintainability:
+| | Topic | Read |
+|---|---|---|
+| 📄 | **Research paper** | [v3 · 7 pages](./docs/research%20paper/EVNet_Sentinel_Research_Paper_v3.pdf) · [v2 · full](./docs/research%20paper/EVNet_Sentinel_Research_Paper_v2.pdf) · [walkthrough](./docs/PAPER_WALKTHROUGH.md) |
+| ▶️ | **Running the project** | [RUNNING.md](./docs/RUNNING.md) · [Runbook PDF](./docs/EVNet_Sentinel_Runbook.pdf) |
+| 🔍 | **Leakage audit** | [Results](./docs/leakage_audit_results.md) · [Findings PDF](./docs/EVNet_Sentinel_Findings.pdf) |
+| 🎤 | **Demo scripts** | [General](./docs/DEMO_SCRIPT.md) · [Data Warehousing & Mining](./docs/DEMO_DWM.md) |
+| 🧭 | **Walkthroughs** | [Website](./docs/WEBSITE_WALKTHROUGH.md) · [Notebooks](./docs/NOTEBOOK_WALKTHROUGH.md) |
+| 🏛️ | **Design** | [Architecture](./docs/ARCHITECTURE.md) · [Use cases](./docs/evnet_sentinel_use_cases.md) · [SRS](./docs/Project_SRS/WDL_SRS_EVNetSentinel.pdf) |
+| 🧪 | **Data** | [Feature engineering](./docs/dataset_feature_engineering.md) · [Resampling trade-offs](./docs/Resampling_Tradeoffs.md) · [Reference papers](./docs/papers.md) |
 
-- 🏛️ [**Architecture Details**](./docs/ARCHITECTURE.md)
-- ▶️ [**Running the servers**](./docs/RUNNING.md): website, prediction API, demo route
-- ⚙️ [**Setup & Installation**](./docs/SETUP.md)
-- 📚 [**Reference Papers Index**](./docs/papers.md)
-- 📊 [**Dataset Feature Engineering**](./docs/dataset_feature_engineering.md)
-- ⚖️ [**Dataset Resampling Trade-offs**](./docs/Resampling_Tradeoffs.md)
-- 🔍 [**Leakage Audit — Results**](./docs/leakage_audit_results.md)
-- 🎯 [**Use Case Diagrams**](./docs/evnet_sentinel_use_cases.md)
-- 📄 [**Project SRS**](./docs/Project_SRS/WDL_SRS_EVNetSentinel.pdf)
+<details>
+<summary><b>📁 Repository layout</b></summary>
 
-## 📈 Model Performance & Notebooks
-
-We evaluate our models on the **15-class** attack dataset. View our interactive training notebooks and detailed evaluation reports below:
-
-> [!WARNING]
-> The reports under `evaluation_results/` at the repository root were produced **before** the
-> capture-timestamp leak was found (#46) and are retained only for the before/after comparison.
-> Corrected results live in [`evaluation_results/leakfree/`](./evaluation_results/leakfree/COMPARISON.md)
-> and are discussed in [the leakage audit](./docs/leakage_audit_results.md).
-
-### Interactive surfaces
-
-| Route | What it does |
+| Path | Contents |
 |---|---|
-| `/` | Landing page. The **storyline** section walks through where Sentinel sits — between the charging station and its management system — as one continuous scene. |
-| `/simulation` | **Attack console.** Pick one of the 14 real attack classes, launch it across the CICEVSE2024 testbed topology, and watch a detector call each packet. Every flow is held-out data and every verdict is a real model output. |
-| `/dashboard` | **Findings.** Per-class F1 with seed error bars, the leakage evidence, the fingerprint ablation, and the drift-vs-capture-boundary result. |
-| `/docs` | Component-level system architecture. |
+| `src/data_prep/` | `preprocess.py`, the corrected (leak-free) pipeline |
+| `src/models/` | Training scripts and notebooks per model |
+| `src/evaluation/` | Multi-seed experiments, attack harness, exporters |
+| `src/reproduction/` | One script per leakage finding, plus attack routes |
+| `src/response/` | Containment policy (threat level, quarantine) |
+| `src/api/` | FastAPI prediction service |
+| `frontend/` | Next.js website; `frontend/data/` is what it displays |
+| `evaluation_results/` | Every reported number, labelled current / evidence / historical |
+| `tests/` | pytest suite (71 tests) |
+| `docs/` | Papers, figures, diagrams, guides |
+| `data/` · `saved_models/` · `datasets/` | Local only, never committed |
 
-Regenerate the data these pages read:
+Notebooks (single-seed exploration): [Random Forest](./src/models/random_forest/Random_Forest_Training.ipynb) · [Decision Tree](./src/models/decision_tree/Decision_Tree_Training.ipynb) · [Logistic Regression](./src/models/log_reg/Logistic_Regression_Training.ipynb) · [SVM](./src/models/svm/svm_training.ipynb) · [ARF + ADWIN](./src/models/arfadwin/ARF_ADWIN_Training.ipynb)
 
-```bash
-python3 src/evaluation/export_dashboard_data.py    # findings + replay
-python3 src/evaluation/export_simulation_data.py   # attack console pool
-```
+</details>
 
-- 🌳 **Random Forest**: [Training Notebook](./src/models/random_forest/Random_Forest_Training.ipynb) | [Evaluation Report](./evaluation_results/rf_evaluation_summary.md)
-- 📉 **Support Vector Machine (SVM)**: [Training Notebook](./src/models/svm/svm_training.ipynb) | [Evaluation Report](./evaluation_results/SVM_evaluation_summary.md)
-- 🔄 **Adaptive Random Forest (ARF-ADWIN)**: [Implementation Script](./src/models/arfadwin/train_arfadwin.py) | [Model Notes](./src/models/arfadwin/README.md) *(Online Learning Model)*
-
-## 🔐 Dataset Access & Security Rules
+<details>
+<summary><b>🔐 Dataset access rules</b></summary>
 
 The CICEVSE2024 dataset used for this project is heavy and access-restricted. Please follow these rules:
 1. **Never commit the dataset**: All dataset archives and CSV files (`*.tar.xz`, `*.zip`, `*.csv`) are strictly ignored in `.gitignore`. Do NOT bypass this rule.
@@ -119,21 +207,31 @@ The CICEVSE2024 dataset used for this project is heavy and access-restricted. Pl
      ```
    - *Note: `make data` will download the 2.4GB dataset, extract it to `data/raw/`, and process it into `data/processed/`. Ensure you have sufficient disk space.*
 
-## 🙏 Acknowledgements & Citations
+</details>
+
+<details>
+<summary><b>🙏 Acknowledgements</b></summary>
 
 This project builds upon the foundational research and methodology open-sourced by the TATU-hacker team. We would like to acknowledge and cite their repository:
 - [TATU-hacker/Intrusion_Detection_on_Electric_Vehicle_Charging_Systems](https://github.com/TATU-hacker/Intrusion_Detection_on_Electric_Vehicle_Charging_Systems)
 
 Their work on online machine learning for EVCS intrusion detection heavily inspired our approach, particularly our implementation of the ARF-ADWIN model and the use of the CICEVSE2024 dataset.
 
-## 👥 Meet The Team
+</details>
 
-| Roll No. | Name | Official Role Title | GitHub |
+<a id="team"></a>
+
+## 👥 Team
+
+Guide: **Prof. Mahesh Khandke**, Dept. of Computer Engineering, Vidyalankar Institute of Technology, Mumbai.
+
+
+| Roll No. | Name | Role | GitHub |
 |----------|------|---------------------|--------|
-| **24102A0013** | Mukta Varak | Cloud Deployment & Backend API | [@Mukta01](https://github.com/Mukta01) |
-| **24102A0018** | Shruti Chaurasiya | Data Visualization & Testing QA | [@shrutich-30](https://github.com/shrutich-30) |
-| **24102A0021** | Shardul Chogale | ML Pipelining & Model Evaluation | [@shard-c6](https://github.com/shard-c6) |
-| **24102A0022** | Neha Chavhan | Frontend UI & Real-Time Integration | [@nehachavhan2006](https://github.com/nehachavhan2006) |
+| **24102A0013** | Mukta Varak | Cloud Deployment DevOps | [@Mukta01](https://github.com/Mukta01) |
+| **24102A0018** | Shruti Chaurasiya | Data Viz & Testing | [@shrutich-30](https://github.com/shrutich-30) |
+| **24102A0021** | Shardul Chogale | ML Pipelining & Evaluation | [@shard-c6](https://github.com/shard-c6) |
+| **24102A0022** | Neha Chavhan | Frontend & API Integration | [@nehachavhan2006](https://github.com/nehachavhan2006) |
 
 ---
 <div align="center">
