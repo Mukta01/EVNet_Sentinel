@@ -13,6 +13,7 @@ Keep the two in step when a command or port changes. For the demo-day walkthroug
 | **Website**: landing page, dashboard, simulation, docs | `make web` | http://localhost:3100 | Node.js only |
 | Website with live reload (while editing) | `make web-dev` | http://localhost:3000 | Node.js only |
 | **Prediction API** (FastAPI) | `make api` | http://localhost:8000 | Python, plus the trained models |
+| Public link to any of the above | `ngrok start …` ([below](#share-a-public-link-ngrok)) | `https://<your-domain>` | an ngrok account (free) |
 | Animated diagrams (pipeline, API call) | `make diagrams` | http://localhost:8765 | Python only |
 
 The two are independent. **The website does not call the API**: it reads results
@@ -137,6 +138,81 @@ make api    # terminal 2: API on :8000
 
 Stop either one with `Ctrl+C`.
 
+## Share a public link (ngrok)
+
+Use this when someone should open the demo on their own device, for example a
+professor on their laptop. [ngrok](https://ngrok.com) gives your laptop a public
+HTTPS address. The free plan has **one** domain, so one link serves all three
+servers, routed by path:
+
+| Public path | Goes to |
+|---|---|
+| `https://<your-domain>/` (and `/dashboard`, `/simulation`) | website, `make web` on :3100 |
+| `https://<your-domain>/api/` | prediction API, `make api` on :8000 |
+| `https://<your-domain>/diagrams/` | animated diagrams, `make diagrams` on :8765 |
+
+### One-time setup
+
+1. Install ngrok and log in once with your auth token, from the ngrok dashboard
+   under *Getting Started → Your Authtoken*:
+
+   ```bash
+   brew install ngrok
+   ```
+   ```bash
+   ngrok config add-authtoken <your-token>
+   ```
+
+2. Find your free domain on the ngrok dashboard (*Universal Gateway → Domains*),
+   for example `something-something.ngrok-free.dev`.
+
+3. Copy the routing file and put your domain in it:
+
+   ```bash
+   cp docs/examples/ngrok-demo.example.yml ~/ngrok-demo.yml
+   ```
+
+   Open `~/ngrok-demo.yml` and replace `YOUR-DOMAIN` with your domain. Keep the file
+   outside the repository, because it is specific to your account.
+
+### Every time
+
+1. Start the servers, each in its own terminal: `make web`, `make api`, `make diagrams`.
+   You only need the ones you want to share.
+2. Start ngrok in another terminal. It loads your normal config (which holds the
+   token) plus the routing file:
+
+   ```bash
+   ngrok start --all --config "$HOME/Library/Application Support/ngrok/ngrok.yml" --config ~/ngrok-demo.yml
+   ```
+
+   On Linux the first path is `~/.config/ngrok/ngrok.yml`. Run `ngrok config check`
+   to see where yours is.
+3. Check it works. This should return `SYN_Flood`:
+
+   ```bash
+   curl -s -H "ngrok-skip-browser-warning: 1" -X POST https://<your-domain>/api/predict -H "Content-Type: application/json" -d @docs/examples/predict_syn_flood.json
+   ```
+
+4. Share `https://<your-domain>/`. ngrok's status page at http://localhost:4040
+   shows every request as it arrives.
+
+**Website only?** Skip the routing file:
+
+```bash
+ngrok http 3100
+```
+
+### Things to know
+
+- **Warning page:** a first-time visitor sees an ngrok "You are about to visit"
+  page and clicks **Visit Site** once.
+- **Swagger UI** (`/docs` on the API) only works locally, at http://localhost:8000/docs.
+  Over the public link, `/api/` and `/api/predict` work.
+- **The link is public.** Anyone with it can reach the site and the API while ngrok
+  runs. Stop it with `Ctrl+C` as soon as the demo ends.
+- **Your laptop must stay awake.** The link stops working if it sleeps.
+
 ## Refreshing what the website shows (optional)
 
 The website's numbers come from committed JSON files in `frontend/data/`. You only
@@ -162,3 +238,6 @@ needs the local models and data described above. Run `make web` again afterwards
 | API: `Feature names seen at fit time, yet now missing: …_seen_ms` | You started it with `make run`. Use `make api`. |
 | `npm` errors about the Node version | Install Node.js 20.9 or newer. |
 | The landing story doesn't animate | The visitor's system has *Reduce motion* turned on. The page then shows the same story as plain text, by design. |
+| ngrok: `ERR_NGROK_8012` / bad gateway | The server behind that path isn't running. Start it (`make web`, `make api` or `make diagrams`). |
+| ngrok: all paths show the same server | You started each server with its own `ngrok http`. On the free plan they share one domain; use the routing file above instead. |
+| ngrok: `authentication failed` | Run `ngrok config add-authtoken <your-token>` again. |
