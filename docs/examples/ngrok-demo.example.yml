@@ -1,0 +1,32 @@
+# One public ngrok link for the whole demo (see docs/RUNNING.md, "Share a public link").
+# Copy to ~/ngrok-demo.yml and replace YOUR-DOMAIN with the domain on your ngrok
+# dashboard (Universal Gateway -> Domains). The free plan gives one domain, so a
+# single link routes by path:
+#   /            -> website  (make web,      :3100)
+#   /api/...     -> API      (make api,      :8000)
+#   /diagrams/...-> diagrams (make diagrams, :8765)
+version: "3"
+endpoints:
+  - name: website
+    url: https://YOUR-DOMAIN.ngrok-free.dev
+    upstream: { url: 3100 }
+    traffic_policy:
+      on_http_request:
+        - expressions: ["req.url.path.startsWith('/api/')"]
+          actions:
+            - type: url-rewrite
+              config: { from: "^(https?://[^/]+)/api/(.*)$", to: "$1/$2" }
+            - type: forward-internal
+              config: { url: "https://api.internal" }
+        - expressions: ["req.url.path.startsWith('/diagrams/')"]
+          actions:
+            - type: url-rewrite
+              config: { from: "^(https?://[^/]+)/diagrams/(.*)$", to: "$1/$2" }
+            - type: forward-internal
+              config: { url: "https://diagrams.internal" }
+  - name: api
+    url: https://api.internal
+    upstream: { url: 8000 }
+  - name: diagrams
+    url: https://diagrams.internal
+    upstream: { url: 8765 }
