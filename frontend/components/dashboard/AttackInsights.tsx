@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useMemo, useState } from "react";
-import { MODEL_COLOR } from "./theme";
+import { MODEL_COLOR, fmtPct } from "./theme";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Insights = any;
@@ -41,7 +41,7 @@ const TONE: Record<string, string> = {
   good: "#34D399", caution: "#38BDF8", warning: "#FB7185", neutral: "#94A3B8",
 };
 
-const pct = (v: number) => `${Math.round(v * 100)}%`;
+const pct = fmtPct;
 
 export default function AttackInsights({ insights }: { insights: Insights }) {
   const models: string[] = insights.models;

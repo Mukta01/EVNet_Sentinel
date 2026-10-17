@@ -197,7 +197,7 @@ export default function ConfusionExplorer({ confusion, seeds }: { confusion: Con
                     <text key={`t-${i}-${j}`} x={LEFT + j * CELL + CELL / 2} y={TOP + i * CELL + CELL / 2 + 3.5}
                           fontSize={9} textAnchor="middle" fill={i === j && v > 0.5 ? "#022C22" : "#F8FAFC"}
                           pointerEvents="none">
-                      {Math.round(v * 100)}
+                      {v >= 0.995 && v < 1 ? (Math.floor(v * 1000) / 10).toFixed(1) : Math.round(v * 100)}
                     </text>
                   ) : null,
                 ),
