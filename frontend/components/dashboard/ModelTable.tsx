@@ -18,7 +18,7 @@ type ModelRow = {
  * Every model on one axis, with the spread visible.
  *
  * Macro-F1 leads because the class distribution is extreme: accuracy tracks the
- * flood classes and would rank these four almost identically.
+ * flood classes and would rank these models almost identically.
  */
 export default function ModelTable({
   models,
@@ -120,7 +120,8 @@ export default function ModelTable({
         Random Forest and Decision Tree overlap at one standard deviation. Their
         earlier apparent gap came from <code className="font-mono text-slate-300">src_port</code>,
         an ephemeral port that bands per capture; with it removed they are
-        indistinguishable.
+        indistinguishable. Gradient-boosted XGBoost and LightGBM, trained on the same
+        splits, land in the same band: a stronger tree model does not lift the ceiling.
       </p>
     </section>
   );

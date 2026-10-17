@@ -114,7 +114,7 @@ More detail, stopping servers, and sharing a public link with ngrok: **[docs/RUN
 | | Feature | What it does |
 |---|---|---|
 | 🔍 | **Leakage audit** | Five findings, each reproduced by its own script in `src/reproduction/` |
-| 📊 | **Corrected benchmarks** | 4 static models + ARF/ADWIN, 15 classes, 3 seeds, macro-F1 |
+| 📊 | **Corrected benchmarks** | 6 static models (incl. XGBoost, LightGBM) + ARF/ADWIN, 15 classes, 3 seeds, macro-F1 |
 | 🎯 | **Attack test harness** | Every attack × every model: detected / right category / named exactly, with regression gates |
 | 🛡️ | **Simulated containment** | Threat level Safe → Elevated → Not safe; operator-approved quarantine of the attacking device only |
 | 🌐 | **Web front end** | Landing page, simulation console, dashboard, all built from exported results |
@@ -146,12 +146,14 @@ flowchart LR
 
 | Model | Macro-F1 (3 seeds) | Accuracy | False alarms | |
 |---|---|---|---|---|
-| 🥇 **Random Forest** | **0.558 ± 0.008** | 0.868 | **2%** | recommended detector |
-| Decision Tree | 0.557 ± 0.010 | 0.868 | 12% | |
-| Logistic Regression | 0.436 ± 0.017 | 0.863 | 46% | best second opinion on scans |
-| SVM | 0.411 ± 0.017 | 0.862 | 59% | |
+| **Random Forest** | **0.558 ± 0.008** | 0.868 | 3% | highest macro-F1; trains in 8.5 s |
+| Decision Tree | 0.557 ± 0.010 | 0.868 | 11% | |
+| 🥇 **XGBoost** | 0.551 ± 0.011 | 0.869 | **2%** | recommended detector (fewest false alarms; tied with RF) |
+| LightGBM | 0.550 ± 0.004 | 0.868 | 3% | |
+| Logistic Regression | 0.436 ± 0.017 | 0.863 | 44% | best second opinion on scans |
+| SVM | 0.411 ± 0.017 | 0.862 | 58% | |
 
-Every model reaches about 0.86 accuracy, which is why macro-F1 is the headline. Sources: [`MULTISEED_RESULTS.md`](./evaluation_results/multiseed/MULTISEED_RESULTS.md) · [`attack_tests.json`](./evaluation_results/attack_tests.json) · [guide to the results folder](./evaluation_results/README.md).
+The four tree models are statistically tied: gradient boosting does not break the scan ceiling. Every model reaches about 0.86 accuracy, which is why macro-F1 is the headline. The recommended detector is chosen by a fixed rule: among models that name attacks within 2 points of the best, the fewest false alarms. Sources: [`MULTISEED_RESULTS.md`](./evaluation_results/multiseed/MULTISEED_RESULTS.md) · [`BOOSTING_RESULTS.md`](./evaluation_results/boosting/BOOSTING_RESULTS.md) · [`attack_tests.json`](./evaluation_results/attack_tests.json) · [guide to the results folder](./evaluation_results/README.md).
 
 > [!WARNING]
 > `evaluation_results/rf_evaluation_summary.md` and `SVM_evaluation_summary.md` predate the correction (their 0.9994 came from the timestamps). They are kept only as the "before".
@@ -187,7 +189,7 @@ Every model reaches about 0.86 accuracy, which is why macro-F1 is the headline. 
 | `docs/` | Papers, figures, diagrams, guides |
 | `data/` · `saved_models/` · `datasets/` | Local only, never committed |
 
-Notebooks (single-seed exploration): [Random Forest](./src/models/random_forest/Random_Forest_Training.ipynb) · [Decision Tree](./src/models/decision_tree/Decision_Tree_Training.ipynb) · [Logistic Regression](./src/models/log_reg/Logistic_Regression_Training.ipynb) · [SVM](./src/models/svm/svm_training.ipynb) · [ARF + ADWIN](./src/models/arfadwin/ARF_ADWIN_Training.ipynb)
+Notebooks (single seed, saved with outputs): [Random Forest](./src/models/random_forest/Random_Forest_Training.ipynb) · [Decision Tree](./src/models/decision_tree/Decision_Tree_Training.ipynb) · [Logistic Regression](./src/models/log_reg/Logistic_Regression_Training.ipynb) · [SVM](./src/models/svm/svm_training.ipynb) · [XGBoost](./src/models/xgboost/XGBoost_Training.ipynb) · [LightGBM](./src/models/lightgbm/LightGBM_Training.ipynb) · [ARF + ADWIN](./src/models/arfadwin/ARF_ADWIN_Training.ipynb)
 
 </details>
 

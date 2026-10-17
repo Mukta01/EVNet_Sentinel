@@ -33,18 +33,15 @@ from datetime import datetime, timezone
 import joblib
 import numpy as np
 import pandas as pd
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from src.evaluation.model_registry import MODEL_FILES  # noqa: E402
 
 VOLUMETRIC = {"SYN_Flood", "TCP_Flood", "UDP_Flood", "SynonymousIP_Flood", "PSHACK_Flood"}
 RECON = {"TCP_Port_Scan", "SYN_Stealth_Scan", "Service_Version_Detection",
          "OS_Fingerprinting", "Aggressive_Scan", "Vulnerability_Scan"}
 BENIGN = {"Benign"}
 
-MODEL_FILES = {
-    "RandomForest": "rf_model_multiclass.pkl",
-    "DecisionTree": "dt_model_multiclass.pkl",
-    "SVM": "svm_model_multiclass.pkl",
-    "LogisticRegression": "logreg_model_multiclass.pkl",
-}
 
 DISPLAY_FEATURES = [
     ("dst_port", "Destination port", ""),
@@ -173,8 +170,12 @@ def rescore_static(bundle_path, data_dir, models_dir):
     slot = {name: str(i) for i, name in enumerate(bundle["models"])}
     for name, filename in MODEL_FILES.items():
         path = os.path.join(models_dir, filename)
-        if name not in slot or not os.path.exists(path):
+        if not os.path.exists(path):
             continue
+        if name not in slot:
+            # A newly added detector: append, so existing verdict slots keep their index.
+            slot[name] = str(len(bundle["models"]))
+            bundle["models"].append(name)
         model = joblib.load(path)
         preds = model.predict(sample)
         conf = confidence_for(model, sample)

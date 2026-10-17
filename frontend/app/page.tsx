@@ -9,6 +9,7 @@ import Team from "@/components/Team";
 import Roadmap from "@/components/Roadmap";
 import Footer from "@/components/Footer";
 import type { DemoAttack } from "@/components/hero/BeatTheSentinel";
+import { MODEL_LABEL } from "@/components/dashboard/theme";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -59,7 +60,7 @@ async function heroData() {
   const stats: HeroStat[] = [
     { value: pct(mean(floods.map((a) => a.models[a.bestModel].exact))), label: "Floods named exactly", sub: `${floods.length} flood types` },
     { value: pct(mean(scans.map((a) => Math.max(...Object.values(a.models).map((m: any) => m.category))))), label: "Scans recognised as scans", sub: "best model per scan" },
-    { value: pct(1 - benign.models.RandomForest.exact), label: "False alarms", sub: "Random Forest" },
+    { value: pct(1 - benign.models[insights.primary ?? "RandomForest"].exact), label: "False alarms", sub: `${MODEL_LABEL[insights.primary] ?? insights.primary ?? "Random Forest"}, the primary detector` },
     { value: `${(findings.dataset.rows_after_dedup / 1e6).toFixed(1)}M`, label: "Flows analysed", sub: `${findings.dataset.n_classes} traffic classes` },
   ];
   return { attacks, tuning, stats };

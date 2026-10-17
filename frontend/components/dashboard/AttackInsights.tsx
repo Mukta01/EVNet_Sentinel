@@ -178,7 +178,7 @@ export default function AttackInsights({ insights }: { insights: Insights }) {
                       })}
                       <td className="px-4 py-2.5 text-[12px] text-slate-300">
                         {(a.bestTied ?? [a.bestModel]).length === models.length
-                          ? "All four tie"
+                          ? `All ${models.length} tie`
                           : (a.bestTied ?? [a.bestModel]).map((m: string) => labels[m]).join(" = ")}
                       </td>
                     </tr>

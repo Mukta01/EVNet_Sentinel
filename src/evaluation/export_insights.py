@@ -23,9 +23,10 @@ import os
 from datetime import datetime, timezone
 
 import numpy as np
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from src.evaluation.model_registry import LABEL, load_multiseed  # noqa: E402
 
-LABEL = {"RandomForest": "Random Forest", "DecisionTree": "Decision Tree",
-         "LogisticRegression": "Logistic Regression", "SVM": "SVM"}
 VOLUMETRIC = {"SYN_Flood", "TCP_Flood", "UDP_Flood", "SynonymousIP_Flood", "PSHACK_Flood"}
 
 
@@ -40,16 +41,13 @@ def merge_actions(playbook, cls, cat):
     return {role: specific.get(role, []) + general.get(role, []) for role in playbook["roles"]}
 
 
-def takeaways(tests, attacks):
-    """Findings a third person can read without the tables."""
-    models = tests["models"]
-    campaign = tests["campaign"]["summary"]
-    out = []
-
-    # Recommend a primary detector on what matters operationally: among the
-    # models that name attacks about as well as the best one, pick the one that
-    # raises the fewest false alarms. Counting "wins" alone would reward a model
-    # for being the least-wrong on scans it names correctly a fraction of the time.
+def choose_primary(models, attacks):
+    """
+    Recommend a primary detector on what matters operationally: among the
+    models that name attacks about as well as the best one, pick the one that
+    raises the fewest false alarms. Counting "wins" alone would reward a model
+    for being the least-wrong on scans it names correctly a fraction of the time.
+    """
     well = [a for a in attacks if a["class"] != "Benign" and not a["lowSupport"]]
     naming = {m: float(np.mean([a["models"][m]["exact"] for a in well])) for m in models}
     top_naming = max(naming.values())
@@ -57,6 +55,16 @@ def takeaways(tests, attacks):
     benign = next((a for a in attacks if a["class"] == "Benign"), None)
     alarms = ({m: 1 - benign["models"][m]["exact"] for m in models} if benign else {m: 0.0 for m in models})
     primary = min(contenders, key=lambda m: alarms[m])
+    return primary, naming, alarms, contenders
+
+
+def takeaways(tests, attacks):
+    """Findings a third person can read without the tables."""
+    models = tests["models"]
+    campaign = tests["campaign"]["summary"]
+    out = []
+
+    primary, naming, alarms, contenders = choose_primary(models, attacks)
     others = [m for m in contenders if m != primary]
     detail = (f"It names well-sampled attacks {naming[primary]:.0%} of the time on average"
               + (f", level with {' and '.join(LABEL.get(m, m) for m in others)}" if others else "")
@@ -151,7 +159,7 @@ def main():
 
     tests = json.load(open(args.tests))
     playbook = json.load(open(args.playbook))
-    multiseed = json.load(open(args.multiseed)) if os.path.exists(args.multiseed) else None
+    multiseed = load_multiseed(args.multiseed) if os.path.exists(args.multiseed) else None
 
     attacks = []
     for row in tests["perAttack"]:
@@ -197,6 +205,7 @@ def main():
         "modelLabels": {m: LABEL.get(m, m) for m in tests["models"]},
         "roles": playbook["roles"],
         "takeaways": takeaways(tests, attacks),
+        "primary": choose_primary(tests["models"], attacks)[0],
         "campaign": tests["campaign"],
         "passed": tests["passed"],
         "gateFailures": tests["gateFailures"],
