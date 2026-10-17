@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-29T05:57:04+00:00",
+  "generated": "2026-10-17T09:16:30+00:00",
   "provenance": "Real held-out flows from the CICEVSE2024 test split. Every verdict is the actual output of the corresponding trained model, computed at export time. Nothing is generated or estimated.",
   "source": {
     "dataDir": "data/multiseed/seed-42",
@@ -10,8 +10,10 @@
   "models": [
     "RandomForest",
     "DecisionTree",
-    "SVM",
-    "LogisticRegression"
+    "XGBoost",
+    "LightGBM",
+    "LogisticRegression",
+    "SVM"
   ],
   "classes": [
     "Aggressive_Scan",
@@ -120,15 +122,25 @@
           "correct": false,
           "confidence": 0.1955
         },
-        "SVM": {
+        "XGBoost": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5126
+          "confidence": 0.203
+        },
+        "LightGBM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.2136
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.182
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5126
         }
       }
     },
@@ -221,7 +233,12 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 0.9999
+        },
+        "LightGBM": {
           "label": "Benign",
           "correct": true,
           "confidence": 1.0
@@ -230,6 +247,11 @@
           "label": "Benign",
           "correct": true,
           "confidence": 0.5
+        },
+        "SVM": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -322,15 +344,25 @@
           "correct": true,
           "confidence": 0.2686
         },
-        "SVM": {
-          "label": "Vulnerability_Scan",
+        "XGBoost": {
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5033
+          "confidence": 0.2798
+        },
+        "LightGBM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.2933
         },
         "LogisticRegression": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
           "confidence": 0.1904
+        },
+        "SVM": {
+          "label": "Vulnerability_Scan",
+          "correct": false,
+          "confidence": 0.5033
         }
       }
     },
@@ -423,15 +455,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9999
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
           "confidence": 0.9991
+        },
+        "SVM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9999
         }
       }
     },
@@ -524,15 +566,25 @@
           "correct": true,
           "confidence": 0.5983
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
-          "correct": false,
-          "confidence": 0.5025
+        "XGBoost": {
+          "label": "Vulnerability_Scan",
+          "correct": true,
+          "confidence": 0.2229
+        },
+        "LightGBM": {
+          "label": "Vulnerability_Scan",
+          "correct": true,
+          "confidence": 0.2498
         },
         "LogisticRegression": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
           "confidence": 0.1763
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5025
         }
       }
     },
@@ -625,15 +677,25 @@
           "correct": false,
           "confidence": 0.1859
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "Service_Version_Detection",
           "correct": false,
-          "confidence": 0.5189
+          "confidence": 0.1839
+        },
+        "LightGBM": {
+          "label": "Service_Version_Detection",
+          "correct": false,
+          "confidence": 0.1843
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1801
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5189
         }
       }
     },
@@ -726,15 +788,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9998
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
           "confidence": 0.9991
+        },
+        "SVM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9998
         }
       }
     },
@@ -827,15 +899,25 @@
           "correct": false,
           "confidence": 1.0
         },
-        "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 1.0
+        "XGBoost": {
+          "label": "ICMP_Fragmentation",
+          "correct": true,
+          "confidence": 0.9794
+        },
+        "LightGBM": {
+          "label": "ICMP_Fragmentation",
+          "correct": true,
+          "confidence": 0.9793
         },
         "LogisticRegression": {
           "label": "ICMP_Flood",
           "correct": false,
           "confidence": 0.3893
+        },
+        "SVM": {
+          "label": "ICMP_Flood",
+          "correct": false,
+          "confidence": 1.0
         }
       }
     },
@@ -928,15 +1010,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SYN_Flood",
           "correct": true,
-          "confidence": 0.9987
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 0.9983
+        },
+        "SVM": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 0.9987
         }
       }
     },
@@ -1029,7 +1121,12 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "Benign",
           "correct": true,
           "confidence": 1.0
@@ -1038,6 +1135,11 @@
           "label": "Benign",
           "correct": true,
           "confidence": 0.5
+        },
+        "SVM": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -1130,15 +1232,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9391
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
           "confidence": 0.9868
+        },
+        "SVM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 0.9391
         }
       }
     },
@@ -1231,12 +1343,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
@@ -1332,15 +1454,25 @@
           "correct": false,
           "confidence": 0.6584
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.8837
+          "confidence": 0.6284
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.6577
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": false,
           "confidence": 0.366
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.8837
         }
       }
     },
@@ -1433,15 +1565,25 @@
           "correct": false,
           "confidence": 0.1774
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
-          "correct": true,
-          "confidence": 0.52
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1855
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1914
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": true,
           "confidence": 0.1802
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.52
         }
       }
     },
@@ -1534,12 +1676,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
@@ -1635,15 +1787,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "TCP_Flood",
           "correct": true,
-          "confidence": 0.9975
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 0.9926
+        },
+        "SVM": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 0.9975
         }
       }
     },
@@ -1736,15 +1898,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "TCP_Flood",
           "correct": true,
-          "confidence": 0.9972
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 0.9913
+        },
+        "SVM": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 0.9972
         }
       }
     },
@@ -1837,15 +2009,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "ICMP_Fragmentation",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9996
+        },
+        "LightGBM": {
+          "label": "ICMP_Fragmentation",
+          "correct": true,
+          "confidence": 0.9999
         },
         "LogisticRegression": {
           "label": "ICMP_Fragmentation",
           "correct": true,
           "confidence": 0.9596
+        },
+        "SVM": {
+          "label": "ICMP_Fragmentation",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -1938,12 +2120,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
@@ -2039,12 +2231,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
@@ -2140,15 +2342,25 @@
           "correct": false,
           "confidence": 1.0
         },
-        "SVM": {
-          "label": "Benign",
+        "XGBoost": {
+          "label": "ICMP_Fragmentation",
+          "correct": true,
+          "confidence": 0.4982
+        },
+        "LightGBM": {
+          "label": "SynonymousIP_Flood",
           "correct": false,
-          "confidence": 1.0
+          "confidence": 0.4341
         },
         "LogisticRegression": {
           "label": "Benign",
           "correct": false,
           "confidence": 0.3333
+        },
+        "SVM": {
+          "label": "Benign",
+          "correct": false,
+          "confidence": 1.0
         }
       }
     },
@@ -2241,15 +2453,25 @@
           "correct": false,
           "confidence": 0.1949
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.517
+          "confidence": 0.1903
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1909
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1816
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.517
         }
       }
     },
@@ -2342,15 +2564,25 @@
           "correct": false,
           "confidence": 0.1671
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.5174
+          "confidence": 0.1792
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.171
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1777
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5174
         }
       }
     },
@@ -2443,15 +2675,25 @@
           "correct": false,
           "confidence": 0.1907
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.5174
+          "confidence": 0.1908
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1956
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1818
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5174
         }
       }
     },
@@ -2544,12 +2786,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 0.9998
+        },
+        "LightGBM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
@@ -2645,12 +2897,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
@@ -2746,15 +3008,25 @@
           "correct": false,
           "confidence": 0.2212
         },
-        "SVM": {
-          "label": "Slowloris_Scan",
+        "XGBoost": {
+          "label": "Aggressive_Scan",
           "correct": false,
-          "confidence": 0.5326
+          "confidence": 0.2147
+        },
+        "LightGBM": {
+          "label": "Aggressive_Scan",
+          "correct": false,
+          "confidence": 0.2026
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": true,
           "confidence": 0.1679
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.5326
         }
       }
     },
@@ -2847,15 +3119,25 @@
           "correct": false,
           "confidence": 0.2183
         },
-        "SVM": {
+        "XGBoost": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5121
+          "confidence": 0.2116
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2191
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1823
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5121
         }
       }
     },
@@ -2948,12 +3230,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
@@ -3049,15 +3341,25 @@
           "correct": false,
           "confidence": 0.2895
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "Vulnerability_Scan",
           "correct": false,
-          "confidence": 0.5164
+          "confidence": 0.2323
+        },
+        "LightGBM": {
+          "label": "Vulnerability_Scan",
+          "correct": false,
+          "confidence": 0.2309
         },
         "LogisticRegression": {
           "label": "OS_Fingerprinting",
           "correct": false,
           "confidence": 0.1736
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5164
         }
       }
     },
@@ -3150,15 +3452,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9999
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
           "confidence": 0.9991
+        },
+        "SVM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9999
         }
       }
     },
@@ -3251,15 +3563,25 @@
           "correct": false,
           "confidence": 0.1924
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.5163
+          "confidence": 0.1896
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.189
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1824
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5163
         }
       }
     },
@@ -3352,15 +3674,25 @@
           "correct": false,
           "confidence": 0.1969
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.5197
+          "confidence": 0.1844
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1802
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1805
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5197
         }
       }
     },
@@ -3453,12 +3785,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
@@ -3554,15 +3896,25 @@
           "correct": false,
           "confidence": 0.2035
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.5119
+          "confidence": 0.2042
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2135
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1828
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5119
         }
       }
     },
@@ -3655,15 +4007,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9999
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
           "confidence": 0.9991
+        },
+        "SVM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9999
         }
       }
     },
@@ -3756,12 +4118,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
@@ -3857,15 +4229,25 @@
           "correct": false,
           "confidence": 0.1932
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.5191
+          "confidence": 0.1831
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1812
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1808
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5191
         }
       }
     },
@@ -3958,15 +4340,25 @@
           "correct": false,
           "confidence": 0.1708
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
-          "correct": true,
-          "confidence": 0.5273
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1864
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1842
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": true,
           "confidence": 0.1758
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.5273
         }
       }
     },
@@ -4059,15 +4451,25 @@
           "correct": false,
           "confidence": 0.2265
         },
-        "SVM": {
-          "label": "Vulnerability_Scan",
+        "XGBoost": {
+          "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5003
+          "confidence": 0.2367
+        },
+        "LightGBM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.2228
         },
         "LogisticRegression": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
           "confidence": 0.184
+        },
+        "SVM": {
+          "label": "Vulnerability_Scan",
+          "correct": false,
+          "confidence": 0.5003
         }
       }
     },
@@ -4160,15 +4562,25 @@
           "correct": false,
           "confidence": 0.1788
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5016
+          "confidence": 0.1823
+        },
+        "LightGBM": {
+          "label": "Aggressive_Scan",
+          "correct": false,
+          "confidence": 0.1776
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1631
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.5016
         }
       }
     },
@@ -4261,12 +4673,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
@@ -4362,15 +4784,25 @@
           "correct": false,
           "confidence": 0.2025
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.5132
+          "confidence": 0.1975
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.1999
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1828
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5132
         }
       }
     },
@@ -4463,7 +4895,12 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
@@ -4472,6 +4909,11 @@
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 0.9997
+        },
+        "SVM": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -4564,15 +5006,25 @@
           "correct": false,
           "confidence": 0.2108
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.548
+          "confidence": 0.1877
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1878
         },
         "LogisticRegression": {
           "label": "OS_Fingerprinting",
           "correct": false,
           "confidence": 0.1671
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.548
         }
       }
     },
@@ -4665,15 +5117,25 @@
           "correct": false,
           "confidence": 0.2924
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.8826
+          "confidence": 0.6191
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.65
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": false,
           "confidence": 0.3641
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.8826
         }
       }
     },
@@ -4766,15 +5228,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9998
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.9998
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": true,
           "confidence": 0.5
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -4867,15 +5339,25 @@
           "correct": true,
           "confidence": 0.2886
         },
-        "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": false,
-          "confidence": 0.5037
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
+          "correct": true,
+          "confidence": 0.2846
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": true,
+          "confidence": 0.2967
         },
         "LogisticRegression": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
           "confidence": 0.1893
+        },
+        "SVM": {
+          "label": "Vulnerability_Scan",
+          "correct": false,
+          "confidence": 0.5037
         }
       }
     },
@@ -4968,15 +5450,25 @@
           "correct": false,
           "confidence": 0.1952
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
-          "correct": true,
-          "confidence": 0.5191
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1847
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1912
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": true,
           "confidence": 0.1802
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.5191
         }
       }
     },
@@ -5069,12 +5561,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
@@ -5170,15 +5672,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9115
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
           "confidence": 0.9676
+        },
+        "SVM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 0.9115
         }
       }
     },
@@ -5271,15 +5783,25 @@
           "correct": false,
           "confidence": 0.2698
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.5152
+          "confidence": 0.1853
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.1805
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1821
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5152
         }
       }
     },
@@ -5372,15 +5894,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9998
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.9998
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": true,
           "confidence": 0.5
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -5473,15 +6005,25 @@
           "correct": false,
           "confidence": 0.2035
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
-          "correct": true,
-          "confidence": 0.5117
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2105
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2147
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": true,
           "confidence": 0.1829
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.5117
         }
       }
     },
@@ -5574,7 +6116,12 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "Benign",
           "correct": true,
           "confidence": 1.0
@@ -5583,6 +6130,11 @@
           "label": "Benign",
           "correct": true,
           "confidence": 0.5
+        },
+        "SVM": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -5675,15 +6227,25 @@
           "correct": false,
           "confidence": 0.1952
         },
-        "SVM": {
-          "label": "Slowloris_Scan",
+        "XGBoost": {
+          "label": "Aggressive_Scan",
           "correct": false,
-          "confidence": 0.5178
+          "confidence": 0.2023
+        },
+        "LightGBM": {
+          "label": "Aggressive_Scan",
+          "correct": false,
+          "confidence": 0.2114
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": true,
           "confidence": 0.1792
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.5178
         }
       }
     },
@@ -5776,15 +6338,25 @@
           "correct": false,
           "confidence": 0.6459
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.8822
+          "confidence": 0.6508
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.6505
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": false,
           "confidence": 0.3633
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.8822
         }
       }
     },
@@ -5877,7 +6449,12 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "ICMP_Flood",
+          "correct": true,
+          "confidence": 0.9999
+        },
+        "LightGBM": {
           "label": "ICMP_Flood",
           "correct": true,
           "confidence": 1.0
@@ -5886,6 +6463,11 @@
           "label": "ICMP_Flood",
           "correct": true,
           "confidence": 0.4994
+        },
+        "SVM": {
+          "label": "ICMP_Flood",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -5978,15 +6560,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9999
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
           "confidence": 0.9991
+        },
+        "SVM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9999
         }
       }
     },
@@ -6079,15 +6671,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 0.8983
+          "confidence": 0.9916
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.9889
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": true,
           "confidence": 0.5154
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.8983
         }
       }
     },
@@ -6180,15 +6782,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9997
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
           "confidence": 0.9991
+        },
+        "SVM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9997
         }
       }
     },
@@ -6281,12 +6893,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
@@ -6382,15 +7004,25 @@
           "correct": false,
           "confidence": 0.3691
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.504
+          "confidence": 0.3577
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.3508
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.177
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.504
         }
       }
     },
@@ -6483,12 +7115,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
@@ -6584,12 +7226,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
@@ -6685,15 +7337,25 @@
           "correct": false,
           "confidence": 0.2016
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.5166
+          "confidence": 0.1874
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.1836
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1813
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5166
         }
       }
     },
@@ -6786,7 +7448,12 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
@@ -6795,6 +7462,11 @@
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 0.9997
+        },
+        "SVM": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -6887,15 +7559,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.8865
+          "confidence": 0.9998
+        },
+        "LightGBM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
           "confidence": 0.9471
+        },
+        "SVM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 0.8865
         }
       }
     },
@@ -6988,15 +7670,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 1.0
+        "XGBoost": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 0.9992
+        },
+        "LightGBM": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 0.9995
         },
         "LogisticRegression": {
           "label": "ICMP_Flood",
           "correct": false,
           "confidence": 0.3184
+        },
+        "SVM": {
+          "label": "ICMP_Flood",
+          "correct": false,
+          "confidence": 1.0
         }
       }
     },
@@ -7089,15 +7781,25 @@
           "correct": true,
           "confidence": 0.2138
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.5193
+          "confidence": 0.2155
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2125
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1784
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5193
         }
       }
     },
@@ -7190,15 +7892,25 @@
           "correct": false,
           "confidence": 0.3673
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5061
+          "confidence": 0.3616
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.361
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1787
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.5061
         }
       }
     },
@@ -7291,15 +8003,25 @@
           "correct": true,
           "confidence": 0.2035
         },
-        "SVM": {
+        "XGBoost": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5114
+          "confidence": 0.2113
+        },
+        "LightGBM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.2112
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1827
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5114
         }
       }
     },
@@ -7392,15 +8114,25 @@
           "correct": true,
           "confidence": 0.1877
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
-          "correct": false,
-          "confidence": 0.5201
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
+          "correct": true,
+          "confidence": 0.1915
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": true,
+          "confidence": 0.1923
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.18
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5201
         }
       }
     },
@@ -7493,15 +8225,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9999
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
           "confidence": 0.9991
+        },
+        "SVM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9999
         }
       }
     },
@@ -7594,15 +8336,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9078
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
           "confidence": 0.9626
+        },
+        "SVM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 0.9078
         }
       }
     },
@@ -7695,15 +8447,25 @@
           "correct": false,
           "confidence": 0.6145
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.8816
+          "confidence": 0.5719
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.6405
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": false,
           "confidence": 0.3622
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.8816
         }
       }
     },
@@ -7796,15 +8558,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9998
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
           "confidence": 0.9991
+        },
+        "SVM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9998
         }
       }
     },
@@ -7897,15 +8669,25 @@
           "correct": false,
           "confidence": 0.1877
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.5193
+          "confidence": 0.1908
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1947
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1803
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5193
         }
       }
     },
@@ -7998,15 +8780,25 @@
           "correct": false,
           "confidence": 0.3673
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5054
+          "confidence": 0.3311
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.291
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1793
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.5054
         }
       }
     },
@@ -8099,15 +8891,25 @@
           "correct": false,
           "confidence": 1.0
         },
-        "SVM": {
-          "label": "SYN_Flood",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 1.0
+          "confidence": 0.2835
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.6684
         },
         "LogisticRegression": {
           "label": "ICMP_Fragmentation",
           "correct": true,
           "confidence": 0.3333
+        },
+        "SVM": {
+          "label": "SYN_Flood",
+          "correct": false,
+          "confidence": 1.0
         }
       }
     },
@@ -8200,15 +9002,25 @@
           "correct": true,
           "confidence": 0.1924
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
+          "correct": true,
+          "confidence": 0.1911
+        },
+        "LightGBM": {
+          "label": "Service_Version_Detection",
           "correct": false,
-          "confidence": 0.516
+          "confidence": 0.1867
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1825
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.516
         }
       }
     },
@@ -8301,12 +9113,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 0.9994
+        },
+        "LightGBM": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 0.9998
+        },
+        "LogisticRegression": {
           "label": "Benign",
           "correct": true,
           "confidence": 1.0
         },
-        "LogisticRegression": {
+        "SVM": {
           "label": "Benign",
           "correct": true,
           "confidence": 1.0
@@ -8402,15 +9224,25 @@
           "correct": false,
           "confidence": 0.6459
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.882
+          "confidence": 0.6318
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.6494
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": false,
           "confidence": 0.363
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.882
         }
       }
     },
@@ -8503,15 +9335,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9327
+          "confidence": 0.9999
+        },
+        "LightGBM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
           "confidence": 0.9906
+        },
+        "SVM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 0.9327
         }
       }
     },
@@ -8604,15 +9446,25 @@
           "correct": false,
           "confidence": 0.2317
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5078
+          "confidence": 0.2973
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.2699
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1799
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5078
         }
       }
     },
@@ -8705,15 +9557,25 @@
           "correct": false,
           "confidence": 0.1986
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.5164
+          "confidence": 0.1992
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2023
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1804
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5164
         }
       }
     },
@@ -8806,15 +9668,25 @@
           "correct": false,
           "confidence": 0.1986
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.5152
+          "confidence": 0.2022
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2018
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1808
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5152
         }
       }
     },
@@ -8907,7 +9779,12 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "Benign",
           "correct": true,
           "confidence": 1.0
@@ -8916,6 +9793,11 @@
           "label": "Benign",
           "correct": true,
           "confidence": 0.4999
+        },
+        "SVM": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -9008,12 +9890,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
@@ -9109,15 +10001,25 @@
           "correct": false,
           "confidence": 0.4622
         },
-        "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": true,
-          "confidence": 0.5017
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2613
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.31
         },
         "LogisticRegression": {
           "label": "OS_Fingerprinting",
           "correct": false,
           "confidence": 0.189
+        },
+        "SVM": {
+          "label": "Vulnerability_Scan",
+          "correct": true,
+          "confidence": 0.5017
         }
       }
     },
@@ -9210,15 +10112,25 @@
           "correct": false,
           "confidence": 0.2986
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5075
+          "confidence": 0.3043
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.3055
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1796
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5075
         }
       }
     },
@@ -9311,12 +10223,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
@@ -9412,12 +10334,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "TCP_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "TCP_Flood",
           "correct": true,
           "confidence": 1.0
@@ -9513,15 +10445,25 @@
           "correct": true,
           "confidence": 0.1898
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "Aggressive_Scan",
+          "correct": true,
+          "confidence": 0.1879
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.5335
+          "confidence": 0.1877
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1721
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5335
         }
       }
     },
@@ -9614,15 +10556,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9998
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
           "confidence": 0.9991
+        },
+        "SVM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9998
         }
       }
     },
@@ -9715,15 +10667,25 @@
           "correct": false,
           "confidence": 0.1883
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.5217
+          "confidence": 0.1863
+        },
+        "LightGBM": {
+          "label": "Aggressive_Scan",
+          "correct": false,
+          "confidence": 0.184
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1793
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5217
         }
       }
     },
@@ -9816,15 +10778,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9069
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
           "confidence": 0.9614
+        },
+        "SVM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 0.9069
         }
       }
     },
@@ -9917,15 +10889,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9115
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
           "confidence": 0.9737
+        },
+        "SVM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 0.9115
         }
       }
     },
@@ -10018,15 +11000,25 @@
           "correct": false,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "TCP_Port_Scan",
           "correct": true,
-          "confidence": 0.5214
+          "confidence": 0.2236
+        },
+        "LightGBM": {
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.2334
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": true,
           "confidence": 0.175
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.5214
         }
       }
     },
@@ -10119,15 +11111,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "UDP_Flood",
           "correct": true,
-          "confidence": 0.9994
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "UDP_Flood",
           "correct": true,
           "confidence": 0.999
+        },
+        "SVM": {
+          "label": "UDP_Flood",
+          "correct": true,
+          "confidence": 0.9994
         }
       }
     },
@@ -10220,15 +11222,25 @@
           "correct": false,
           "confidence": 0.1921
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 0.8823
+          "confidence": 0.6311
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.6269
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": true,
           "confidence": 0.3636
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.8823
         }
       }
     },
@@ -10321,15 +11333,25 @@
           "correct": true,
           "confidence": 0.2986
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
-          "correct": false,
-          "confidence": 0.5077
+        "XGBoost": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.3666
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.3047
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1798
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5077
         }
       }
     },
@@ -10422,12 +11444,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
@@ -10523,15 +11555,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
-          "label": "Benign",
-          "correct": false,
+        "XGBoost": {
+          "label": "ICMP_Flood",
+          "correct": true,
+          "confidence": 0.9999
+        },
+        "LightGBM": {
+          "label": "ICMP_Flood",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "Benign",
           "correct": false,
           "confidence": 0.2
+        },
+        "SVM": {
+          "label": "Benign",
+          "correct": false,
+          "confidence": 1.0
         }
       }
     },
@@ -10624,15 +11666,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
-          "label": "Benign",
-          "correct": false,
+        "XGBoost": {
+          "label": "ICMP_Flood",
+          "correct": true,
+          "confidence": 0.9999
+        },
+        "LightGBM": {
+          "label": "ICMP_Flood",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "Benign",
           "correct": false,
           "confidence": 0.201
+        },
+        "SVM": {
+          "label": "Benign",
+          "correct": false,
+          "confidence": 1.0
         }
       }
     },
@@ -10725,12 +11777,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
@@ -10826,15 +11888,25 @@
           "correct": false,
           "confidence": 0.2439
         },
-        "SVM": {
-          "label": "Vulnerability_Scan",
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.5033
+          "confidence": 0.2482
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2411
         },
         "LogisticRegression": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
           "confidence": 0.1895
+        },
+        "SVM": {
+          "label": "Vulnerability_Scan",
+          "correct": false,
+          "confidence": 0.5033
         }
       }
     },
@@ -10927,15 +11999,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
-          "label": "Vulnerability_Scan",
-          "correct": false,
-          "confidence": 0.5296
+        "XGBoost": {
+          "label": "Service_Version_Detection",
+          "correct": true,
+          "confidence": 0.9121
+        },
+        "LightGBM": {
+          "label": "Service_Version_Detection",
+          "correct": true,
+          "confidence": 0.9076
         },
         "LogisticRegression": {
           "label": "Vulnerability_Scan",
           "correct": false,
           "confidence": 0.4016
+        },
+        "SVM": {
+          "label": "Vulnerability_Scan",
+          "correct": false,
+          "confidence": 0.5296
         }
       }
     },
@@ -11028,15 +12110,25 @@
           "correct": false,
           "confidence": 0.3691
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5051
+          "confidence": 0.3272
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.2887
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1778
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5051
         }
       }
     },
@@ -11129,15 +12221,25 @@
           "correct": false,
           "confidence": 0.4536
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5268
+          "confidence": 0.375
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.4027
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1628
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.5268
         }
       }
     },
@@ -11230,15 +12332,25 @@
           "correct": false,
           "confidence": 0.2283
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
           "correct": false,
-          "confidence": 0.5146
+          "confidence": 0.2327
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2366
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1802
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5146
         }
       }
     },
@@ -11331,15 +12443,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9247
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
           "confidence": 0.9746
+        },
+        "SVM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 0.9247
         }
       }
     },
@@ -11432,15 +12554,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9822
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
           "confidence": 0.9793
+        },
+        "SVM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 0.9822
         }
       }
     },
@@ -11533,15 +12665,25 @@
           "correct": false,
           "confidence": 0.4214
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Vulnerability_Scan",
           "correct": true,
-          "confidence": 0.5035
+          "confidence": 0.2706
+        },
+        "LightGBM": {
+          "label": "Vulnerability_Scan",
+          "correct": true,
+          "confidence": 0.3234
         },
         "LogisticRegression": {
           "label": "SYN_Stealth_Scan",
           "correct": false,
           "confidence": 0.1854
+        },
+        "SVM": {
+          "label": "Vulnerability_Scan",
+          "correct": true,
+          "confidence": 0.5035
         }
       }
     },
@@ -11634,15 +12776,25 @@
           "correct": false,
           "confidence": 0.1955
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2049
+        },
+        "LightGBM": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5138
+          "confidence": 0.2054
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1813
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5138
         }
       }
     },
@@ -11735,12 +12887,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
@@ -11836,15 +12998,25 @@
           "correct": true,
           "confidence": 0.2295
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
-          "correct": true,
-          "confidence": 0.5103
+        "XGBoost": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2362
+        },
+        "LightGBM": {
+          "label": "SYN_Stealth_Scan",
+          "correct": false,
+          "confidence": 0.2692
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": true,
           "confidence": 0.1825
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": true,
+          "confidence": 0.5103
         }
       }
     },
@@ -11937,15 +13109,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
-          "label": "Benign",
-          "correct": false,
+        "XGBoost": {
+          "label": "ICMP_Flood",
+          "correct": true,
+          "confidence": 0.9999
+        },
+        "LightGBM": {
+          "label": "ICMP_Flood",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "Benign",
           "correct": false,
           "confidence": 0.25
+        },
+        "SVM": {
+          "label": "Benign",
+          "correct": false,
+          "confidence": 1.0
         }
       }
     },
@@ -12038,15 +13220,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
-          "label": "ICMP_Flood",
-          "correct": false,
-          "confidence": 1.0
+        "XGBoost": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 0.9996
+        },
+        "LightGBM": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 0.9994
         },
         "LogisticRegression": {
           "label": "ICMP_Flood",
           "correct": false,
           "confidence": 0.3191
+        },
+        "SVM": {
+          "label": "ICMP_Flood",
+          "correct": false,
+          "confidence": 1.0
         }
       }
     },
@@ -12139,15 +13331,25 @@
           "correct": true,
           "confidence": 0.1947
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.517
+          "confidence": 0.1813
+        },
+        "LightGBM": {
+          "label": "Service_Version_Detection",
+          "correct": false,
+          "confidence": 0.1837
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1812
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.517
         }
       }
     },
@@ -12240,15 +13442,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SynonymousIP_Flood",
           "correct": true,
-          "confidence": 0.9423
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SynonymousIP_Flood",
           "correct": true,
           "confidence": 0.9873
+        },
+        "SVM": {
+          "label": "SynonymousIP_Flood",
+          "correct": true,
+          "confidence": 0.9423
         }
       }
     },
@@ -12341,12 +13553,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
@@ -12442,12 +13664,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
@@ -12543,15 +13775,25 @@
           "correct": false,
           "confidence": 0.4536
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": false,
-          "confidence": 0.5197
+          "confidence": 0.4384
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.437
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1682
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.5197
         }
       }
     },
@@ -12644,15 +13886,25 @@
           "correct": true,
           "confidence": 0.3673
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 0.5073
+          "confidence": 0.3336
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.3599
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1778
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.5073
         }
       }
     },
@@ -12745,15 +13997,25 @@
           "correct": false,
           "confidence": 0.1898
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "Aggressive_Scan",
           "correct": false,
-          "confidence": 0.5366
+          "confidence": 0.1799
+        },
+        "LightGBM": {
+          "label": "Aggressive_Scan",
+          "correct": false,
+          "confidence": 0.1757
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1701
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5366
         }
       }
     },
@@ -12846,7 +14108,12 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 1.0
@@ -12855,6 +14122,11 @@
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 0.9997
+        },
+        "SVM": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -12947,15 +14219,25 @@
           "correct": false,
           "confidence": 0.1877
         },
-        "SVM": {
-          "label": "TCP_Port_Scan",
+        "XGBoost": {
+          "label": "OS_Fingerprinting",
           "correct": false,
-          "confidence": 0.5185
+          "confidence": 0.1916
+        },
+        "LightGBM": {
+          "label": "OS_Fingerprinting",
+          "correct": false,
+          "confidence": 0.1923
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1808
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5185
         }
       }
     },
@@ -13048,12 +14330,22 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
+          "label": "PSHACK_Flood",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "SVM": {
           "label": "PSHACK_Flood",
           "correct": true,
           "confidence": 1.0
@@ -13149,15 +14441,25 @@
           "correct": true,
           "confidence": 0.6732
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 0.8813
+          "confidence": 0.6786
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.6283
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": true,
           "confidence": 0.3616
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.8813
         }
       }
     },
@@ -13250,15 +14552,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9997
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.9997
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": true,
           "confidence": 0.4964
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -13351,7 +14663,12 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "Benign",
           "correct": true,
           "confidence": 1.0
@@ -13360,6 +14677,11 @@
           "label": "Benign",
           "correct": true,
           "confidence": 0.4996
+        },
+        "SVM": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -13452,15 +14774,25 @@
           "correct": false,
           "confidence": 0.2623
         },
-        "SVM": {
+        "XGBoost": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5118
+          "confidence": 0.2405
+        },
+        "LightGBM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.2424
         },
         "LogisticRegression": {
           "label": "OS_Fingerprinting",
           "correct": true,
           "confidence": 0.1758
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5118
         }
       }
     },
@@ -13553,15 +14885,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "SYN_Flood",
           "correct": true,
-          "confidence": 0.9984
+          "confidence": 1.0
+        },
+        "LightGBM": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "SYN_Flood",
           "correct": true,
           "confidence": 0.9979
+        },
+        "SVM": {
+          "label": "SYN_Flood",
+          "correct": true,
+          "confidence": 0.9984
         }
       }
     },
@@ -13654,15 +14996,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
-          "label": "Benign",
-          "correct": false,
+        "XGBoost": {
+          "label": "ICMP_Flood",
+          "correct": true,
+          "confidence": 0.9999
+        },
+        "LightGBM": {
+          "label": "ICMP_Flood",
+          "correct": true,
           "confidence": 1.0
         },
         "LogisticRegression": {
           "label": "Benign",
           "correct": false,
           "confidence": 0.2
+        },
+        "SVM": {
+          "label": "Benign",
+          "correct": false,
+          "confidence": 1.0
         }
       }
     },
@@ -13755,7 +15107,12 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
+        },
+        "LightGBM": {
           "label": "Benign",
           "correct": true,
           "confidence": 1.0
@@ -13764,6 +15121,11 @@
           "label": "Benign",
           "correct": true,
           "confidence": 0.4997
+        },
+        "SVM": {
+          "label": "Benign",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     },
@@ -13856,15 +15218,25 @@
           "correct": false,
           "confidence": 1.0
         },
-        "SVM": {
-          "label": "SYN_Flood",
+        "XGBoost": {
+          "label": "PSHACK_Flood",
           "correct": false,
-          "confidence": 1.0
+          "confidence": 0.306
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": false,
+          "confidence": 0.2649
         },
         "LogisticRegression": {
           "label": "TCP_Flood",
           "correct": false,
           "confidence": 0.6396
+        },
+        "SVM": {
+          "label": "SYN_Flood",
+          "correct": false,
+          "confidence": 1.0
         }
       }
     },
@@ -13957,15 +15329,25 @@
           "correct": false,
           "confidence": 0.2183
         },
-        "SVM": {
+        "XGBoost": {
           "label": "TCP_Port_Scan",
           "correct": false,
-          "confidence": 0.5128
+          "confidence": 0.2031
+        },
+        "LightGBM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.2033
         },
         "LogisticRegression": {
           "label": "TCP_Port_Scan",
           "correct": false,
           "confidence": 0.1825
+        },
+        "SVM": {
+          "label": "TCP_Port_Scan",
+          "correct": false,
+          "confidence": 0.5128
         }
       }
     },
@@ -14058,15 +15440,25 @@
           "correct": true,
           "confidence": 1.0
         },
-        "SVM": {
+        "XGBoost": {
           "label": "Slowloris_Scan",
           "correct": true,
-          "confidence": 1.0
+          "confidence": 0.9997
+        },
+        "LightGBM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 0.9997
         },
         "LogisticRegression": {
           "label": "Slowloris_Scan",
           "correct": true,
           "confidence": 0.4995
+        },
+        "SVM": {
+          "label": "Slowloris_Scan",
+          "correct": true,
+          "confidence": 1.0
         }
       }
     }

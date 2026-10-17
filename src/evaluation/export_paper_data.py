@@ -31,6 +31,10 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_selection import mutual_info_classif
 
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from src.evaluation.model_registry import load_multiseed  # noqa: E402
+
 VOLUMETRIC = {"SYN_Flood", "TCP_Flood", "UDP_Flood", "SynonymousIP_Flood", "PSHACK_Flood"}
 DOS = VOLUMETRIC | {"ICMP_Flood", "ICMP_Fragmentation", "Slowloris_Scan"}
 RECON = {"TCP_Port_Scan", "SYN_Stealth_Scan", "Service_Version_Detection",
@@ -148,7 +152,7 @@ def main():
     parser.add_argument("--out", default="frontend/data/paper.json")
     args = parser.parse_args()
 
-    multiseed = json.load(open(args.multiseed))
+    multiseed = load_multiseed(args.multiseed)
     bundle = {
         "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "seeds": multiseed["seeds"],

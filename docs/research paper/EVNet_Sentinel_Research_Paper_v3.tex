@@ -85,7 +85,7 @@ makhandke@gmail.com}
 
 % ============================================================================
 \begin{abstract}
-Public electric vehicle chargers are networked computers, and an attack on their link to the central management system can stop charging and billing. Machine-learning intrusion detectors evaluated on the CICEVSE2024 dataset report accuracies near 99 percent. This study reproduces the most recent of them, an online Adaptive Random Forest with ADWIN drift detection, and audits whether that accuracy reflects attack detection. We follow a quantitative, computational design: the published preprocessing is replayed, every feature is probed for label leakage, and four static classifiers and the online model are retrained on corrected data and evaluated over three seeds with macro-F1. A single capture timestamp recovers the attack label with 99.76 percent accuracy, above the published 98.40 percent, and the drift detector fires on the joins between capture files rather than on changes in traffic. After correction, flooding attacks remain near-perfectly separable while six network-scan types are not, and a mutual-information analysis shows that this limit lies in the flow features rather than in the models. A per-attack test finds that no attack passes as normal traffic and that Random Forest names attacks best with the fewest false alarms. The work is delivered as EVNet Sentinel, with a prediction service, role-based response guidance and an interactive web front end.
+Public electric vehicle chargers are networked computers, and an attack on their link to the central management system can stop charging and billing. Machine-learning intrusion detectors evaluated on the CICEVSE2024 dataset report accuracies near 99 percent. This study reproduces the most recent of them, an online Adaptive Random Forest with ADWIN drift detection, and audits whether that accuracy reflects attack detection. We follow a quantitative, computational design: the published preprocessing is replayed, every feature is probed for label leakage, and six static classifiers, including the gradient-boosted XGBoost and LightGBM, and the online model are retrained on corrected data and evaluated over three seeds with macro-F1. A single capture timestamp recovers the attack label with 99.76 percent accuracy, above the published 98.40 percent, and the drift detector fires on the joins between capture files rather than on changes in traffic. After correction, flooding attacks remain near-perfectly separable while six network-scan types are not, and a mutual-information analysis shows that this limit lies in the flow features rather than in the models. A per-attack test finds that no attack passes as normal traffic; the tree ensembles are statistically tied, and XGBoost is selected as the primary detector by its marginally lower false-alarm rate. The work is delivered as EVNet Sentinel, with a prediction service, role-based response guidance and an interactive web front end.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -162,7 +162,7 @@ Fig.~\ref{fig:pipeline} summarises the method and the delivered system, from cap
 
 \subsection{Research Design}
 
-The study is \emph{quantitative and computational}, in two parts. The first is a \emph{reproduction audit}: the published pipeline is replayed exactly and each suspected artefact is isolated with a controlled experiment that changes one factor at a time (a feature, the stream order, or the split). The second is a \emph{comparative experiment}: four static classifiers and the online model are trained on corrected data under one protocol. This design suits the objectives because each finding becomes a measurable, repeatable test rather than an opinion, and every number can be regenerated from the public code.
+The study is \emph{quantitative and computational}, in two parts. The first is a \emph{reproduction audit}: the published pipeline is replayed exactly and each suspected artefact is isolated with a controlled experiment that changes one factor at a time (a feature, the stream order, or the split). The second is a \emph{comparative experiment}: six static classifiers and the online model are trained on corrected data under one protocol. This design suits the objectives because each finding becomes a measurable, repeatable test rather than an opinion, and every number can be regenerated from the public code.
 
 The detector is \emph{passive}. It reads a mirrored copy of the switch traffic, classifies each completed network flow and raises an alert, but never blocks traffic. This matches how CICEVSE2024 itself was recorded.
 
@@ -220,9 +220,11 @@ The dataset, code and exported results are public (Section~\ref{sec:conclusion})
 \begin{itemize}
     \item Random Forest \cite{b16}: 100 trees, depth 15;
     \item Decision Tree: depth 20;
+    \item XGBoost: up to 400 rounds, depth 8, learning rate 0.1;
+    \item LightGBM: up to 600 rounds, 63 leaves, learning rate 0.05;
     \item Logistic Regression and a linear SVM, both trained by stochastic gradient descent.
 \end{itemize}
-All four use balanced class weights $w_k = N/(K n_k)$, so that rare classes count as much as common ones. ARF uses the published configuration: 20 trees, half the features per split, a grace period of 30, and ADWIN with $\delta = 0.002$. It is run prequentially, predicting each flow before learning from it, in both capture order and shuffled order.
+All six use balanced class weights $w_k = N/(K n_k)$ (as sample weights for the boosted models), so that rare classes count as much as common ones. The boosted models stop early on the validation split, after 110--125 rounds; their settings were fixed in advance, not tuned on the test set. ARF uses the published configuration: 20 trees, half the features per split, a grace period of 30, and ADWIN with $\delta = 0.002$. It is run prequentially, predicting each flow before learning from it, in both capture order and shuffled order.
 
 \textbf{Step 5, per-attack testing.} For each attack, model and seed, 30 batches of 50 unseen flows are scored. Mixed campaigns of four simultaneous attacks are also run. Regression gates fail the run if detection of any attack falls below 0.95.
 
@@ -352,7 +354,7 @@ Of the 43 drift alarms in capture order, 42 lie within 100 flows of a file bound
 
 \subsection{Corrected benchmarks}
 
-Table~\ref{tab:results} gives the corrected results. Random Forest and Decision Tree are within one standard deviation of each other, the linear models trail by more than 0.1 macro-$F_1$, and all four reach about 0.86 accuracy. On a like-for-like split, removing the timestamps lowers Random Forest's macro-$F_1$ from 0.9547 to 0.5894, while the SVM changes by only $+0.03$. Removing \col{src\_port}, with the rows and the split held fixed, costs the deeper Decision Tree twice as much as Random Forest (Table~\ref{tab:srcport}). Extra depth was buying finer bands of port numbers, so the tree's earlier advantage was memorisation.
+Table~\ref{tab:results} gives the corrected results. The four tree-based models, Random Forest, Decision Tree, XGBoost and LightGBM, are within one standard deviation of each other: gradient boosting does not break the ceiling. The linear models trail by more than 0.1 macro-$F_1$, and all six reach about 0.86 accuracy. On a like-for-like split, removing the timestamps lowers Random Forest's macro-$F_1$ from 0.9547 to 0.5894, while the SVM changes by only $+0.03$. Removing \col{src\_port}, with the rows and the split held fixed, costs the deeper Decision Tree twice as much as Random Forest (Table~\ref{tab:srcport}). Extra depth was buying finer bands of port numbers, so the tree's earlier advantage was memorisation.
 
 \begin{table}[!t]
 \caption{Effect of removing \col{src\_port} (macro-$F_1$, single seed)}
@@ -380,6 +382,8 @@ Decision Tree & 0.6834 & 0.5135 & $\mathbf{-0.170}$ \\
 \midrule
 Random Forest & \textbf{0.558$\pm$0.008} & 0.868 & 8.5 \\
 Decision Tree & 0.557$\pm$0.010 & 0.868 & 3.4 \\
+XGBoost & 0.551$\pm$0.011 & 0.869 & 33.0 \\
+LightGBM & 0.550$\pm$0.004 & 0.868 & 42.4 \\
 Logistic Regression & 0.436$\pm$0.017 & 0.863 & 78.9 \\
 Linear SVM & 0.411$\pm$0.017 & 0.862 & 34.9 \\
 \bottomrule
@@ -434,7 +438,7 @@ Slowloris & 2,721 & 0.191 \\
 
 \subsection{Per-attack detection and confidence}
 
-Table~\ref{tab:perattack} lists the exact-naming rate per attack. Across 90 mixed campaigns, every model flags at least 99.9\% of attack flows as malicious. Every model names the floods exactly ($\ge 0.98$). The scans are placed in the right category 96\% of the time by the best model for each, but named exactly only 34\% of the time. Table~\ref{tab:fa} gives the false-alarm rates on benign traffic. By the selection rule of Section~\ref{sec:method}, Random Forest is the primary detector. Applying the confidence gate \eqref{eq:gate} at $t = 0.5$ cuts Random Forest's wrong scan names from 81\% to 3\% and reports 94\% of scans by category, while 93\% of DoS flows are still named exactly (Table~\ref{tab:gate}).
+Table~\ref{tab:perattack} lists the exact-naming rate per attack. Across 90 mixed campaigns, every model flags at least 99.9\% of attack flows as malicious. Every model names the floods exactly ($\ge 0.98$). The scans are placed in the right category 96\% of the time by the best model for each, but named exactly only 35\% of the time. Table~\ref{tab:fa} gives the false-alarm rates on benign traffic. By the selection rule of Section~\ref{sec:method}, XGBoost is the primary detector; its lead over Random Forest (0.02 against 0.03) is within the 95\% intervals of the 12 benign test flows, so the two are interchangeable in practice. Applying the confidence gate \eqref{eq:gate} at $t = 0.5$ cuts Random Forest's wrong scan names from 81\% to 3\% and reports 94\% of scans by category, while 93\% of DoS flows are still named exactly (Table~\ref{tab:gate}).
 
 \begin{table}[!t]
 \caption{Exact-naming rate $E$ per attack for Random Forest, the best model at naming, and the best category rate $C$}
@@ -446,13 +450,13 @@ Table~\ref{tab:perattack} lists the exact-naming rate per attack. Across 90 mixe
 \textbf{Attack} & \textbf{RF $E$} & \textbf{Best $E$} & \textbf{Best $C$} \\
 \midrule
 Five volumetric floods & 1.00 & all ($\ge 0.98$) & 1.00 \\
-Slowloris & 0.82 & RF & 0.82 \\
-TCP port scan & 0.32 & LR 0.65 & 0.97 \\
-OS fingerprinting & 0.41 & RF/DT 0.41 & 0.95 \\
-SYN stealth scan & 0.06 & SVM 0.43 & 0.97 \\
-Vulnerability scan & 0.13 & SVM 0.26 & 0.97 \\
-Aggressive scan & 0.12 & DT 0.15 & 0.94 \\
-Service-version det. & 0.10 & DT 0.13 & 0.96 \\
+Slowloris & 0.82 & XGB 0.83 & 0.83 \\
+TCP port scan & 0.33 & LR 0.66 & 0.97 \\
+OS fingerprinting & 0.42 & XGB 0.43 & 0.95 \\
+SYN stealth scan & 0.08 & SVM 0.43 & 0.97 \\
+Vulnerability scan & 0.14 & SVM 0.26 & 0.97 \\
+Aggressive scan & 0.12 & LGBM 0.17 & 0.94 \\
+Service-version det. & 0.10 & DT 0.13 & 0.97 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -480,11 +484,11 @@ $t$ & $R$ & $W$ & $H$ & $R$ & $W$ & $H$ \\
 \label{tab:fa}
 \centering
 \footnotesize
-\begin{tabular}{@{}lrrrr@{}}
+\begin{tabular}{@{}lrrrrrr@{}}
 \toprule
- & \textbf{RF} & \textbf{DT} & \textbf{LR} & \textbf{SVM} \\
+ & \textbf{RF} & \textbf{DT} & \textbf{XGB} & \textbf{LGBM} & \textbf{LR} & \textbf{SVM} \\
 \midrule
-False-alarm rate & \textbf{0.02} & 0.12 & 0.46 & 0.59 \\
+False alarms & 0.03 & 0.11 & \textbf{0.02} & 0.03 & 0.44 & 0.58 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -499,7 +503,7 @@ False-alarm rate & \textbf{0.02} & 0.12 & 0.46 & 0.59 \\
 
 \textbf{Floods and scans.} The near-perfect flood scores are plausible rather than leaked. The fingerprint columns are removed; a flood has a strong physical signature that a single timing feature captures; and the linear models also name the floods. We nevertheless claim this only for this testbed: the random split can place near-identical flows from one capture on both sides of the split, and floods sent at a lower rate would look different. The scans are a different matter. All six are modes of one tool, the aggressive mode includes two of the others, and Fig.~\ref{fig:separability} shows that no single flow statistic separates them. More model capacity cannot recover information the features do not contain.
 
-\textbf{Operational meaning.} No attack passes as normal traffic. The weakness is \emph{naming}, not \emph{noticing}. Random Forest names attacks as well as any model and raises the fewest false alarms, so it is the primary detector. For scans, a confidence gate turns confidently wrong names into correct category alerts, which is the information an operator can act on.
+\textbf{Operational meaning.} No attack passes as normal traffic. The weakness is \emph{naming}, not \emph{noticing}. Random Forest, XGBoost and LightGBM name attacks equally well and raise few false alarms; XGBoost is selected by the pre-stated rule, but Random Forest trains four times faster and is an equally sound choice. For scans, a confidence gate turns confidently wrong names into correct category alerts, which is the information an operator can act on.
 
 \textbf{Limitations.} Labels come from file names, so background traffic recorded during an attack carries the attack's label. Only 81 benign flows exist, so false-alarm rates are indicative. The headline results use a random rather than a grouped split. The study covers a single testbed with tools at default settings, and the host and power data in CICEVSE2024 are not used.
 
@@ -513,7 +517,7 @@ This study set out to test whether the high accuracies reported on CICEVSE2024 m
     \item streaming accuracy in capture order is matched by repeating the previous label;
     \item the drift detector responds to file boundaries.
 \end{itemize}
-With these effects removed, the corrected benchmark is 0.558 macro-$F_1$ for Random Forest over three seeds. Volumetric floods remain near-perfectly separable on this testbed, while the six nmap scan modes are not, and a model-independent analysis places that limit in the flow features. Operationally, every attack is detected, Random Forest is the recommended detector, and requiring confidence before naming an attack replaces most wrong scan names with correct category alerts. The system, code and results are public at \url{https://github.com/Mukta01/EVNet_Sentinel}.
+With these effects removed, the corrected benchmark is 0.558 macro-$F_1$ for Random Forest over three seeds. Volumetric floods remain near-perfectly separable on this testbed, while the six nmap scan modes are not, and a model-independent analysis places that limit in the flow features. Gradient-boosted trees (XGBoost, LightGBM) tie with Random Forest rather than surpass it. Operationally, every attack is detected, XGBoost is the recommended detector (statistically tied with Random Forest), and requiring confidence before naming an attack replaces most wrong scan names with correct category alerts. The system, code and results are public at \url{https://github.com/Mukta01/EVNet_Sentinel}.
 
 % ============================================================================
 \section{Future Work and Recommendations}

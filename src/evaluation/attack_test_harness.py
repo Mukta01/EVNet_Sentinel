@@ -40,13 +40,8 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from src.evaluation.model_registry import MODEL_FILES  # noqa: E402
 
-MODEL_FILES = {
-    "RandomForest": "rf_model_multiclass.pkl",
-    "DecisionTree": "dt_model_multiclass.pkl",
-    "LogisticRegression": "logreg_model_multiclass.pkl",
-    "SVM": "svm_model_multiclass.pkl",
-}
 
 # Response category: what an operator acts on. Every flood, including the
 # low-volume ICMP variants and Slowloris, is a denial-of-service attack whatever
