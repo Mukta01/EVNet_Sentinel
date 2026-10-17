@@ -42,6 +42,16 @@ export const FAMILY = {
 
 export type Family = keyof typeof FAMILY;
 
+/**
+ * Never let rounding turn a near-perfect score into a perfect one: 0.99993
+ * would print as "1.000", which reads as a claim the data does not support.
+ * Values in [0.995, 1) are floored at one more digit of precision instead.
+ */
+export const fmtScore = (v: number) =>
+  v >= 0.995 && v < 1 ? (Math.floor(v * 1e4) / 1e4).toFixed(4) : v.toFixed(3);
+export const fmtPct = (v: number) =>
+  v >= 0.995 && v < 1 ? `${(Math.floor(v * 1000) / 10).toFixed(1)}%` : `${Math.round(v * 100)}%`;
+
 export const MODEL_COLOR: Record<string, string> = {
   RandomForest: "#22C55E",
   DecisionTree: "#38BDF8",

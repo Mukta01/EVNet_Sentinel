@@ -133,8 +133,20 @@ export default function DashboardShell({
             control={findings.supportControl}
           />
           <ConfusionExplorer confusion={paper.confusion} seeds={paper.seeds} />
-          <FeatureSeparability importance={paper.importance} />
           <ModelTable models={findings.models} seeds={findings.seeds} />
+          <FeatureSeparability importance={paper.importance} />
+          <details className="group rounded-lg border border-white/8 bg-white/[0.02] open:bg-transparent open:border-transparent">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-lg px-5 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 [&::-webkit-details-marker]:hidden">
+              <span>
+                <span className="block text-base font-semibold text-white">The audit evidence</span>
+                <span className="mt-0.5 block text-sm text-slate-400">
+                  Which columns leaked, what dropping them changes, and why the drift alarms land on file seams.
+                </span>
+              </span>
+              <span className="shrink-0 rounded-md border border-white/10 px-3 py-1.5 text-xs text-slate-300 group-open:hidden">Show</span>
+              <span className="hidden shrink-0 rounded-md border border-white/10 px-3 py-1.5 text-xs text-slate-300 group-open:inline">Hide</span>
+            </summary>
+            <div className="space-y-20 pt-10">
           <LeakEvidence
             probes={findings.singleColumnProbe}
             effects={findings.leakEffect}
@@ -154,6 +166,8 @@ export default function DashboardShell({
             paperEvents={findings.paperReported.driftEvents}
           />
           <Environment environment={environment} generated={findings.generated} />
+            </div>
+          </details>
         </div>
       ) : (
         <div className="pt-12">

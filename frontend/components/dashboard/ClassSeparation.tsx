@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { FAMILY, MODEL_COLOR, MODEL_LABEL, prettyClass, type Family } from "./theme";
+import { FAMILY, MODEL_COLOR, MODEL_LABEL, prettyClass, type Family, fmtScore } from "./theme";
 
 type ClassRow = {
   class: string;
@@ -65,13 +65,13 @@ export default function ClassSeparation({
             id="separation-heading"
             className="text-2xl font-semibold tracking-tight text-white text-balance"
           >
-            Floods are solved. Reconnaissance is not.
+            Floods are near-perfect. Reconnaissance is not.
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-400">
-            Per-class F1 with leakage removed, averaged over three seeds. Whiskers
-            are one standard deviation. The gap holds for every model, linear and
-            non-linear alike, which makes it a property of the data rather than of
-            model capacity.
+            Per-class F1 with leakage removed, averaged over three seeds. The thin
+            line on each bar is &plusmn; one standard deviation across the seeds: wide
+            lines mean the class has few flows, so its score moves with the split.
+            The gap holds for every model, so it is a property of the data.
           </p>
         </div>
 
@@ -120,13 +120,23 @@ export default function ClassSeparation({
         {ordered.map((row, index) => {
           const { f1, std } = row.models[active];
           const family = FAMILY[row.group];
-          const isCliff = index === cliffIndex || index === tailIndex;
+          
+          const heading =
+            index === 0 ? "Volumetric floods"
+            : index === cliffIndex ? "Reconnaissance scans"
+            : index === tailIndex ? "Low-rate attacks and normal traffic \u00b7 few flows, left out of the averages"
+            : null;
 
           return (
             <div key={row.class} className="contents">
+              {heading && (
+                <p className={`text-[10px] uppercase tracking-[0.14em] text-slate-500 sm:col-span-2 ${index ? "mt-6" : ""}`}>
+                  {heading}
+                </p>
+              )}
               <div
                 className={`flex items-center justify-end gap-2 py-1.5 text-right ${
-                  isCliff ? "mt-4 sm:mt-6" : ""
+                  ""
                 }`}
               >
                 <span className="truncate text-[13px] text-slate-300">
@@ -140,7 +150,7 @@ export default function ClassSeparation({
               </div>
 
               <div
-                className={`flex items-center gap-3 py-1.5 ${isCliff ? "mt-4 sm:mt-6" : ""}`}
+                className={`flex items-center gap-3 py-1.5 ${""}`}
               >
                 <div className="relative h-5 flex-1 overflow-hidden rounded-[3px] bg-white/[0.03]">
                   <motion.div
@@ -168,7 +178,7 @@ export default function ClassSeparation({
                   )}
                 </div>
                 <span className="w-14 shrink-0 font-mono text-xs tabular-nums text-slate-300">
-                  {f1.toFixed(3)}
+                  {fmtScore(f1)}
                 </span>
                 <span
                   className="hidden w-20 shrink-0 text-right font-mono text-[11px] tabular-nums text-slate-600 sm:block"
