@@ -189,7 +189,7 @@ The four tree models are statistically tied: gradient boosting does not break th
 | `docs/` | Papers, figures, diagrams, guides |
 | `data/` · `saved_models/` · `datasets/` | Local only, never committed |
 
-Notebooks (single-seed exploration): [Random Forest](./src/models/random_forest/Random_Forest_Training.ipynb) · [Decision Tree](./src/models/decision_tree/Decision_Tree_Training.ipynb) · [Logistic Regression](./src/models/log_reg/Logistic_Regression_Training.ipynb) · [SVM](./src/models/svm/svm_training.ipynb) · [ARF + ADWIN](./src/models/arfadwin/ARF_ADWIN_Training.ipynb)
+Notebooks (single seed, saved with outputs): [Random Forest](./src/models/random_forest/Random_Forest_Training.ipynb) · [Decision Tree](./src/models/decision_tree/Decision_Tree_Training.ipynb) · [Logistic Regression](./src/models/log_reg/Logistic_Regression_Training.ipynb) · [SVM](./src/models/svm/svm_training.ipynb) · [XGBoost](./src/models/xgboost/XGBoost_Training.ipynb) · [LightGBM](./src/models/lightgbm/LightGBM_Training.ipynb) · [ARF + ADWIN](./src/models/arfadwin/ARF_ADWIN_Training.ipynb)
 
 </details>
 
