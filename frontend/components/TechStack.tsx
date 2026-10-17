@@ -11,17 +11,17 @@ export default function TechStack() {
         </h3>
         <div className="flex flex-wrap justify-center gap-3">
           {[
-            { name: "Next.js 14", category: "Frontend", color: "border-white/20 text-white" },
-            { name: "React 18", category: "UI", color: "border-cyan-500/30 text-cyan-400" },
+            { name: "Next.js 16", category: "Frontend", color: "border-white/20 text-white" },
+            { name: "React 19", category: "UI", color: "border-cyan-500/30 text-cyan-400" },
             { name: "TypeScript", category: "Language", color: "border-blue-500/30 text-blue-400" },
-            { name: "Tailwind CSS", category: "Styling", color: "border-teal-500/30 text-teal-400" },
+            { name: "Tailwind CSS 4", category: "Styling", color: "border-teal-500/30 text-teal-400" },
             { name: "Framer Motion", category: "Animation", color: "border-violet-500/30 text-violet-400" },
             { name: "GSAP", category: "Scroll FX", color: "border-green-500/30 text-green-400" },
             { name: "FastAPI", category: "Backend", color: "border-emerald-500/30 text-emerald-400" },
-            { name: "Python 3.10+", category: "Runtime", color: "border-yellow-500/30 text-yellow-400" },
+            { name: "Python 3.13", category: "Runtime", color: "border-yellow-500/30 text-yellow-400" },
             { name: "scikit-learn", category: "Static ML", color: "border-orange-500/30 text-orange-400" },
             { name: "River", category: "Online ML", color: "border-cyan-500/30 text-cyan-400" },
-            { name: "WebSocket", category: "Real-time", color: "border-pink-500/30 text-pink-400" },
+            { name: "pytest", category: "Testing", color: "border-pink-500/30 text-pink-400" },
             { name: "Recharts", category: "Data Viz", color: "border-indigo-500/30 text-indigo-400" },
           ].map((tech, i) => (
             <motion.div
