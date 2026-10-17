@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-29T05:56:06+00:00",
+  "generated": "2026-10-17T09:15:49+00:00",
   "config": {
     "trials": 30,
     "batch": 50,
@@ -19,6 +19,8 @@
   "models": [
     "RandomForest",
     "DecisionTree",
+    "XGBoost",
+    "LightGBM",
     "LogisticRegression",
     "SVM"
   ],
@@ -83,13 +85,65 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.8876,
+          "categoryCI": 0.0089,
+          "exact": 0.1558,
+          "exactCI": 0.0104,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.4502
+            },
+            {
+              "label": "Slowloris_Scan",
+              "category": "dos",
+              "share": 0.1139
+            },
+            {
+              "label": "TCP_Port_Scan",
+              "category": "recon",
+              "share": 0.1103
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.888,
+          "categoryCI": 0.0093,
+          "exact": 0.1713,
+          "exactCI": 0.0126,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.4315
+            },
+            {
+              "label": "Slowloris_Scan",
+              "category": "dos",
+              "share": 0.1151
+            },
+            {
+              "label": "TCP_Port_Scan",
+              "category": "recon",
+              "share": 0.1099
+            }
+          ]
+        },
         "LogisticRegression": {
-          "detected": 0.9929,
-          "detectedCI": 0.0026,
-          "category": 0.9396,
-          "categoryCI": 0.0077,
-          "exact": 0.0933,
-          "exactCI": 0.0243,
+          "detected": 0.9936,
+          "detectedCI": 0.0025,
+          "category": 0.9378,
+          "categoryCI": 0.0088,
+          "exact": 0.1002,
+          "exactCI": 0.0244,
           "verdict": "category",
           "confusedWith": [
             {
@@ -112,10 +166,10 @@
         "SVM": {
           "detected": 0.9929,
           "detectedCI": 0.0027,
-          "category": 0.8453,
-          "categoryCI": 0.0123,
-          "exact": 0.0222,
-          "exactCI": 0.0051,
+          "category": 0.8429,
+          "categoryCI": 0.0121,
+          "exact": 0.0242,
+          "exactCI": 0.0056,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -137,9 +191,9 @@
         }
       },
       "bestTied": [
-        "DecisionTree"
+        "LightGBM"
       ],
-      "bestModel": "DecisionTree",
+      "bestModel": "LightGBM",
       "bestVerdict": "detected",
       "bestCategoryModel": "LogisticRegression"
     },
@@ -152,12 +206,12 @@
       "trials": 90,
       "models": {
         "RandomForest": {
-          "detected": 0.9769,
-          "detectedCI": 0.011,
-          "category": 0.9769,
-          "categoryCI": 0.011,
-          "exact": 0.9769,
-          "exactCI": 0.011,
+          "detected": 0.9741,
+          "detectedCI": 0.0102,
+          "category": 0.9741,
+          "categoryCI": 0.0102,
+          "exact": 0.9741,
+          "exactCI": 0.0102,
           "verdict": "clean",
           "confusedWith": [
             {
@@ -168,12 +222,12 @@
           ]
         },
         "DecisionTree": {
-          "detected": 0.8843,
-          "detectedCI": 0.0211,
-          "category": 0.8843,
-          "categoryCI": 0.0211,
-          "exact": 0.8843,
-          "exactCI": 0.0211,
+          "detected": 0.888,
+          "detectedCI": 0.0185,
+          "category": 0.888,
+          "categoryCI": 0.0185,
+          "exact": 0.888,
+          "exactCI": 0.0185,
           "verdict": "false-alarm",
           "confusedWith": [
             {
@@ -193,13 +247,45 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 0.9815,
+          "detectedCI": 0.0081,
+          "category": 0.9815,
+          "categoryCI": 0.0081,
+          "exact": 0.9815,
+          "exactCI": 0.0081,
+          "verdict": "clean",
+          "confusedWith": [
+            {
+              "label": "PSHACK_Flood",
+              "category": "dos",
+              "share": 0.0278
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 0.9722,
+          "detectedCI": 0.0109,
+          "category": 0.9722,
+          "categoryCI": 0.0109,
+          "exact": 0.9722,
+          "exactCI": 0.0109,
+          "verdict": "clean",
+          "confusedWith": [
+            {
+              "label": "Slowloris_Scan",
+              "category": "dos",
+              "share": 0.0278
+            }
+          ]
+        },
         "LogisticRegression": {
-          "detected": 0.5417,
-          "detectedCI": 0.0834,
-          "category": 0.5417,
-          "categoryCI": 0.0834,
-          "exact": 0.5417,
-          "exactCI": 0.0834,
+          "detected": 0.562,
+          "detectedCI": 0.0853,
+          "category": 0.562,
+          "categoryCI": 0.0853,
+          "exact": 0.562,
+          "exactCI": 0.0853,
           "verdict": "false-alarm",
           "confusedWith": [
             {
@@ -220,12 +306,12 @@
           ]
         },
         "SVM": {
-          "detected": 0.413,
-          "detectedCI": 0.0611,
-          "category": 0.413,
-          "categoryCI": 0.0611,
-          "exact": 0.413,
-          "exactCI": 0.0611,
+          "detected": 0.4241,
+          "detectedCI": 0.0634,
+          "category": 0.4241,
+          "categoryCI": 0.0634,
+          "exact": 0.4241,
+          "exactCI": 0.0634,
           "verdict": "false-alarm",
           "confusedWith": [
             {
@@ -247,11 +333,13 @@
         }
       },
       "bestTied": [
-        "RandomForest"
+        "RandomForest",
+        "XGBoost",
+        "LightGBM"
       ],
       "bestModel": "RandomForest",
       "bestVerdict": "clean",
-      "bestCategoryModel": "RandomForest"
+      "bestCategoryModel": "XGBoost"
     },
     {
       "class": "ICMP_Flood",
@@ -264,10 +352,10 @@
         "RandomForest": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.7422,
-          "categoryCI": 0.0512,
-          "exact": 0.7422,
-          "exactCI": 0.0512,
+          "category": 0.7489,
+          "categoryCI": 0.0553,
+          "exact": 0.7489,
+          "exactCI": 0.0553,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -285,10 +373,10 @@
         "DecisionTree": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.7267,
-          "categoryCI": 0.0538,
-          "exact": 0.7267,
-          "exactCI": 0.0538,
+          "category": 0.7222,
+          "categoryCI": 0.059,
+          "exact": 0.7222,
+          "exactCI": 0.059,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -303,13 +391,60 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.7667,
+          "categoryCI": 0.0512,
+          "exact": 0.7667,
+          "exactCI": 0.0512,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.2
+            },
+            {
+              "label": "Vulnerability_Scan",
+              "category": "recon",
+              "share": 0.0667
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.7911,
+          "categoryCI": 0.0455,
+          "exact": 0.7467,
+          "exactCI": 0.0506,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.1333
+            },
+            {
+              "label": "UDP_Flood",
+              "category": "dos",
+              "share": 0.0667
+            },
+            {
+              "label": "Vulnerability_Scan",
+              "category": "recon",
+              "share": 0.0667
+            }
+          ]
+        },
         "LogisticRegression": {
-          "detected": 0.5556,
-          "detectedCI": 0.0675,
-          "category": 0.5556,
-          "categoryCI": 0.0675,
-          "exact": 0.4867,
-          "exactCI": 0.0591,
+          "detected": 0.5444,
+          "detectedCI": 0.0629,
+          "category": 0.5444,
+          "categoryCI": 0.0629,
+          "exact": 0.4733,
+          "exactCI": 0.0531,
           "verdict": "missed",
           "confusedWith": [
             {
@@ -325,12 +460,12 @@
           ]
         },
         "SVM": {
-          "detected": 0.5133,
-          "detectedCI": 0.065,
-          "category": 0.5133,
-          "categoryCI": 0.065,
-          "exact": 0.44,
-          "exactCI": 0.0582,
+          "detected": 0.5044,
+          "detectedCI": 0.0656,
+          "category": 0.5044,
+          "categoryCI": 0.0656,
+          "exact": 0.4267,
+          "exactCI": 0.0588,
           "verdict": "missed",
           "confusedWith": [
             {
@@ -347,11 +482,11 @@
         }
       },
       "bestTied": [
-        "RandomForest"
+        "XGBoost"
       ],
-      "bestModel": "RandomForest",
+      "bestModel": "XGBoost",
       "bestVerdict": "detected",
-      "bestCategoryModel": "RandomForest"
+      "bestCategoryModel": "LightGBM"
     },
     {
       "class": "ICMP_Fragmentation",
@@ -364,10 +499,10 @@
         "RandomForest": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.8056,
-          "categoryCI": 0.047,
-          "exact": 0.4861,
-          "exactCI": 0.0607,
+          "category": 0.8389,
+          "categoryCI": 0.046,
+          "exact": 0.5556,
+          "exactCI": 0.0661,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -390,10 +525,10 @@
         "DecisionTree": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.8083,
-          "categoryCI": 0.0502,
-          "exact": 0.4028,
-          "exactCI": 0.0674,
+          "category": 0.8528,
+          "categoryCI": 0.0386,
+          "exact": 0.4444,
+          "exactCI": 0.0692,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -413,13 +548,65 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.9111,
+          "categoryCI": 0.0397,
+          "exact": 0.5944,
+          "exactCI": 0.0517,
+          "verdict": "category",
+          "confusedWith": [
+            {
+              "label": "UDP_Flood",
+              "category": "dos",
+              "share": 0.1667
+            },
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.0833
+            },
+            {
+              "label": "SYN_Flood",
+              "category": "dos",
+              "share": 0.0833
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.8417,
+          "categoryCI": 0.0413,
+          "exact": 0.5583,
+          "exactCI": 0.06,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.1667
+            },
+            {
+              "label": "SYN_Flood",
+              "category": "dos",
+              "share": 0.0833
+            },
+            {
+              "label": "SynonymousIP_Flood",
+              "category": "dos",
+              "share": 0.0833
+            }
+          ]
+        },
         "LogisticRegression": {
-          "detected": 0.8111,
-          "detectedCI": 0.0492,
-          "category": 0.8111,
-          "categoryCI": 0.0492,
-          "exact": 0.5833,
-          "exactCI": 0.0747,
+          "detected": 0.8583,
+          "detectedCI": 0.038,
+          "category": 0.8583,
+          "categoryCI": 0.038,
+          "exact": 0.5667,
+          "exactCI": 0.0766,
           "verdict": "missed",
           "confusedWith": [
             {
@@ -440,12 +627,12 @@
           ]
         },
         "SVM": {
-          "detected": 0.8194,
-          "detectedCI": 0.0424,
-          "category": 0.8194,
-          "categoryCI": 0.0424,
-          "exact": 0.4639,
-          "exactCI": 0.0836,
+          "detected": 0.8056,
+          "detectedCI": 0.0482,
+          "category": 0.8056,
+          "categoryCI": 0.0482,
+          "exact": 0.4861,
+          "exactCI": 0.0828,
           "verdict": "missed",
           "confusedWith": [
             {
@@ -467,11 +654,11 @@
         }
       },
       "bestTied": [
-        "LogisticRegression"
+        "XGBoost"
       ],
-      "bestModel": "LogisticRegression",
-      "bestVerdict": "missed",
-      "bestCategoryModel": "SVM"
+      "bestModel": "XGBoost",
+      "bestVerdict": "category",
+      "bestCategoryModel": "XGBoost"
     },
     {
       "class": "OS_Fingerprinting",
@@ -484,10 +671,10 @@
         "RandomForest": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.8809,
-          "categoryCI": 0.0091,
-          "exact": 0.4062,
-          "exactCI": 0.0131,
+          "category": 0.8922,
+          "categoryCI": 0.0095,
+          "exact": 0.4164,
+          "exactCI": 0.0145,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -510,10 +697,10 @@
         "DecisionTree": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.8864,
-          "categoryCI": 0.0109,
-          "exact": 0.4102,
-          "exactCI": 0.012,
+          "category": 0.8927,
+          "categoryCI": 0.0088,
+          "exact": 0.4111,
+          "exactCI": 0.0139,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -533,13 +720,65 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.8778,
+          "categoryCI": 0.0088,
+          "exact": 0.4324,
+          "exactCI": 0.0147,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "Aggressive_Scan",
+              "category": "recon",
+              "share": 0.1384
+            },
+            {
+              "label": "TCP_Port_Scan",
+              "category": "recon",
+              "share": 0.1351
+            },
+            {
+              "label": "Slowloris_Scan",
+              "category": "dos",
+              "share": 0.1226
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 0.9998,
+          "detectedCI": 0.0004,
+          "category": 0.8829,
+          "categoryCI": 0.0088,
+          "exact": 0.4158,
+          "exactCI": 0.0142,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "Aggressive_Scan",
+              "category": "recon",
+              "share": 0.1553
+            },
+            {
+              "label": "TCP_Port_Scan",
+              "category": "recon",
+              "share": 0.1388
+            },
+            {
+              "label": "Slowloris_Scan",
+              "category": "dos",
+              "share": 0.1222
+            }
+          ]
+        },
         "LogisticRegression": {
-          "detected": 0.9996,
-          "detectedCI": 0.0006,
-          "category": 0.9529,
-          "categoryCI": 0.0055,
-          "exact": 0.022,
-          "exactCI": 0.0061,
+          "detected": 0.9998,
+          "detectedCI": 0.0004,
+          "category": 0.9487,
+          "categoryCI": 0.0074,
+          "exact": 0.0271,
+          "exactCI": 0.0078,
           "verdict": "category",
           "confusedWith": [
             {
@@ -560,12 +799,12 @@
           ]
         },
         "SVM": {
-          "detected": 0.9998,
-          "detectedCI": 0.0004,
-          "category": 0.8636,
-          "categoryCI": 0.0104,
-          "exact": 0.0144,
-          "exactCI": 0.0035,
+          "detected": 0.9996,
+          "detectedCI": 0.0006,
+          "category": 0.8513,
+          "categoryCI": 0.0112,
+          "exact": 0.0096,
+          "exactCI": 0.0029,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -587,10 +826,9 @@
         }
       },
       "bestTied": [
-        "RandomForest",
-        "DecisionTree"
+        "XGBoost"
       ],
-      "bestModel": "RandomForest",
+      "bestModel": "XGBoost",
       "bestVerdict": "detected",
       "bestCategoryModel": "LogisticRegression"
     },
@@ -607,8 +845,8 @@
           "detectedCI": 0.0,
           "category": 1.0,
           "categoryCI": 0.0,
-          "exact": 0.9998,
-          "exactCI": 0.0004,
+          "exact": 1.0,
+          "exactCI": 0.0,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -654,13 +892,65 @@
             }
           ]
         },
-        "LogisticRegression": {
+        "XGBoost": {
           "detected": 1.0,
           "detectedCI": 0.0,
           "category": 1.0,
           "categoryCI": 0.0,
           "exact": 1.0,
           "exactCI": 0.0,
+          "verdict": "identified",
+          "confusedWith": [
+            {
+              "label": "SYN_Stealth_Scan",
+              "category": "recon",
+              "share": 0.0
+            },
+            {
+              "label": "UDP_Flood",
+              "category": "dos",
+              "share": 0.0
+            },
+            {
+              "label": "ICMP_Flood",
+              "category": "dos",
+              "share": 0.0
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 1.0,
+          "exactCI": 0.0,
+          "verdict": "identified",
+          "confusedWith": [
+            {
+              "label": "UDP_Flood",
+              "category": "dos",
+              "share": 0.0
+            },
+            {
+              "label": "SYN_Stealth_Scan",
+              "category": "recon",
+              "share": 0.0
+            },
+            {
+              "label": "SYN_Flood",
+              "category": "dos",
+              "share": 0.0
+            }
+          ]
+        },
+        "LogisticRegression": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 0.9998,
+          "exactCI": 0.0004,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -710,12 +1000,14 @@
       "bestTied": [
         "RandomForest",
         "DecisionTree",
+        "XGBoost",
+        "LightGBM",
         "LogisticRegression",
         "SVM"
       ],
       "bestModel": "RandomForest",
       "bestVerdict": "identified",
-      "bestCategoryModel": "DecisionTree"
+      "bestCategoryModel": "RandomForest"
     },
     {
       "class": "SYN_Flood",
@@ -728,10 +1020,10 @@
         "RandomForest": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.9998,
-          "categoryCI": 0.0004,
-          "exact": 0.9996,
-          "exactCI": 0.0006,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 1.0,
+          "exactCI": 0.0,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -777,13 +1069,65 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.9998,
+          "categoryCI": 0.0004,
+          "exact": 0.9996,
+          "exactCI": 0.0006,
+          "verdict": "identified",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.0001
+            },
+            {
+              "label": "Aggressive_Scan",
+              "category": "recon",
+              "share": 0.0
+            },
+            {
+              "label": "ICMP_Flood",
+              "category": "dos",
+              "share": 0.0
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 0.9996,
+          "exactCI": 0.0006,
+          "verdict": "identified",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.0001
+            },
+            {
+              "label": "Aggressive_Scan",
+              "category": "recon",
+              "share": 0.0
+            },
+            {
+              "label": "ICMP_Flood",
+              "category": "dos",
+              "share": 0.0
+            }
+          ]
+        },
         "LogisticRegression": {
           "detected": 1.0,
           "detectedCI": 0.0,
           "category": 1.0,
           "categoryCI": 0.0,
-          "exact": 0.9818,
-          "exactCI": 0.0035,
+          "exact": 0.9816,
+          "exactCI": 0.0038,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -806,10 +1150,10 @@
         "SVM": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.9998,
-          "categoryCI": 0.0004,
-          "exact": 0.9864,
-          "exactCI": 0.0031,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 0.9869,
+          "exactCI": 0.0035,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -832,11 +1176,13 @@
       },
       "bestTied": [
         "RandomForest",
-        "DecisionTree"
+        "DecisionTree",
+        "XGBoost",
+        "LightGBM"
       ],
       "bestModel": "RandomForest",
       "bestVerdict": "identified",
-      "bestCategoryModel": "DecisionTree"
+      "bestCategoryModel": "RandomForest"
     },
     {
       "class": "SYN_Stealth_Scan",
@@ -849,10 +1195,10 @@
         "RandomForest": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.9136,
-          "categoryCI": 0.0084,
-          "exact": 0.0649,
-          "exactCI": 0.0075,
+          "category": 0.9113,
+          "categoryCI": 0.0075,
+          "exact": 0.076,
+          "exactCI": 0.0072,
           "verdict": "category",
           "confusedWith": [
             {
@@ -875,10 +1221,10 @@
         "DecisionTree": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.9071,
-          "categoryCI": 0.0085,
-          "exact": 0.1431,
-          "exactCI": 0.0108,
+          "category": 0.916,
+          "categoryCI": 0.0089,
+          "exact": 0.1351,
+          "exactCI": 0.0111,
           "verdict": "category",
           "confusedWith": [
             {
@@ -898,13 +1244,65 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.9067,
+          "categoryCI": 0.0092,
+          "exact": 0.1589,
+          "exactCI": 0.0103,
+          "verdict": "category",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.3587
+            },
+            {
+              "label": "TCP_Port_Scan",
+              "category": "recon",
+              "share": 0.1917
+            },
+            {
+              "label": "Slowloris_Scan",
+              "category": "dos",
+              "share": 0.0956
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.9116,
+          "categoryCI": 0.0079,
+          "exact": 0.14,
+          "exactCI": 0.0106,
+          "verdict": "category",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.3418
+            },
+            {
+              "label": "TCP_Port_Scan",
+              "category": "recon",
+              "share": 0.1946
+            },
+            {
+              "label": "Aggressive_Scan",
+              "category": "recon",
+              "share": 0.1027
+            }
+          ]
+        },
         "LogisticRegression": {
-          "detected": 0.9998,
-          "detectedCI": 0.0004,
-          "category": 0.9696,
-          "categoryCI": 0.0046,
-          "exact": 0.0342,
-          "exactCI": 0.0121,
+          "detected": 0.9996,
+          "detectedCI": 0.0006,
+          "category": 0.9733,
+          "categoryCI": 0.0047,
+          "exact": 0.0293,
+          "exactCI": 0.0101,
           "verdict": "category",
           "confusedWith": [
             {
@@ -925,12 +1323,12 @@
           ]
         },
         "SVM": {
-          "detected": 1.0,
-          "detectedCI": 0.0,
-          "category": 0.8998,
-          "categoryCI": 0.0093,
-          "exact": 0.428,
-          "exactCI": 0.0767,
+          "detected": 0.9998,
+          "detectedCI": 0.0004,
+          "category": 0.8947,
+          "categoryCI": 0.0098,
+          "exact": 0.4324,
+          "exactCI": 0.0758,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -969,10 +1367,10 @@
         "RandomForest": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.8944,
-          "categoryCI": 0.0098,
-          "exact": 0.0984,
-          "exactCI": 0.009,
+          "category": 0.8902,
+          "categoryCI": 0.0095,
+          "exact": 0.0987,
+          "exactCI": 0.0093,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -995,10 +1393,10 @@
         "DecisionTree": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.8958,
-          "categoryCI": 0.01,
-          "exact": 0.132,
-          "exactCI": 0.0099,
+          "category": 0.8947,
+          "categoryCI": 0.0089,
+          "exact": 0.1336,
+          "exactCI": 0.0101,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -1018,13 +1416,65 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.8922,
+          "categoryCI": 0.0087,
+          "exact": 0.1036,
+          "exactCI": 0.0094,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.3957
+            },
+            {
+              "label": "TCP_Port_Scan",
+              "category": "recon",
+              "share": 0.1329
+            },
+            {
+              "label": "SYN_Stealth_Scan",
+              "category": "recon",
+              "share": 0.1195
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.884,
+          "categoryCI": 0.0099,
+          "exact": 0.1198,
+          "exactCI": 0.0088,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.3773
+            },
+            {
+              "label": "TCP_Port_Scan",
+              "category": "recon",
+              "share": 0.1398
+            },
+            {
+              "label": "Slowloris_Scan",
+              "category": "dos",
+              "share": 0.1156
+            }
+          ]
+        },
         "LogisticRegression": {
-          "detected": 0.9993,
-          "detectedCI": 0.0007,
-          "category": 0.964,
-          "categoryCI": 0.0058,
-          "exact": 0.038,
-          "exactCI": 0.0053,
+          "detected": 0.9998,
+          "detectedCI": 0.0004,
+          "category": 0.966,
+          "categoryCI": 0.0049,
+          "exact": 0.0398,
+          "exactCI": 0.006,
           "verdict": "category",
           "confusedWith": [
             {
@@ -1045,12 +1495,12 @@
           ]
         },
         "SVM": {
-          "detected": 0.9998,
-          "detectedCI": 0.0004,
-          "category": 0.8678,
-          "categoryCI": 0.012,
-          "exact": 0.0102,
-          "exactCI": 0.0032,
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.8669,
+          "categoryCI": 0.0094,
+          "exact": 0.0124,
+          "exactCI": 0.0036,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -1089,10 +1539,10 @@
         "RandomForest": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.8193,
-          "categoryCI": 0.012,
-          "exact": 0.8193,
-          "exactCI": 0.012,
+          "category": 0.8229,
+          "categoryCI": 0.0109,
+          "exact": 0.8229,
+          "exactCI": 0.0109,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -1115,10 +1565,10 @@
         "DecisionTree": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.7049,
-          "categoryCI": 0.0125,
-          "exact": 0.7038,
-          "exactCI": 0.0125,
+          "category": 0.7096,
+          "categoryCI": 0.0119,
+          "exact": 0.7089,
+          "exactCI": 0.0119,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -1138,13 +1588,65 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.8342,
+          "categoryCI": 0.0103,
+          "exact": 0.8342,
+          "exactCI": 0.0103,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.0752
+            },
+            {
+              "label": "TCP_Port_Scan",
+              "category": "recon",
+              "share": 0.0245
+            },
+            {
+              "label": "Aggressive_Scan",
+              "category": "recon",
+              "share": 0.0229
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.8269,
+          "categoryCI": 0.0103,
+          "exact": 0.8269,
+          "exactCI": 0.0103,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.0662
+            },
+            {
+              "label": "Aggressive_Scan",
+              "category": "recon",
+              "share": 0.0335
+            },
+            {
+              "label": "SYN_Stealth_Scan",
+              "category": "recon",
+              "share": 0.0221
+            }
+          ]
+        },
         "LogisticRegression": {
-          "detected": 0.9982,
-          "detectedCI": 0.0012,
-          "category": 0.6398,
-          "categoryCI": 0.0139,
-          "exact": 0.5247,
-          "exactCI": 0.0228,
+          "detected": 0.9978,
+          "detectedCI": 0.0013,
+          "category": 0.6453,
+          "categoryCI": 0.0136,
+          "exact": 0.5347,
+          "exactCI": 0.025,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -1165,12 +1667,12 @@
           ]
         },
         "SVM": {
-          "detected": 0.996,
-          "detectedCI": 0.0017,
-          "category": 0.7858,
-          "categoryCI": 0.0136,
-          "exact": 0.7029,
-          "exactCI": 0.0198,
+          "detected": 0.9962,
+          "detectedCI": 0.0016,
+          "category": 0.7829,
+          "categoryCI": 0.0128,
+          "exact": 0.6953,
+          "exactCI": 0.0224,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -1192,11 +1694,12 @@
         }
       },
       "bestTied": [
-        "RandomForest"
+        "XGBoost",
+        "LightGBM"
       ],
-      "bestModel": "RandomForest",
+      "bestModel": "XGBoost",
       "bestVerdict": "detected",
-      "bestCategoryModel": "RandomForest"
+      "bestCategoryModel": "XGBoost"
     },
     {
       "class": "SynonymousIP_Flood",
@@ -1211,8 +1714,8 @@
           "detectedCI": 0.0,
           "category": 1.0,
           "categoryCI": 0.0,
-          "exact": 1.0,
-          "exactCI": 0.0,
+          "exact": 0.9998,
+          "exactCI": 0.0004,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -1258,13 +1761,65 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 1.0,
+          "exactCI": 0.0,
+          "verdict": "identified",
+          "confusedWith": [
+            {
+              "label": "SYN_Flood",
+              "category": "dos",
+              "share": 0.0
+            },
+            {
+              "label": "UDP_Flood",
+              "category": "dos",
+              "share": 0.0
+            },
+            {
+              "label": "Aggressive_Scan",
+              "category": "recon",
+              "share": 0.0
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 0.9996,
+          "exactCI": 0.0006,
+          "verdict": "identified",
+          "confusedWith": [
+            {
+              "label": "Aggressive_Scan",
+              "category": "recon",
+              "share": 0.0
+            },
+            {
+              "label": "ICMP_Fragmentation",
+              "category": "dos",
+              "share": 0.0
+            },
+            {
+              "label": "ICMP_Flood",
+              "category": "dos",
+              "share": 0.0
+            }
+          ]
+        },
         "LogisticRegression": {
-          "detected": 0.9998,
-          "detectedCI": 0.0004,
-          "category": 0.9998,
-          "categoryCI": 0.0004,
-          "exact": 0.9998,
-          "exactCI": 0.0004,
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 1.0,
+          "exactCI": 0.0,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -1285,12 +1840,12 @@
           ]
         },
         "SVM": {
-          "detected": 0.9998,
-          "detectedCI": 0.0004,
-          "category": 0.9998,
-          "categoryCI": 0.0004,
-          "exact": 0.9998,
-          "exactCI": 0.0004,
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 1.0,
+          "exactCI": 0.0,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -1314,12 +1869,14 @@
       "bestTied": [
         "RandomForest",
         "DecisionTree",
+        "XGBoost",
+        "LightGBM",
         "LogisticRegression",
         "SVM"
       ],
       "bestModel": "RandomForest",
       "bestVerdict": "identified",
-      "bestCategoryModel": "RandomForest"
+      "bestCategoryModel": "XGBoost"
     },
     {
       "class": "TCP_Flood",
@@ -1332,10 +1889,10 @@
         "RandomForest": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 1.0,
-          "categoryCI": 0.0,
-          "exact": 0.9996,
-          "exactCI": 0.0006,
+          "category": 0.9998,
+          "categoryCI": 0.0004,
+          "exact": 0.9998,
+          "exactCI": 0.0004,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -1360,8 +1917,8 @@
           "detectedCI": 0.0,
           "category": 1.0,
           "categoryCI": 0.0,
-          "exact": 0.9998,
-          "exactCI": 0.0004,
+          "exact": 1.0,
+          "exactCI": 0.0,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -1376,6 +1933,58 @@
             },
             {
               "label": "ICMP_Fragmentation",
+              "category": "dos",
+              "share": 0.0
+            }
+          ]
+        },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 0.9998,
+          "exactCI": 0.0004,
+          "verdict": "identified",
+          "confusedWith": [
+            {
+              "label": "ICMP_Fragmentation",
+              "category": "dos",
+              "share": 0.0
+            },
+            {
+              "label": "ICMP_Flood",
+              "category": "dos",
+              "share": 0.0
+            },
+            {
+              "label": "PSHACK_Flood",
+              "category": "dos",
+              "share": 0.0
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 1.0,
+          "exactCI": 0.0,
+          "verdict": "identified",
+          "confusedWith": [
+            {
+              "label": "ICMP_Fragmentation",
+              "category": "dos",
+              "share": 0.0
+            },
+            {
+              "label": "ICMP_Flood",
+              "category": "dos",
+              "share": 0.0
+            },
+            {
+              "label": "UDP_Flood",
               "category": "dos",
               "share": 0.0
             }
@@ -1408,12 +2017,12 @@
           ]
         },
         "SVM": {
-          "detected": 1.0,
-          "detectedCI": 0.0,
-          "category": 1.0,
-          "categoryCI": 0.0,
-          "exact": 1.0,
-          "exactCI": 0.0,
+          "detected": 0.9998,
+          "detectedCI": 0.0004,
+          "category": 0.9998,
+          "categoryCI": 0.0004,
+          "exact": 0.9998,
+          "exactCI": 0.0004,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -1437,12 +2046,14 @@
       "bestTied": [
         "RandomForest",
         "DecisionTree",
+        "XGBoost",
+        "LightGBM",
         "LogisticRegression",
         "SVM"
       ],
       "bestModel": "RandomForest",
       "bestVerdict": "identified",
-      "bestCategoryModel": "LogisticRegression"
+      "bestCategoryModel": "DecisionTree"
     },
     {
       "class": "TCP_Port_Scan",
@@ -1455,10 +2066,10 @@
         "RandomForest": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.9093,
-          "categoryCI": 0.0079,
-          "exact": 0.3227,
-          "exactCI": 0.0128,
+          "category": 0.9089,
+          "categoryCI": 0.0091,
+          "exact": 0.3307,
+          "exactCI": 0.0133,
           "verdict": "category",
           "confusedWith": [
             {
@@ -1481,10 +2092,10 @@
         "DecisionTree": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.9082,
-          "categoryCI": 0.0086,
-          "exact": 0.1838,
-          "exactCI": 0.0129,
+          "category": 0.9138,
+          "categoryCI": 0.0089,
+          "exact": 0.1771,
+          "exactCI": 0.01,
           "verdict": "category",
           "confusedWith": [
             {
@@ -1504,13 +2115,65 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.8978,
+          "categoryCI": 0.0075,
+          "exact": 0.1933,
+          "exactCI": 0.0112,
+          "verdict": "detected",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.3436
+            },
+            {
+              "label": "SYN_Stealth_Scan",
+              "category": "recon",
+              "share": 0.1529
+            },
+            {
+              "label": "Slowloris_Scan",
+              "category": "dos",
+              "share": 0.0967
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.9038,
+          "categoryCI": 0.0099,
+          "exact": 0.2011,
+          "exactCI": 0.011,
+          "verdict": "category",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.3323
+            },
+            {
+              "label": "SYN_Stealth_Scan",
+              "category": "recon",
+              "share": 0.1378
+            },
+            {
+              "label": "Aggressive_Scan",
+              "category": "recon",
+              "share": 0.0979
+            }
+          ]
+        },
         "LogisticRegression": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.9702,
-          "categoryCI": 0.0049,
-          "exact": 0.6496,
-          "exactCI": 0.0385,
+          "category": 0.9727,
+          "categoryCI": 0.0043,
+          "exact": 0.6616,
+          "exactCI": 0.0388,
           "verdict": "category",
           "confusedWith": [
             {
@@ -1533,10 +2196,10 @@
         "SVM": {
           "detected": 0.9998,
           "detectedCI": 0.0004,
-          "category": 0.8936,
-          "categoryCI": 0.0101,
-          "exact": 0.2549,
-          "exactCI": 0.0753,
+          "category": 0.8878,
+          "categoryCI": 0.0092,
+          "exact": 0.2527,
+          "exactCI": 0.0746,
           "verdict": "detected",
           "confusedWith": [
             {
@@ -1575,10 +2238,10 @@
         "RandomForest": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.9998,
-          "categoryCI": 0.0004,
-          "exact": 0.9993,
-          "exactCI": 0.0007,
+          "category": 1.0,
+          "categoryCI": 0.0,
+          "exact": 0.9996,
+          "exactCI": 0.0006,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -1601,8 +2264,8 @@
         "DecisionTree": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.9998,
-          "categoryCI": 0.0004,
+          "category": 0.9996,
+          "categoryCI": 0.0006,
           "exact": 0.9996,
           "exactCI": 0.0006,
           "verdict": "identified",
@@ -1624,13 +2287,65 @@
             }
           ]
         },
-        "LogisticRegression": {
-          "detected": 0.9993,
-          "detectedCI": 0.0007,
-          "category": 0.9991,
-          "categoryCI": 0.0009,
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.9998,
+          "categoryCI": 0.0004,
+          "exact": 0.9996,
+          "exactCI": 0.0006,
+          "verdict": "identified",
+          "confusedWith": [
+            {
+              "label": "ICMP_Fragmentation",
+              "category": "dos",
+              "share": 0.0002
+            },
+            {
+              "label": "ICMP_Flood",
+              "category": "dos",
+              "share": 0.0001
+            },
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.0001
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.9996,
+          "categoryCI": 0.0006,
           "exact": 0.9987,
           "exactCI": 0.001,
+          "verdict": "identified",
+          "confusedWith": [
+            {
+              "label": "ICMP_Fragmentation",
+              "category": "dos",
+              "share": 0.0002
+            },
+            {
+              "label": "Aggressive_Scan",
+              "category": "recon",
+              "share": 0.0001
+            },
+            {
+              "label": "ICMP_Flood",
+              "category": "dos",
+              "share": 0.0001
+            }
+          ]
+        },
+        "LogisticRegression": {
+          "detected": 0.9998,
+          "detectedCI": 0.0004,
+          "category": 0.9996,
+          "categoryCI": 0.0006,
+          "exact": 0.9993,
+          "exactCI": 0.0007,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -1651,12 +2366,12 @@
           ]
         },
         "SVM": {
-          "detected": 1.0,
-          "detectedCI": 0.0,
-          "category": 0.9996,
-          "categoryCI": 0.0006,
-          "exact": 0.9991,
-          "exactCI": 0.0009,
+          "detected": 0.9998,
+          "detectedCI": 0.0004,
+          "category": 0.9998,
+          "categoryCI": 0.0004,
+          "exact": 0.9987,
+          "exactCI": 0.001,
           "verdict": "identified",
           "confusedWith": [
             {
@@ -1680,12 +2395,14 @@
       "bestTied": [
         "RandomForest",
         "DecisionTree",
+        "XGBoost",
+        "LightGBM",
         "LogisticRegression",
         "SVM"
       ],
       "bestModel": "RandomForest",
       "bestVerdict": "identified",
-      "bestCategoryModel": "DecisionTree"
+      "bestCategoryModel": "RandomForest"
     },
     {
       "class": "Vulnerability_Scan",
@@ -1698,10 +2415,10 @@
         "RandomForest": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.9207,
-          "categoryCI": 0.0077,
-          "exact": 0.1336,
-          "exactCI": 0.0107,
+          "category": 0.9176,
+          "categoryCI": 0.0079,
+          "exact": 0.138,
+          "exactCI": 0.0099,
           "verdict": "category",
           "confusedWith": [
             {
@@ -1724,10 +2441,10 @@
         "DecisionTree": {
           "detected": 1.0,
           "detectedCI": 0.0,
-          "category": 0.9231,
-          "categoryCI": 0.0082,
-          "exact": 0.17,
-          "exactCI": 0.0119,
+          "category": 0.9236,
+          "categoryCI": 0.0084,
+          "exact": 0.1744,
+          "exactCI": 0.0102,
           "verdict": "category",
           "confusedWith": [
             {
@@ -1747,13 +2464,65 @@
             }
           ]
         },
+        "XGBoost": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.9016,
+          "categoryCI": 0.009,
+          "exact": 0.1524,
+          "exactCI": 0.0108,
+          "verdict": "category",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.3054
+            },
+            {
+              "label": "TCP_Port_Scan",
+              "category": "recon",
+              "share": 0.1942
+            },
+            {
+              "label": "SYN_Stealth_Scan",
+              "category": "recon",
+              "share": 0.1408
+            }
+          ]
+        },
+        "LightGBM": {
+          "detected": 1.0,
+          "detectedCI": 0.0,
+          "category": 0.9042,
+          "categoryCI": 0.0089,
+          "exact": 0.1547,
+          "exactCI": 0.0109,
+          "verdict": "category",
+          "confusedWith": [
+            {
+              "label": "OS_Fingerprinting",
+              "category": "recon",
+              "share": 0.2931
+            },
+            {
+              "label": "TCP_Port_Scan",
+              "category": "recon",
+              "share": 0.2003
+            },
+            {
+              "label": "SYN_Stealth_Scan",
+              "category": "recon",
+              "share": 0.1222
+            }
+          ]
+        },
         "LogisticRegression": {
-          "detected": 0.9996,
-          "detectedCI": 0.0006,
-          "category": 0.9702,
-          "categoryCI": 0.0051,
-          "exact": 0.1967,
-          "exactCI": 0.019,
+          "detected": 0.9991,
+          "detectedCI": 0.0009,
+          "category": 0.9691,
+          "categoryCI": 0.0049,
+          "exact": 0.1844,
+          "exactCI": 0.0175,
           "verdict": "category",
           "confusedWith": [
             {
@@ -1774,12 +2543,12 @@
           ]
         },
         "SVM": {
-          "detected": 0.9993,
-          "detectedCI": 0.0007,
-          "category": 0.9058,
-          "categoryCI": 0.0085,
-          "exact": 0.2642,
-          "exactCI": 0.0453,
+          "detected": 0.9987,
+          "detectedCI": 0.0012,
+          "category": 0.9073,
+          "categoryCI": 0.0089,
+          "exact": 0.2576,
+          "exactCI": 0.0452,
           "verdict": "category",
           "confusedWith": [
             {
@@ -1815,27 +2584,37 @@
     "summary": {
       "RandomForest": {
         "detected": 1.0,
-        "category": 0.9316,
-        "exact": 0.5643
+        "category": 0.9362,
+        "exact": 0.5997
       },
       "DecisionTree": {
         "detected": 1.0,
-        "category": 0.9234,
-        "exact": 0.5597
+        "category": 0.9262,
+        "exact": 0.591
+      },
+      "XGBoost": {
+        "detected": 1.0,
+        "category": 0.9321,
+        "exact": 0.5987
+      },
+      "LightGBM": {
+        "detected": 1.0,
+        "category": 0.932,
+        "exact": 0.594
       },
       "LogisticRegression": {
-        "detected": 0.9994,
-        "category": 0.949,
-        "exact": 0.529
+        "detected": 0.9993,
+        "category": 0.9498,
+        "exact": 0.5669
       },
       "SVM": {
-        "detected": 0.9996,
-        "category": 0.92,
-        "exact": 0.5598
+        "detected": 0.9992,
+        "category": 0.9238,
+        "exact": 0.573
       }
     }
   },
   "gateFailures": [],
   "passed": true,
-  "seconds": 5.1
+  "seconds": 12.6
 }

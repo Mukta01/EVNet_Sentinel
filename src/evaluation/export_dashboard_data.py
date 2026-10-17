@@ -25,6 +25,9 @@ from datetime import datetime, timezone
 import joblib
 import numpy as np
 import pandas as pd
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from src.evaluation.model_registry import MODEL_FILES, load_multiseed  # noqa: E402
 
 # The project's central finding needs a grouping that survives scrutiny.
 #
@@ -46,12 +49,6 @@ VOLUMETRIC_CLASSES = {"SYN_Flood", "TCP_Flood", "UDP_Flood",
 RECON_CLASSES = {"TCP_Port_Scan", "SYN_Stealth_Scan", "Service_Version_Detection",
                  "OS_Fingerprinting", "Aggressive_Scan", "Vulnerability_Scan"}
 
-MODEL_FILES = {
-    "RandomForest": "rf_model_multiclass.pkl",
-    "DecisionTree": "dt_model_multiclass.pkl",
-    "SVM": "svm_model_multiclass.pkl",
-    "LogisticRegression": "logreg_model_multiclass.pkl",
-}
 
 # Shown on the flow inspector. Chosen because each is legible to a reader who
 # knows TCP but not this dataset, and together they explain most verdicts.
@@ -108,7 +105,7 @@ def class_support(data_dir):
 
 
 def build_findings(multiseed_path, out_dir, support):
-    raw = json.load(open(multiseed_path))
+    raw = load_multiseed(multiseed_path)
     per_seed, env = raw["per_seed"], raw["environment"]
     model_names = list(per_seed[0]["models"])
 

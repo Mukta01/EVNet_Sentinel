@@ -45,6 +45,8 @@ export type Family = keyof typeof FAMILY;
 export const MODEL_COLOR: Record<string, string> = {
   RandomForest: "#22C55E",
   DecisionTree: "#38BDF8",
+  XGBoost: "#F59E0B",
+  LightGBM: "#2DD4BF",
   LogisticRegression: "#A78BFA",
   SVM: "#F472B6",
 };
@@ -52,6 +54,8 @@ export const MODEL_COLOR: Record<string, string> = {
 export const MODEL_LABEL: Record<string, string> = {
   RandomForest: "Random Forest",
   DecisionTree: "Decision Tree",
+  XGBoost: "XGBoost",
+  LightGBM: "LightGBM",
   LogisticRegression: "Logistic Regression",
   SVM: "SVM",
 };
