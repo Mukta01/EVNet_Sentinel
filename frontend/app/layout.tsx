@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "EVNet Sentinel | EVCS Intrusion Detection System",
   description:
-    "ML-powered intrusion detection for Electric Vehicle Charging Station networks. Real-time threat detection with ARF + ADWIN online learning.",
+    "Leakage-corrected intrusion detection for EV charging station networks: an audit of ARF + ADWIN on CICEVSE2024, per-attack testing, and an interactive demo.",
 };
 
 export default function RootLayout({

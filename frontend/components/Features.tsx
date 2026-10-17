@@ -67,7 +67,7 @@ export default function Features() {
             whileInView="visible"
             viewport={{ once: true, margin: "0px" }}
           >
-            {"As the world electrifies transportation, charging infrastructure becomes critical — and a prime target. Scroll on to see how an attack unfolds across a real city — and where Sentinel stops it.".split(" ").map((word, i) => (
+            {"As the world electrifies transportation, charging infrastructure becomes critical — and a prime target. Scroll on to see how an attack unfolds across a real city — and where Sentinel catches it.".split(" ").map((word, i) => (
               <motion.span
                 key={i}
                 variants={{
