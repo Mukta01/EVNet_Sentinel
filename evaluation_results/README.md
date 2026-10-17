@@ -40,6 +40,9 @@ Written by `src/evaluation/attack_test_harness.py` (`make attack-test`).
 
 The dashboard's *Attack insights* tab (`frontend/data/insights.json`) is built from this file.
 
+### `boosting/`: XGBoost and LightGBM
+Written by `src/evaluation/run_boosting.py` (`make boosting`) on the **same splits and seeds** as `multiseed/`. XGBoost 0.5511 ± 0.0110, LightGBM 0.5504 ± 0.0035 macro-F1: level with Random Forest within one standard deviation, with the same ceiling on the six scan types. `BOOSTING_RESULTS.md` has all six models side by side, including per-class F1.
+
 ## Evidence
 
 ### `leakfree/`: leak effect and drift

@@ -1,4 +1,4 @@
-.PHONY: diagrams data-fetch data-process data data-reference data-grouped replay-reference attack-test insights figures setup test run api web web-dev help
+.PHONY: boosting diagrams data-fetch data-process data data-reference data-grouped replay-reference attack-test insights figures setup test run api web web-dev help
 
 PYTHON ?= python3
 RAW_DIR ?= data/raw
@@ -93,3 +93,7 @@ web-dev:
 # Archify diagrams of the pipeline and the API (docs/diagrams). Plain static files.
 diagrams:
 	$(PYTHON) -m http.server 8765 --directory docs/diagrams
+
+# XGBoost and LightGBM on the multiseed splits (needs data/multiseed from run_experiments.py).
+boosting:
+	$(PYTHON) src/evaluation/run_boosting.py --seeds 42 1337 2024
