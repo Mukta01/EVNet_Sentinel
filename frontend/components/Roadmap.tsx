@@ -7,54 +7,74 @@ import { CheckCircle2, Circle, Loader2 } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * What was actually built, in order, with the merge dates from git history.
+ * Owners are the team areas each phase belongs to.
+ */
 const phases = [
   {
     id: 0,
-    title: "Project Setup & Landing Page",
+    title: "Project setup and landing page",
     status: "done",
-    date: "Aug 4",
-    owner: "Shardul",
+    date: "Aug 4 – 7",
+    owner: "Frontend",
     items: ["Next.js scaffold", "Landing page", "Backend scaffold", "README"],
   },
   {
     id: 1,
-    title: "Backend ML Pipeline",
-    status: "upcoming",
-    date: "Week 1–2",
-    owner: "Mukta",
-    items: ["Data preprocessing", "Static classifiers (RF/SVM/LR/DT)", "ARF + ADWIN online learning", "Model persistence"],
+    title: "Data pipeline and static models",
+    status: "done",
+    date: "Aug 15 – 22",
+    owner: "ML pipeline",
+    items: ["CICEVSE2024 loading and labelling", "Feature engineering", "Random Forest, Decision Tree", "Logistic Regression, SVM (out-of-core)", "Unified evaluation"],
   },
   {
     id: 2,
-    title: "Backend API Layer",
-    status: "upcoming",
-    date: "Week 2–3",
-    owner: "Neha",
-    items: ["REST endpoints", "WebSocket /ws/alerts", "CORS security", "OpenAPI docs"],
+    title: "Online model, API and deployment",
+    status: "done",
+    date: "Aug 21 – 24",
+    owner: "Cloud & API",
+    items: ["ARF + ADWIN streaming model", "FastAPI prediction service", "Docker image", "Compliance tests", "SRS and architecture docs"],
   },
   {
     id: 3,
-    title: "Frontend Dashboard",
-    status: "upcoming",
-    date: "Week 2–4",
-    owner: "Shardul + Shruti",
-    items: ["Animated metrics panel", "Confusion matrix viz", "Live alert feed", "Simulation controls"],
+    title: "Leakage audit and corrected pipeline",
+    status: "done",
+    date: "Sep 1 – 8",
+    owner: "ML pipeline",
+    items: ["Timestamp leak found (0.9976 from one column)", "src_port fingerprint removed", "Leak-free preprocessing", "All models re-run"],
   },
   {
     id: 4,
-    title: "Integration & Testing",
-    status: "upcoming",
-    date: "Week 4–5",
-    owner: "All",
-    items: ["E2E integration", "Performance benchmarks", "Security audit", "Reproducibility checks"],
+    title: "Honest evaluation and results dashboard",
+    status: "done",
+    date: "Sep 22 – 29",
+    owner: "ML · Data viz",
+    items: ["3-seed benchmarks, macro-F1", "Per-attack test harness", "Drift on file seams", "Findings dashboard", "Paper figures"],
   },
   {
     id: 5,
-    title: "Documentation & Submission",
-    status: "upcoming",
-    date: "Week 5",
+    title: "Interactive demo and containment",
+    status: "done",
+    date: "Oct 1 – 10",
+    owner: "Frontend & API",
+    items: ["Beat the Sentinel hero", "Mumbai scroll story", "Simulation on real attack routes", "Threat level and quarantine", "Runbook and diagrams"],
+  },
+  {
+    id: 6,
+    title: "Paper, testing and documentation",
+    status: "done",
+    date: "Oct 5 – 15",
     owner: "All",
-    items: ["Final README", "API docs", "Benchmark comparison", "Demo prep"],
+    items: ["Research paper v2 and v3", "40 test cases, 71 automated tests", "Demo scripts and walkthroughs", "Public demo link"],
+  },
+  {
+    id: 7,
+    title: "Next: journal submission and follow-up research",
+    status: "active",
+    date: "In progress",
+    owner: "All",
+    items: ["Elsevier journal submission", "Grouped (per-capture) evaluation", "Packet-sequence models for scans", "Host and power data fusion"],
   },
 ];
 
@@ -99,11 +119,11 @@ export default function Roadmap() {
       <div className="max-w-4xl mx-auto px-6 relative z-10">
         <div className="roadmap-headline text-center mb-16">
           <div className="inline-flex items-center space-x-2 bg-emerald-500/[0.08] border border-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] mb-6">
-            <span>Implementation Roadmap</span>
+            <span>How we built it</span>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-6">
             From concept to<br />
-            <span className="text-gray-500">working prototype.</span>
+            <span className="text-gray-500">an audited, working system.</span>
           </h2>
         </div>
 
@@ -146,10 +166,12 @@ export default function Roadmap() {
                       className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded ${
                         phase.status === "done"
                           ? "bg-emerald-500/10 text-emerald-400"
-                          : "bg-white/[0.04] text-gray-600"
+                          : phase.status === "active"
+                            ? "bg-blue-500/10 text-blue-400"
+                            : "bg-white/[0.04] text-gray-600"
                       }`}
                     >
-                      {phase.status === "done" ? "Complete" : "Upcoming"}
+                      {phase.status === "done" ? "Complete" : phase.status === "active" ? "In progress" : "Upcoming"}
                     </span>
                   </div>
 
