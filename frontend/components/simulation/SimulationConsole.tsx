@@ -475,7 +475,7 @@ export default function SimulationConsole({
 
       {/* ── canvas ─────────────────────────────────────────── */}
       <section className="space-y-4">
-        <div className="rounded-lg border border-white/8 bg-white/[0.02] p-3">
+        <div className="theme-dark-island island-surface rounded-lg border border-white/8 bg-white/[0.02] p-3">
           <div className="mb-1 flex flex-wrap items-center justify-between gap-2 px-1">
             <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500">
               CICEVSE2024 testbed

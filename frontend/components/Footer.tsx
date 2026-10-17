@@ -1,6 +1,7 @@
 "use client";
 
-import { ShieldCheck, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+import Logo from "./Logo";
 import Link from "next/link";
 
 export default function Footer() {
@@ -11,7 +12,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center space-x-2 mb-3">
-              <ShieldCheck className="w-6 h-6 text-emerald-400" />
+              <Logo className="h-6 w-6" />
               <span className="font-bold text-lg text-white">
                 EVNet <span className="text-emerald-400">Sentinel</span>
               </span>

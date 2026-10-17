@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldCheck, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
+import Logo from "./Logo";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -30,14 +31,14 @@ export default function Navbar() {
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className={`fixed w-full z-50 top-0 transition-all duration-500 ${
         scrolled
-          ? "bg-[#020617]/90 backdrop-blur-xl border-b border-white/5 shadow-2xl shadow-black/40"
+          ? "bg-(--color-background)/90 backdrop-blur-xl border-b border-white/5 shadow-2xl shadow-black/40"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-2.5 group">
           <div className="relative">
-            <ShieldCheck className="w-7 h-7 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
+            <Logo className="h-7 w-7 transition-transform group-hover:scale-105" />
             <div className="absolute inset-0 blur-lg bg-emerald-400/30 group-hover:bg-emerald-400/50 transition-all rounded-full" />
           </div>
           <span className="font-bold text-lg tracking-tight text-white">
@@ -82,7 +83,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#0a0f1a]/95 backdrop-blur-xl border-b border-white/5"
+            className="md:hidden bg-(--color-background)/95 backdrop-blur-xl border-b border-white/5"
           >
             <div className="px-6 py-4 space-y-1">
               {navLinks.map((link) => (

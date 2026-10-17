@@ -84,7 +84,7 @@ export default function DashboardShell({
 
       <nav
         aria-label="Dashboard sections"
-        className="sticky top-16 z-30 -mx-6 mt-10 border-b border-white/8 bg-[#020617]/85 px-6 backdrop-blur-xl"
+        className="sticky top-16 z-30 -mx-6 mt-10 border-b border-white/8 bg-(--color-background)/85 px-6 backdrop-blur-xl"
       >
         <div className="flex gap-1">
           {TABS.map((item) => {
