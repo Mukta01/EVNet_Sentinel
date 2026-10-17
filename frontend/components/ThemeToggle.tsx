@@ -32,11 +32,16 @@ const subscribe = (l: () => void) => {
 
 /**
  * Dark / off-white switch. It records the choice on <html data-theme> and in
- * localStorage; the light palette itself is not built yet, so for now the
- * page stays dark whichever way it is set.
+ * localStorage; the light palette lives in app/globals.css, and a small script
+ * in app/layout.tsx applies the saved choice before first paint.
  */
+/** The current theme, for artwork that CSS variables cannot reach (canvas). */
+export function useTheme(): Theme {
+  return useSyncExternalStore(subscribe, read, () => "dark" as Theme);
+}
+
 export default function ThemeToggle({ className = "" }: { className?: string }) {
-  const theme = useSyncExternalStore(subscribe, read, () => "dark" as Theme);
+  const theme = useTheme();
 
   return (
     <input

@@ -329,7 +329,7 @@ function PinnedStory() {
   };
 
   return (
-    <section ref={section} id="architecture" className="arch-story" aria-label="How EVNet Sentinel works">
+    <section ref={section} id="architecture" className="arch-story theme-dark-island" aria-label="How EVNet Sentinel works">
       <div ref={stage} className="stage">
         <svg className="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
           <defs>
@@ -608,7 +608,7 @@ function PinnedStory() {
 /** Reduced motion: the same story as a plain sequence, nothing pinned or animated. */
 function StaticStory() {
   return (
-    <section id="architecture" className="arch-story arch-story-static mx-auto max-w-3xl px-6 py-24">
+    <section id="architecture" className="arch-story arch-story-static theme-dark-island mx-auto max-w-3xl px-6 py-24">
       <p className="mono text-[11px] uppercase tracking-[0.16em] text-emerald-400">How it works</p>
       {CHAPTERS.map((c, i) => (
         <article key={c.k}>

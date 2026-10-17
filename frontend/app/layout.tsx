@@ -26,7 +26,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        {/* Apply the saved theme before first paint, so a light-theme visitor
+            never sees a dark flash. ThemeToggle keeps it in sync afterwards. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem("evnet-theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}`,
+          }}
+        />
+      </head>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-[#020617] text-[#F8FAFC] antialiased noise-overlay`}
       >

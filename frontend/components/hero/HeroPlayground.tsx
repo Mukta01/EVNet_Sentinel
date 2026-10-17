@@ -16,7 +16,7 @@ export default function HeroPlayground({ attacks, tuning }: { attacks: DemoAttac
   const [mode, setMode] = useState<(typeof MODES)[number]["id"]>("beat");
 
   return (
-    <div className="mx-auto w-full max-w-4xl rounded-2xl border border-white/[0.08] bg-[#050b18]/85 text-left shadow-[0_0_80px_-24px_rgba(16,185,129,0.45)] backdrop-blur-md">
+    <div className="theme-dark-island mx-auto w-full max-w-4xl rounded-2xl border border-white/[0.08] bg-[#050b18]/85 text-left shadow-[0_0_80px_-24px_rgba(16,185,129,0.45)] backdrop-blur-md">
       <div className="flex gap-1 border-b border-white/[0.06] p-2" role="tablist" aria-label="Try Sentinel">
         {MODES.map((m) => {
           const on = mode === m.id;
