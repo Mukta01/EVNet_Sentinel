@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
+import WhatsReal from "@/components/simulation/WhatsReal";
 import Footer from "@/components/Footer";
 import SimulationConsole from "@/components/simulation/SimulationConsole";
 import { promises as fs } from "fs";
@@ -74,6 +75,7 @@ export default async function SimulationPage() {
           <p className="mt-2 max-w-3xl text-[13px] leading-relaxed text-slate-500">
             {sim.benignNote}
           </p>
+          <WhatsReal />
         </header>
         <SimulationConsole sim={sim as never} responses={responses} roles={insights.roles} categorySeverity={categorySeverity} senders={senders} />
       </div>
