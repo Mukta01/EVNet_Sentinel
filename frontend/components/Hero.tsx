@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, Shield } from "lucide-react";
 import DotField from "./DotField";
 import ParticleText from "./ParticleText";
+import { useTheme } from "./ThemeToggle";
 import HeroPlayground from "./hero/HeroPlayground";
 import type { DemoAttack } from "./hero/BeatTheSentinel";
 import type { HeroTuning } from "./hero/TuneDetector";
@@ -17,6 +18,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]; tuning: HeroTuning; stats: HeroStat[] }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const light = useTheme() === "light";
 
   const subRef = useRef<HTMLParagraphElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
@@ -70,10 +72,10 @@ export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]
           bulgeOnly
           gradientFrom="#10b981" 
           gradientTo="#3b82f6" 
-          glowColor="#020617"
+          glowColor={light ? "#F7F5F0" : "#020617"}
         />
       </div>
-      <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-transparent via-[#020617]/50 to-[#020617]" />
+      <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-transparent via-(--color-background)/50 to-(--color-background)" />
 
       {/* Decorative orbs */}
       <div className="orb-1 absolute top-[20%] left-[15%] w-[500px] h-[500px] rounded-full bg-blue-600/[0.07] blur-[120px] pointer-events-none" />
@@ -104,8 +106,8 @@ export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]
             text="Securing the Grid"
             particleSize={2}
             density={4}
-            color="#ffffff"
-            highlightColor="#10b981"
+            color={light ? "#0F172A" : "#ffffff"}
+            highlightColor={light ? "#059669" : "#10b981"}
             scatter={180}
             gatherDuration={1600}
             stagger={420}

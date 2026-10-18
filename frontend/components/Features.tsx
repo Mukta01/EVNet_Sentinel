@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import { ShieldAlert } from "lucide-react";
 import PixelBlast from "./PixelBlast";
 import FoldText from "./FoldText";
+import { useTheme } from "./ThemeToggle";
 
 export default function Features() {
+  const light = useTheme() === "light";
   return (
     <>
       <section id="threat" className="relative pt-32 pb-10 overflow-hidden">
@@ -45,7 +47,7 @@ export default function Features() {
               trigger="scroll"
               fontSize="clamp(2.5rem, 5vw, 3.5rem)"
               fontWeight={800}
-              color="#ffffff"
+              color={light ? "#0F172A" : "#ffffff"}
             />
             <br />
             <FoldText
@@ -53,7 +55,7 @@ export default function Features() {
               trigger="scroll"
               fontSize="clamp(2.5rem, 5vw, 3.5rem)"
               fontWeight={800}
-              color="#6b7280"
+              color={light ? "#475569" : "#6b7280"}
               stagger={0.06}
             />
           </div>
