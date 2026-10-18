@@ -39,7 +39,6 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-[#020617] text-[#F8FAFC] antialiased noise-overlay`}
       >
-        <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async />
         {children}
       </body>
     </html>
