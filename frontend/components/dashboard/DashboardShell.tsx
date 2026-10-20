@@ -13,6 +13,7 @@ import FingerprintAblation from "./FingerprintAblation";
 import InferenceReplay, { type Flow } from "./InferenceReplay";
 import LeakEvidence from "./LeakEvidence";
 import ModelTable from "./ModelTable";
+import ResponseReplay, { type ReplayData } from "./ResponseReplay";
 import type { Family } from "./theme";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -34,11 +35,13 @@ export default function DashboardShell({
   simulation,
   insights,
   paper,
+  replay,
 }: {
   findings: Findings;
   simulation: Simulation;
   insights: Findings;
   paper: Findings;
+  replay: ReplayData;
 }) {
   const [tab, setTab] = useState<TabId>("findings");
 
@@ -135,6 +138,7 @@ export default function DashboardShell({
           <ConfusionExplorer confusion={paper.confusion} seeds={paper.seeds} />
           <ModelTable models={findings.models} seeds={findings.seeds} />
           <FeatureSeparability importance={paper.importance} />
+          <ResponseReplay data={replay} />
           <details className="group rounded-lg border border-white/8 bg-white/[0.02] open:bg-transparent open:border-transparent">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-lg px-5 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 [&::-webkit-details-marker]:hidden">
               <span>

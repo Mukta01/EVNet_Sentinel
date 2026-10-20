@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useReducedMotion } from "framer-motion";
 import { HUBS, MAP_BOUNDS, WARDS } from "./mumbai";
+import replay from "@/data/response-replay.json";
 import "./ArchitectureStory.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -38,9 +39,9 @@ const CHAPTERS: Chapter[] = [
   { k: "Inside Sentinel", title: "From packets to a verdict.",
     body: "Packets become one flow of 60 statistics. Columns that only identify the recording are stripped. Six static models and an online learner judge it.",
     fact: "Removing those columns is our core correction: the published <b>98%</b> came from a single timestamp column." },
-  { k: "The response", title: "An alert is only useful if someone knows what to do.",
-    body: "Every detection maps to concrete steps for three people: the station owner, the CSMS operator and the network analyst.",
-    fact: "When a model can’t reliably name an attack, it says so and gives <b>category-level</b> advice instead." },
+  { k: "The response", title: "Detect, contain, harden, verify.",
+    body: "Each detection leads to an action matched to how sure the detector is: quarantine a flooding device, restrict a scanning one, stop a compromised car’s session. A person approves it, then each role hardens the site so the same attack fails next time.",
+    fact: `Replayed over every recorded attack: <b>${replay.summary.contained} of ${replay.summary.scenarios}</b> attacker-and-attack pairs contained. A device that scanned first is quarantined on its <b>first</b> flood flow.` },
   { k: "What we measured", title: "Honest numbers, tested per attack.",
     body: "Every attack type, fed to every model, in random batches across three independently trained model sets.",
     fact: "No attack slipped through as normal traffic: <b>≥ 99.9%</b> flagged in every mixed campaign." },
@@ -53,6 +54,26 @@ const CSMS_AT = { x: 1420, y: 150 };
 const HUB_FRAME = "translate(100 30) scale(0.98)";
 /** Sentinel hangs off the switch's mirror port, out of the traffic's way. */
 const SENTINEL_AT = { x: 700, y: 380 };
+
+/** Mean attack flows that got through before an action was recommended, per case, from the replay. */
+const flowsTo = (pick: (s: (typeof replay.scenarios)[number]) => boolean) => {
+  const xs = replay.scenarios.filter(pick).map((s) => s.attackFlowsToRecommend ?? 0);
+  return Math.round(xs.reduce((a, b) => a + b, 0) / Math.max(1, xs.length));
+};
+const LOOP = [
+  { who: "Network analyst", color: "#FDA4AF", title: "Flood from the wifi",
+    contain: "Quarantine the device at its switch port.",
+    harden: "SYN cookies on the CSMS; per-source rate limits on the OCPP endpoint.",
+    verify: `Recommended after ~${flowsTo((s) => s.category === "dos")} attack flows.` },
+  { who: "Network analyst", color: "#FCD34D", title: "Scan from the wifi",
+    contain: "Restrict it: internet yes, chargers and CSMS no. Then watch it.",
+    harden: "Stations answer only the CSMS on the OCPP port; patch firmware; segment the network.",
+    verify: `Recommended after ~${flowsTo((s) => s.category === "recon" && s.sender !== "evcc")} scan flows. If it then floods, quarantined on flow ${replay.summary.escalation.afterScanFlowsToQuarantine}.` },
+  { who: "CSMS operator", color: "#7DD3FC", title: "Scan from a compromised car",
+    contain: "Stop the session; block the vehicle’s ID token.",
+    harden: "The charger accepts only ISO 15118 charging messages on the cable.",
+    verify: `Recommended after ~${flowsTo((s) => s.sender === "evcc")} scan flows.` },
+];
 
 /** How far into each chapter its narration appears: the scene builds first, then the words. */
 const TEXT_AT = [0, 0.62, 0.3, 0.3, 0, 0, 0];
@@ -523,29 +544,26 @@ function PinnedStory() {
         {/* ── 6: who acts ────────────────────────────── */}
         <div className="overlay" id="as-resp">
           <div className="resp">
-            <div className="card" style={{ padding: "16px 18px", display: "flex", gap: 16, alignItems: "center", borderColor: "rgba(244,63,94,.35)" }}>
-              <span className="pulse" />
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#F8FAFC" }}>SYN Flood aimed at charging station EVSE-A</div>
-                <div className="mono" style={{ fontSize: 11.5, color: "#94A3B8", marginTop: 3 }}>from a device on the site wifi · severity high · XGBoost</div>
-              </div>
+            <div className="card loop" aria-label="Response loop">
+              {["Detect", "Contain", "Harden", "Verify"].map((x, i) => (
+                <span key={x}><b>{i + 1}</b> {x}{i < 3 && <i aria-hidden>→</i>}</span>
+              ))}
+              <span className="again">↻ back to detect, with the source watched</span>
             </div>
             <div className="roles">
-              {[
-                { who: "Station owner", color: "#7DD3FC", title: "Keep drivers charging",
-                  steps: ["Confirm offline charging is on, so sessions queue locally.", "Flag the station on its display instead of failing silently."] },
-                { who: "CSMS operator", color: "#86EFAC", title: "Protect the backend",
-                  steps: ["Rate-limit the OCPP endpoint per source.", "Hold remote resets until the flood stops."] },
-                { who: "Network analyst", color: "#C4B5FD", title: "Stop the source",
-                  steps: ["Enable SYN cookies; shorten the SYN-RECEIVED timeout.", "Block the source at the edge; keep a packet sample."] },
-              ].map((r) => (
-                <div key={r.who} className="card role">
+              {LOOP.map((r) => (
+                <div key={r.title} className="card role">
                   <div className="who" style={{ color: r.color }}>{r.who}</div>
                   <h4>{r.title}</h4>
-                  <ul>{r.steps.map((s) => <li key={s}>{s}</li>)}</ul>
+                  <ul>
+                    <li><b>Contain</b> {r.contain}</li>
+                    <li><b>Harden</b> {r.harden}</li>
+                    <li><b>Verify</b> {r.verify}</li>
+                  </ul>
                 </div>
               ))}
             </div>
+            <p className="loop-note">Simulated: an operator approves every action, and the numbers are a replay of the recorded attacks, not live blocking.</p>
           </div>
         </div>
 

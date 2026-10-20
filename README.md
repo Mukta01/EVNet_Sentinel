@@ -37,7 +37,7 @@
 | ❓ **The question** | Makhmudov et al. (2025) report **98.4%** accuracy for an online detector (Adaptive Random Forest + ADWIN) on CICEVSE2024. Does that number measure attack detection? |
 | 🔍 **The answer** | Mostly not. **One timestamp column alone scores 99.76%**, because each attack was recorded in its own file at its own time. |
 | ✅ **The honest number** | With the leaks removed: **macro-F1 0.558 ± 0.008** (Random Forest, 3 seeds). Floods are near-perfect; network scans are not. |
-| 🛠️ **What we built** | A per-attack test harness, a prediction API, simulated containment, and a website that shows every result live. |
+| 🛠️ **What we built** | A per-attack test harness, a prediction API, a closed-loop response (detect, contain, harden, verify) replayed over every recorded attack, and a website that shows every result live. |
 
 <a id="what-we-found"></a>
 
@@ -103,7 +103,7 @@ make test       # 🧪 71 tests
 | Page | Try this |
 |---|---|
 | **`/`** | Drag an attack onto a charging station in *Beat the Sentinel*; move the slider in *Tune the detector*; scroll the testbed story |
-| **`/simulation`** | Launch a SYN flood, watch the site turn **Network not safe**, then approve the quarantine |
+| **`/simulation`** | Launch an attack, watch the site turn **Network not safe**, then approve the recommended action: quarantine a flooder, restrict a scanner, or stop a compromised car's session |
 | **`/dashboard`** | *Findings* (the evidence) · *Attack insights* (per-attack results and response guidance) · *Live inference* |
 | **`/docs`** | Method at a glance and the architecture |
 
@@ -116,7 +116,7 @@ More detail, stopping servers, and sharing a public link with ngrok: **[docs/RUN
 | 🔍 | **Leakage audit** | Five findings, each reproduced by its own script in `src/reproduction/` |
 | 📊 | **Corrected benchmarks** | 6 static models (incl. XGBoost, LightGBM) + ARF/ADWIN, 15 classes, 3 seeds, macro-F1 |
 | 🎯 | **Attack test harness** | Every attack × every model: detected / right category / named exactly, with regression gates |
-| 🛡️ | **Simulated containment** | Threat level Safe → Elevated → Not safe; operator-approved quarantine of the attacking device only |
+| 🛡️ | **Closed-loop response** | Threat level Safe → Elevated → Not safe; operator-approved quarantine (floods), restriction (scans) or session stop (compromised car); a scanner that later floods is quarantined on its first flood flow; replayed over all 20 recorded attacker-and-attack pairs |
 | 🌐 | **Web front end** | Landing page, simulation console, dashboard, all built from exported results |
 | ⚙️ | **Prediction API** | `POST /predict` classifies one flow with any corrected model |
 
@@ -181,7 +181,7 @@ The four tree models are statistically tied: gradient boosting does not break th
 | `src/models/` | Training scripts and notebooks per model |
 | `src/evaluation/` | Multi-seed experiments, attack harness, exporters |
 | `src/reproduction/` | One script per leakage finding, plus attack routes |
-| `src/response/` | Containment policy (threat level, quarantine) |
+| `src/response/` | Containment policy (threat level; quarantine, restrict, end-session; escalation) |
 | `src/api/` | FastAPI prediction service |
 | `frontend/` | Next.js website; `frontend/data/` is what it displays |
 | `evaluation_results/` | Every reported number, labelled current / evidence / historical |

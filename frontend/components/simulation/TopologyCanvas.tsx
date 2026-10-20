@@ -38,7 +38,7 @@ type Props = {
   running: boolean;
   /** the device sending the current attack, from the recording */
   sender: Sender | null;
-  /** devices an operator has quarantined (simulated switch ACL) */
+  /** devices an operator has contained: quarantined, restricted or, for the car, session stopped */
   quarantined?: string[];
 };
 
@@ -244,7 +244,7 @@ export default function TopologyCanvas({
             )}
             {blockedNode && (
               <text x={n.x + n.w - 6} y={n.y - 6} textAnchor="end" fontSize="9" fontWeight={700}
-                fill="#CBD5E1" fontFamily="ui-monospace, monospace">QUARANTINED</text>
+                fill="#CBD5E1" fontFamily="ui-monospace, monospace">{n.id === "evcc" ? "BLOCKED" : "CONTAINED"}</text>
             )}
             {hitAge < 520 && (
               <rect x={n.x - 4} y={n.y - 4} width={n.w + 8} height={n.h + 8} rx="6" fill="rgba(244,63,94,0.08)"

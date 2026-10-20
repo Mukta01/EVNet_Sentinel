@@ -57,6 +57,10 @@ attack-test:
 insights: attack-test
 	$(PYTHON) src/evaluation/export_insights.py
 
+# Replays every recorded attack through the containment policy (no raw data needed).
+response:
+	$(PYTHON) src/evaluation/replay_response.py
+
 # Needs saved_models/multiseed and data/multiseed (run_experiments.py) plus the
 # ARF drift logs; the figures then read the same JSON as the dashboard.
 figures:

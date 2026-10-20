@@ -20,11 +20,12 @@ export default async function DashboardPage() {
   const insights = JSON.parse(insightsRaw);
   const paperRaw = await fs.readFile(path.join(process.cwd(), "data", "paper.json"), "utf8");
   const paper = JSON.parse(paperRaw);
+  const replay = JSON.parse(await fs.readFile(path.join(process.cwd(), "data", "response-replay.json"), "utf8"));
 
   return (
     <main className="dashboard-surface min-h-screen bg-[#020617]">
       <Navbar />
-      <DashboardShell findings={findings} simulation={simulation} insights={insights} paper={paper} />
+      <DashboardShell findings={findings} simulation={simulation} insights={insights} paper={paper} replay={replay} />
       <Footer />
     </main>
   );

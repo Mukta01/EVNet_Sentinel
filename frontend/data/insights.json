@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-17T09:21:15+00:00",
+ "generated": "2026-10-20T15:39:19+00:00",
  "testedAt": "2026-10-17T09:15:49+00:00",
  "config": {
   "trials": 30,
@@ -37,6 +37,42 @@
   "owner": "Station owner / site operator",
   "csms": "CSMS operator",
   "analyst": "Network analyst"
+ },
+ "containment": {
+  "quarantine": {
+   "label": "Quarantine the device",
+   "when": "Confident denial-of-service traffic from one identified device.",
+   "who": "analyst",
+   "how": [
+    "Shut the device's switch port, or add an ACL that drops all traffic from its MAC/IP address.",
+    "Keep a packet capture of the last few seconds for the incident record before cutting it off."
+   ],
+   "effect": "The device can no longer reach anything on the site network. Chargers and the CSMS stay online.",
+   "undo": "Release the port or remove the ACL once the device has been checked."
+  },
+  "restrict": {
+   "label": "Restrict the device",
+   "when": "A device on the site network is scanning the chargers or the CSMS.",
+   "who": "analyst",
+   "how": [
+    "Move the device to the guest VLAN, or add an ACL that denies it the charger subnet and the CSMS address while still allowing internet access.",
+    "Mark the device as watched: if it later sends any denial-of-service traffic, Sentinel recommends a full quarantine at a much lower bar."
+   ],
+   "effect": "The scan stops getting answers, so the attacker learns nothing more about the chargers. Softer than a quarantine, because scans are named exactly only about a third of the time.",
+   "undo": "Move the device back to its normal VLAN."
+  },
+  "end-session": {
+   "label": "End the charging session and block the vehicle",
+   "when": "The scan is coming from a vehicle over the charging cable.",
+   "who": "csms",
+   "how": [
+    "Stop the session from the CSMS (OCPP RemoteStopTransaction / RequestStopTransaction).",
+    "Block the vehicle's ID token in the station's local authorisation list (OCPP SendLocalList with status Blocked); for Plug & Charge, revoke its contract certificate.",
+    "Ask the station owner to take the connector out of service until the station has been checked."
+   ],
+   "effect": "The vehicle loses its link to the station. Its traffic never crosses the site switch, so a switch quarantine would not stop it; the charger has to.",
+   "undo": "Unblock the ID token once the vehicle's owner has had it inspected."
+  }
  },
  "takeaways": [
   {
@@ -2230,7 +2266,8 @@
     "actions": {
      "owner": [
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
@@ -2246,7 +2283,8 @@
     "categoryActions": {
      "owner": [
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
@@ -2467,7 +2505,8 @@
     "actions": {
      "owner": [
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
@@ -2483,7 +2522,8 @@
     "categoryActions": {
      "owner": [
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
@@ -2704,7 +2744,8 @@
     "actions": {
      "owner": [
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
@@ -2720,7 +2761,8 @@
     "categoryActions": {
      "owner": [
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
@@ -2942,7 +2984,8 @@
      "owner": [
       "Contact the station vendor: confirm the firmware has no known unpatched vulnerabilities.",
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Audit the scanned stations' configuration and credentials; rotate them if there is any doubt.",
@@ -2959,7 +3002,8 @@
     "categoryActions": {
      "owner": [
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
@@ -3180,7 +3224,8 @@
     "actions": {
      "owner": [
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
@@ -3196,7 +3241,8 @@
     "categoryActions": {
      "owner": [
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
@@ -3418,7 +3464,8 @@
      "owner": [
       "Remove version banners from station services where the vendor allows it.",
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",
@@ -3434,7 +3481,8 @@
     "categoryActions": {
      "owner": [
       "Make sure station firmware is current \u2014 reconnaissance is typically looking for a known, unpatched weakness.",
-      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed."
+      "Ask the vendor which ports the station needs; anything beyond OCPP to the CSMS and the local ISO 15118 link to the vehicle should be closed.",
+      "For a scan from a vehicle: make sure the station only accepts ISO 15118 charging messages on the cable and drops any other IP traffic from the car."
      ],
      "csms": [
       "Require OCPP security profile 2 or 3 (TLS, with client certificates in profile 3) so a mapped station still cannot be impersonated.",

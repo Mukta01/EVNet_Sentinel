@@ -247,17 +247,19 @@ All five are in `docs/figures/` and in paper v2. Each is drawn by `make_paper_fi
 ## 6. Website and dashboard (6 min)
 
 ### Neha: website (Frontend & API Integration), 3 min
-1. **Home → Beat the Sentinel:** drag an attack card onto a charging station and watch it get detected and named. Try a flood (named exactly), then a scan (caught but often misnamed).
-2. **Tune the detector:** move the confidence gate. A higher threshold means fewer exact names but fewer wrong ones.
-3. **Scroll the story:** the testbed builds up piece by piece (CSMS and Wi-Fi, charger, car), then the map of Mumbai shows where Sentinel would sit. Mention that it is a **mirror-port IDS**: it watches a copy of the traffic and raises alerts, but never blocks.
+1. **Home:** the stats count up from the exported results (floods named, scans recognised, false alarms for XGBoost, flows analysed).
+2. **Scroll the story:** Mumbai's chargers report to the CSMS, a car drives in and plugs in, an attacker joins the wifi, Sentinel watches a mirrored copy of the traffic, and the car itself turns attacker. Mention that it is a **mirror-port IDS**: it raises alerts and recommends actions, but never blocks on its own.
+3. **The response chapter:** Detect → Contain → Harden → Verify, with one card per case (flood from the wifi, scan from the wifi, scan from the car) and the replay numbers.
 4. **Simulation:**
    - Pick an attack and choose **Sent from** (Kali PC, Raspberry Pi or a malicious EV). Packets travel to the station that was really attacked in the dataset.
    - Run a **campaign** and show the incident log.
-   - **Containment (simulated):** launch a SYN flood and watch **Site status & containment**.
-     - The level goes Safe → Elevated → **Network not safe**, and Sentinel recommends quarantining the Kali PC.
-     - Click **Approve quarantine**. The attacker is marked QUARANTINED, its packets turn grey and stop at the access point, and the site returns to Safe after 10 quiet flows.
-     - Then run the *Low and slow* campaign: scans also make the site "not safe", but no quarantine is recommended, because scans are named correctly only 34% of the time.
-     - Say: "Sentinel stays passive. It recommends; an operator approves a switch block on that one device; the chargers and CSMS can never be quarantined." The rules are in `frontend/data/containment-policy.json`, and `tests/test_containment.py` checks them on real held-out flows.
+   - **The closed loop (simulated):** watch **Site status & response**, whose strip shows Detect → Contain → Harden → Verify.
+     - **Flood:** launch a SYN flood. The level goes Safe → Elevated → **Network not safe**, and Sentinel recommends **quarantining** the Kali PC, with who does it and how (switch port or ACL). Approve it: the attacker is marked CONTAINED, its packets stop at the access point, the "attack flows stopped" count rises, and the site returns to Safe after 10 quiet flows.
+     - **Scan:** launch a port scan. Sentinel recommends **restricting** the device: it keeps internet access but can no longer reach the chargers or the CSMS. Scans are recognised as scans reliably but named exactly only 34% of the time, so the action works on the category and stops short of a quarantine. The device is now **watched**.
+     - **Escalation:** without approving the restriction, switch to a SYN flood from the same Kali PC. Sentinel recommends a quarantine almost at once, marked *escalation*: a scan followed by an attack.
+     - **Compromised car:** send a scan from the malicious EV. The recommendation is to **stop the session and block the vehicle** (OCPP RemoteStopTransaction, block its ID token), because the car's traffic never crosses the switch.
+     - Under each recommendation, the response panel lists what each role hardens so the same attack fails next time.
+     - Say: "Sentinel recommends; a person approves every action; the chargers and CSMS can never be contained." The rules are in `frontend/data/containment-policy.json`. `tests/test_containment.py` checks them on held-out flows, and `src/evaluation/replay_response.py` replays every recorded attack through them.
 
 ### Shruti: dashboard (Data Viz & Testing), 3 min
 **Findings tab**, top to bottom:
@@ -265,6 +267,7 @@ All five are in `docs/figures/` and in paper v2. Each is drawn by `make_paper_fi
 - **Class separation** and the **confusion explorer:** switch models; hover a cell for counts.
 - **Feature separability:** the live version of the figure.
 - **Model table:** mean ± std over 3 seeds.
+- **After detection: the response, replayed:** 20/20 attacker-and-attack pairs contained, flood flows before quarantine 11 → 1 once the device has scanned first, and 0 actions on normal traffic. The table gives the action per attack and sender, and how many attack flows got through first.
 - **Leak evidence** and **fingerprint ablation:** removing `src_port` closes the Decision Tree's gap.
 - **Drift timeline** and **drift alignment:** alarms sit on file seams.
 - **Figure export:** download any chart as an image.
@@ -273,7 +276,7 @@ All five are in `docs/figures/` and in paper v2. Each is drawn by `make_paper_fi
 - No attack slipped through as normal traffic.
 - Floods are named exactly.
 - Scans are recognised as scans but named only 34% of the time.
-- SVM and Logistic Regression raise too many false alarms: 59% and 46% of normal flows, against 2% for Random Forest. That is why Random Forest is the recommendation.
+- SVM and Logistic Regression raise too many false alarms on normal traffic. XGBoost raises the fewest (1.8%, Random Forest 2.6%, overlapping intervals), so by the pre-stated rule XGBoost is the primary detector.
 - The playbook is split by audience: station owner, CSMS operator, analyst.
 
 **Live inference tab:** replays held-out flows through every model with their confidence.
@@ -285,7 +288,7 @@ All five are in `docs/figures/` and in paper v2. Each is drawn by `make_paper_fi
 - **Reproduced:** the paper's pipeline, number for number.
 - **Found:** a timestamp leak (one column scores 0.9976), and drift alarms that line up with capture-file seams.
 - **Corrected:** leak-free macro-F1 is 0.558 ± 0.008. Floods are solved; scans are an open, data-limited problem.
-- **Built:** per-attack tests with regression gates, an API, a dashboard and a response playbook.
+- **Built:** per-attack tests with regression gates, an API, a dashboard, and a closed-loop response (contain, harden, verify) replayed over every recorded attack.
 - **Next:** the paper goes to an Elsevier journal, as the professor advised.
 
 ---
@@ -294,6 +297,7 @@ All five are in `docs/figures/` and in paper v2. Each is drawn by `make_paper_fi
 
 | Question | Answer, and where to point |
 |---|---|
+| It only detects. What happens when an attack is found? | It closes the loop. Floods get the sending device quarantined, scans get it restricted from the chargers and CSMS, and a scanning car has its session stopped and the vehicle blocked. A device that scanned and then floods is quarantined on its first flood flow. Each role then hardens the site (playbook). Replayed over every recorded attack: 20/20 contained. See the dashboard's Findings tab and `evaluation_results/response/`. |
 | Why macro-F1 and not accuracy? | Floods are 99% of the data after dedup. Accuracy rewards the majority class; macro-F1 weights all 15 classes equally. See `evaluation_results/leakfree-reference/`: 0.996 accuracy, 0.70 macro-F1. |
 | Is ADWIN useless then? | No. It works; here it fires on capture-file seams. The dataset has no real concept drift to detect. |
 | Why not deep learning? | Per-flow features don't contain the information needed to separate scans (best feature: 5%). A bigger model can't recover information that isn't in the features. Session-level features would. |
