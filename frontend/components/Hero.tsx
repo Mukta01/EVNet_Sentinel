@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, Shield } from "lucide-react";
 import DotField from "./DotField";
-import HeroMap from "./HeroMap";
+import ParticleText from "./ParticleText";
 import { useTheme } from "./ThemeToggle";
 
 export type HeroStat = { value: string; label: string; sub: string };
@@ -79,64 +79,58 @@ export default function Hero({ stats }: { stats: HeroStat[] }) {
       <div className="orb-2 absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-emerald-500/[0.07] blur-[120px] pointer-events-none" />
       <div className="absolute top-[60%] left-[50%] w-[300px] h-[300px] rounded-full bg-violet-500/[0.05] blur-[100px] pointer-events-none" />
 
-      {/* Content: the pitch on the left, the live city on the right */}
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-10 px-6 pt-28 pb-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-        <div className="text-center lg:text-left">
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center space-x-2 bg-emerald-500/[0.08] border border-emerald-500/20 text-emerald-400 px-4 py-1.5 rounded-full mb-8 text-xs font-semibold uppercase tracking-widest"
-          >
-            <Shield className="w-3.5 h-3.5" />
-            <span>EVCS Network Intrusion Detection</span>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-6 text-[clamp(2.75rem,6vw,5.25rem)] font-black leading-[0.95] tracking-tight text-white"
-          >
-            Securing <br className="hidden lg:block" />
-            the <span className="text-emerald-400">Grid</span>
-          </motion.h1>
-
-          <motion.p
-            ref={subRef}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto mb-8 max-w-xl text-lg leading-relaxed font-light text-gray-400 lg:mx-0"
-          >
-            Every public charger is a networked computer. Sentinel watches a copy of their
-            traffic and names the attack, tested attack by attack, with the data leak in the
-            published results removed.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.42 }}
-            className="flex flex-wrap justify-center gap-3 lg:justify-start"
-          >
-            <a href="#architecture" className="rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400">
-              See how it works
-            </a>
-            <a href="/dashboard" className="rounded-lg border border-white/15 px-5 py-2.5 text-sm font-semibold text-gray-200 transition-colors hover:border-white/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400">
-              View the results
-            </a>
-          </motion.div>
-        </div>
-
+      {/* Content */}
+      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-24 pb-16">
+        {/* Badge */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto h-[min(68vh,620px)] w-full max-w-[560px] lg:max-w-none"
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="inline-flex items-center space-x-2 bg-emerald-500/[0.08] border border-emerald-500/20 text-emerald-400 px-4 py-1.5 rounded-full mb-10 text-xs font-semibold uppercase tracking-widest"
         >
-          <HeroMap />
+          <Shield className="w-3.5 h-3.5" />
+          <span>EVCS Network Intrusion Detection</span>
         </motion.div>
+
+        {/* Headline */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full h-[120px] sm:h-[160px] md:h-[200px] lg:h-[250px] mb-8"
+        >
+          <ParticleText
+            text="Securing the Grid"
+            particleSize={2}
+            density={4}
+            color={light ? "#0F172A" : "#ffffff"}
+            highlightColor={light ? "#059669" : "#10b981"}
+            scatter={180}
+            gatherDuration={1600}
+            stagger={420}
+            pointerRepel={0}
+            repelRadius={120}
+            idleDrift={0.7}
+            trigger="mount"
+            fontSize="clamp(3rem, 9vw, 8rem)"
+            fontWeight={900}
+            fontFamily="inherit"
+            glow
+          />
+        </motion.div>
+
+        {/* Sub */}
+        <motion.p
+          ref={subRef}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light"
+        >
+          Machine-learning intrusion detection for EV charging networks — tested attack by
+          attack, with the data leak in the published results removed.
+        </motion.p>
+
       </div>
 
       {/* Stats bar */}
@@ -145,7 +139,7 @@ export default function Hero({ stats }: { stats: HeroStat[] }) {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-16"
+        className="relative z-10 w-full max-w-5xl mx-auto px-6 pb-8"
       >
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map((stat, i) => (
