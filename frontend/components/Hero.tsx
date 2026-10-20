@@ -8,15 +8,12 @@ import { ArrowDown, Shield } from "lucide-react";
 import DotField from "./DotField";
 import ParticleText from "./ParticleText";
 import { useTheme } from "./ThemeToggle";
-import HeroPlayground from "./hero/HeroPlayground";
-import type { DemoAttack } from "./hero/BeatTheSentinel";
-import type { HeroTuning } from "./hero/TuneDetector";
 
 export type HeroStat = { value: string; label: string; sub: string };
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]; tuning: HeroTuning; stats: HeroStat[] }) {
+export default function Hero({ stats }: { stats: HeroStat[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const light = useTheme() === "light";
 
@@ -131,18 +128,9 @@ export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]
           className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light"
         >
           Machine-learning intrusion detection for EV charging networks — tested attack by
-          attack, with the data leak in the published results removed. Try to beat it.
+          attack, with the data leak in the published results removed.
         </motion.p>
 
-        {/* Hands-on: fire a real held-out flow at the detector */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.45 }}
-          className="mb-12"
-        >
-          <HeroPlayground attacks={attacks} tuning={tuning} />
-        </motion.div>
       </div>
 
       {/* Stats bar */}
