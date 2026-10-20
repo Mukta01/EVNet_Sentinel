@@ -28,7 +28,7 @@ export default function Pipeline({
       detail: "Stratified train / validation / test, repeated with a new split and model seed each run.",
       figure: `seeds ${seeds.join(" / ")}` },
     { step: "04", title: "Detect", tone: "#22C55E",
-      detail: "Static: Random Forest, Decision Tree, Logistic Regression, SVM. Online: Adaptive Random Forest with ADWIN.",
+      detail: "Static: XGBoost, LightGBM, Random Forest, Decision Tree, Logistic Regression, SVM. Online: Adaptive Random Forest with ADWIN.",
       figure: `${fmt.format(dataset.test_rows)} held-out flows per seed` },
     { step: "05", title: "Test per attack", tone: "#F59E0B",
       detail: "Every attack type fed to every model in random batches; graded detected / right category / named.",

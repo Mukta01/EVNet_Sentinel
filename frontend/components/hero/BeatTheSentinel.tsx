@@ -4,12 +4,12 @@ import { useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion, type PanInfo } from "framer-motion";
 import { Car, Laptop, Network, ShieldCheck, Zap } from "lucide-react";
 
-/** One real held-out flow: what the Random Forest called it, and its recorded route. */
+/** One real held-out flow: what the primary detector called it, and its recorded route. */
 export type DemoFlow = {
   id: number; called: string; confidence: number | null;
   station: "EVSE-A" | "EVSE-B"; sender: "kali" | "rpi" | "evcc";
 };
-export type DemoAttack = { label: string; cls: string; category: "dos" | "recon"; flows: DemoFlow[] };
+export type DemoAttack = { label: string; cls: string; category: "dos" | "recon"; detector: string; flows: DemoFlow[] };
 
 const SCANS = new Set(["TCP_Port_Scan", "SYN_Stealth_Scan", "Service_Version_Detection", "OS_Fingerprinting", "Aggressive_Scan", "Vulnerability_Scan"]);
 const pretty = (s: string) => s.replace(/_/g, " ");
@@ -46,7 +46,7 @@ type Result = {
  * it past Sentinel unnoticed. The attack travels from the device that really
  * sent it to the station you chose; the switch mirrors a copy to Sentinel,
  * which raises an alert or doesn't. Each try replays a real held-out flow
- * recorded against that station, judged by the Random Forest.
+ * recorded against that station, judged by the primary detector.
  */
 export default function BeatTheSentinel({ attacks }: { attacks: DemoAttack[] }) {
   const reduce = useReducedMotion();
@@ -288,7 +288,7 @@ function Verdict({ r }: { r: Result }) {
         </p>
       )}
       <p className="mt-1 font-mono text-[11px] text-slate-600">
-        flow #{r.flow.id} · {SENDER[r.flow.sender].label} → {r.station} · Random Forest{conf}
+        flow #{r.flow.id} · {SENDER[r.flow.sender].label} → {r.station} · {r.attack.detector}{conf}
       </p>
     </div>
   );

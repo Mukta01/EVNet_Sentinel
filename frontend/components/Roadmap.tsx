@@ -64,9 +64,9 @@ const phases = [
     id: 6,
     title: "Paper, testing and documentation",
     status: "done",
-    date: "Oct 5 – 15",
+    date: "Oct 5 – 17",
     owner: "All",
-    items: ["Research paper v2 and v3", "40 test cases, 71 automated tests", "Demo scripts and walkthroughs", "Public demo link"],
+    items: ["XGBoost and LightGBM benchmarks", "Research paper v2 and v3", "40 test cases, 71 automated tests", "Demo scripts and walkthroughs", "Public demo link"],
   },
   {
     id: 7,

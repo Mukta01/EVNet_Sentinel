@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { MODEL_LABEL as LABEL } from "@/components/dashboard/theme";
 
 type Cat = { n: number; rightHist: number[]; wrongHist: number[] };
 export type HeroTuning = {
@@ -14,7 +15,6 @@ export type HeroTuning = {
   }>;
 };
 
-const LABEL: Record<string, string> = { RandomForest: "Random Forest", DecisionTree: "Decision Tree" };
 const ROWS = [
   { key: "dos", title: "Denial of service" },
   { key: "recon", title: "Scans (reconnaissance)" },
@@ -148,7 +148,7 @@ export default function TuneDetector({ data }: { data: HeroTuning }) {
           ? `Always naming, ${LABEL[model]} gets ${Math.round(base.wrong * 100)}% of scans wrong. Raise the bar.`
           : `Wrong scan names: ${Math.round(base.wrong * 100)}% → ${Math.round(scans.wrong * 100)}%. ` +
             (scans.wrong > 0.01 && bar > 80
-              ? `${LABEL[model]} stays confidently wrong on some scans — a single tree can’t tell when it’s unsure.`
+              ? `${LABEL[model]} stays confidently wrong on some scans${model === "DecisionTree" ? " — a single tree can’t tell when it’s unsure" : ""}.`
               : `The rest are honestly reported as “a scan”.`)}
         {" "}False alarms on normal traffic: {(m.falseAlarm * 100).toFixed(1)}% ({m.benignN} flows).
       </p>
