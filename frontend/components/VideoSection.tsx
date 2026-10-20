@@ -18,7 +18,7 @@ export default function VideoSection() {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <section id="video" className="relative px-6 pb-24 pt-8">
+    <section id="video" className="relative px-6 pb-8 pt-16">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}

@@ -127,6 +127,8 @@ function PinnedStory() {
 
     const bar = q(".progress i") as HTMLElement | null;
     if (bar) bar.style.width = `${p * 100}%`;
+    // Hand off to the next section: the stage fades out over the last few percent of the scroll.
+    if (stage.current) stage.current.style.opacity = String(1 - seg(p, 0.965, 1));
 
     // 1 → 2: zoom from the city map into the BKC hub
     const hub = HUBS[FOCUS];
