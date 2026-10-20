@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Play, Clapperboard } from "lucide-react";
+import DecryptedText from "./DecryptedText";
 
 /**
  * A short project video under the hero. Until VIDEO_ID is set it shows a
@@ -52,7 +53,9 @@ export default function VideoSection() {
               <span className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">
                 <Clapperboard className="h-6 w-6 text-emerald-400" aria-hidden />
               </span>
-              <p className="text-lg font-semibold text-white">Project video coming soon</p>
+              <p className="text-lg font-semibold text-white">
+                <DecryptedText text="Project video coming soon" animateOn="view" sequential revealDirection="start" speed={40} encryptedClassName="text-emerald-400/70" />
+              </p>
               <p className="max-w-sm text-[13px] text-slate-400">
                 A two-minute walkthrough: the leak we found, the corrected results, and Sentinel catching a live attack.
               </p>
@@ -60,7 +63,7 @@ export default function VideoSection() {
           )}
         </div>
         <div className="flex items-center justify-between border-t border-white/[0.06] px-5 py-3 text-[12.5px] text-slate-400">
-          <span className="text-slate-200">{VIDEO_TITLE}</span>
+          <DecryptedText text={VIDEO_TITLE} animateOn="view" sequential speed={35} className="text-slate-200" encryptedClassName="text-emerald-400/70" />
           <span className="font-mono">~2 min</span>
         </div>
       </motion.div>

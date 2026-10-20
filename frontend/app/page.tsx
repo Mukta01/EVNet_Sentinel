@@ -9,6 +9,7 @@ import TechStack from "@/components/TechStack";
 import Team from "@/components/Team";
 import Roadmap from "@/components/Roadmap";
 import Footer from "@/components/Footer";
+import SectionDots from "@/components/SectionDots";
 import { MODEL_LABEL } from "@/components/dashboard/theme";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -53,8 +54,10 @@ export default async function Home() {
       <ArchitectureStory />
       <VideoSection />
       <Features />
-      <TechStack />
-      <Team />
+      <SectionDots>
+        <TechStack />
+        <Team />
+      </SectionDots>
       <Roadmap />
       <Footer />
     </main>
