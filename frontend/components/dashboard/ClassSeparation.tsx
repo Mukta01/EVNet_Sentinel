@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { FAMILY, MODEL_COLOR, MODEL_LABEL, prettyClass, type Family, fmtScore } from "./theme";
+import { FAMILY, MODEL_COLOR, MODEL_LABEL, prettyClass, type Family, fmtScore, fmtStd } from "./theme";
 
 type ClassRow = {
   class: string;
@@ -180,6 +180,10 @@ export default function ClassSeparation({
                 <span className="w-14 shrink-0 font-mono text-xs tabular-nums text-slate-300">
                   {fmtScore(f1)}
                 </span>
+                <span className="w-16 shrink-0 font-mono text-[11px] tabular-nums text-slate-500"
+                  title={`Standard deviation over the seeds, rounded up: ${std.toFixed(6)}`}>
+                  ± {fmtStd(std, f1)}
+                </span>
                 <span
                   className="hidden w-20 shrink-0 text-right font-mono text-[11px] tabular-nums text-slate-600 sm:block"
                   title={`${count.format(row.support)} flows in the dataset`}
@@ -203,7 +207,7 @@ export default function ClassSeparation({
           </span>{" "}
           flows and scores{" "}
           <span className="font-mono tabular-nums text-slate-100">
-            {(volumetric.find((r) => r.class === control.solved.class)?.models[active].f1 ?? 0).toFixed(3)}
+            {fmtScore(volumetric.find((r) => r.class === control.solved.class)?.models[active].f1 ?? 0)}
           </span>
           .{" "}
           <span className="text-amber-300">{prettyClass(control.unsolved.class)}</span>{" "}
@@ -213,7 +217,7 @@ export default function ClassSeparation({
           </span>{" "}
           flows and scores{" "}
           <span className="font-mono tabular-nums text-slate-100">
-            {(recon.find((r) => r.class === control.unsolved.class)?.models[active].f1 ?? 0).toFixed(3)}
+            {fmtScore(recon.find((r) => r.class === control.unsolved.class)?.models[active].f1 ?? 0)}
           </span>
           . Comparable support, opposite outcomes.
         </p>
@@ -222,7 +226,7 @@ export default function ClassSeparation({
           {[
             {
               term: `${FAMILY.volumetric.label} mean F1`,
-              value: volumetricMean.toFixed(3),
+              value: fmtScore(volumetricMean),
               tone: FAMILY.volumetric.text,
               note: `${volumetric.length} classes`,
             },

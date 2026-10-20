@@ -111,7 +111,7 @@ def build_findings(multiseed_path, out_dir, support):
 
     def agg(model, key):
         values = [s["models"][model][key] for s in per_seed]
-        return round(float(np.mean(values)), 4), round(float(np.std(values)), 4)
+        return round(float(np.mean(values)), 6), round(float(np.std(values)), 6)
 
     models = []
     for name in model_names:
@@ -130,8 +130,8 @@ def build_findings(multiseed_path, out_dir, support):
                "support": support.get(cls, 0), "models": {}}
         for name in model_names:
             values = [s["models"][name]["per_class_f1"].get(cls, 0.0) for s in per_seed]
-            row["models"][name] = {"f1": round(float(np.mean(values)), 4),
-                                   "std": round(float(np.std(values)), 4)}
+            row["models"][name] = {"f1": round(float(np.mean(values)), 6),
+                                   "std": round(float(np.std(values)), 6)}
         per_class.append(row)
     order = {"volumetric": 0, "recon": 1, "other": 2}
     per_class.sort(key=lambda r: (order[r["group"]], -r["models"][models[0]["name"]]["f1"]))
@@ -293,11 +293,15 @@ def main():
     parser.add_argument("--out-dir", dest="out_dir", default="frontend/data")
     parser.add_argument("--per-class", dest="per_class", type=int, default=10)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--findings-only", action="store_true",
+                        help="Rewrite findings.json only; leave the recorded simulation flows as they are")
     args = parser.parse_args()
 
     os.makedirs(args.out_dir, exist_ok=True)
     support = class_support(args.data_dir)
     build_findings(args.multiseed, args.out_dir, support)
+    if args.findings_only:
+        return
     build_simulation(args.data_dir, args.models_dir, args.out_dir, args.per_class, args.seed)
 
 

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ListChecks, Pause, Play, Radio, Square } from "lucide-react";
 import TopologyCanvas, { groupTone, type Packet } from "./TopologyCanvas";
 import { BLOCKED_PATHS, SENDERS, nodeById, routeFor, type NodeId, type Sender } from "./topology";
-import { FAMILY, MODEL_LABEL, prettyClass } from "../dashboard/theme";
+import { FAMILY, MODEL_LABEL, fmtConfidence, prettyClass } from "../dashboard/theme";
 import ResponsePanel, { type ResponseMap } from "./ResponsePanel";
 import IncidentLog, { type Incident } from "./IncidentLog";
 import ContainmentPanel, { ACTION_LABEL, type ContainmentEvent, type ContainmentGuide } from "./ContainmentPanel";
@@ -711,7 +711,7 @@ function FlowInspector({
               {verdict && <GroupChip group={verdict.group} className="mt-1.5" />}
               {verdict?.confidence != null && (
                 <p className="mt-1.5 font-mono text-[10px] tabular-nums text-slate-500">
-                  confidence {(verdict.confidence * 100).toFixed(1)}%
+                  confidence {fmtConfidence(verdict.confidence)}
                 </p>
               )}
             </div>

@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-20T15:39:19+00:00",
+ "generated": "2026-10-20T17:06:23+00:00",
  "testedAt": "2026-10-17T09:15:49+00:00",
  "config": {
   "trials": 30,
@@ -324,6 +324,7 @@
    "bestVerdict": "identified",
    "bestCategoryModel": "RandomForest",
    "label": "PSHACK Flood",
+   "tested": 4500,
    "f1": {
     "RandomForest": {
      "f1": 0.9999,
@@ -566,6 +567,7 @@
    "bestVerdict": "identified",
    "bestCategoryModel": "RandomForest",
    "label": "SYN Flood",
+   "tested": 4500,
    "f1": {
     "RandomForest": {
      "f1": 0.9999,
@@ -811,6 +813,7 @@
    "bestVerdict": "identified",
    "bestCategoryModel": "XGBoost",
    "label": "SynonymousIP Flood",
+   "tested": 4500,
    "f1": {
     "RandomForest": {
      "f1": 0.9999,
@@ -1055,6 +1058,7 @@
    "bestVerdict": "identified",
    "bestCategoryModel": "DecisionTree",
    "label": "TCP Flood",
+   "tested": 4500,
    "f1": {
     "RandomForest": {
      "f1": 0.9999,
@@ -1299,6 +1303,7 @@
    "bestVerdict": "identified",
    "bestCategoryModel": "RandomForest",
    "label": "UDP Flood",
+   "tested": 4500,
    "f1": {
     "RandomForest": {
      "f1": 0.9994,
@@ -1539,6 +1544,7 @@
    "bestVerdict": "detected",
    "bestCategoryModel": "XGBoost",
    "label": "Slowloris Scan",
+   "tested": 408,
    "f1": {
     "RandomForest": {
      "f1": 0.1908,
@@ -1754,6 +1760,7 @@
    "bestVerdict": "detected",
    "bestCategoryModel": "LightGBM",
    "label": "ICMP Flood",
+   "tested": 5,
    "f1": {
     "RandomForest": {
      "f1": 0.6605,
@@ -1993,6 +2000,7 @@
    "bestVerdict": "category",
    "bestCategoryModel": "XGBoost",
    "label": "ICMP Fragmentation",
+   "tested": 4,
    "f1": {
     "RandomForest": {
      "f1": 0.439,
@@ -2232,6 +2240,7 @@
    "bestVerdict": "category",
    "bestCategoryModel": "LogisticRegression",
    "label": "TCP Port Scan",
+   "tested": 4500,
    "f1": {
     "RandomForest": {
      "f1": 0.2654,
@@ -2471,6 +2480,7 @@
    "bestVerdict": "detected",
    "bestCategoryModel": "LogisticRegression",
    "label": "OS Fingerprinting",
+   "tested": 4155,
    "f1": {
     "RandomForest": {
      "f1": 0.2227,
@@ -2710,6 +2720,7 @@
    "bestVerdict": "detected",
    "bestCategoryModel": "LogisticRegression",
    "label": "SYN Stealth Scan",
+   "tested": 4500,
    "f1": {
     "RandomForest": {
      "f1": 0.1053,
@@ -2949,6 +2960,7 @@
    "bestVerdict": "category",
    "bestCategoryModel": "LogisticRegression",
    "label": "Vulnerability Scan",
+   "tested": 4500,
    "f1": {
     "RandomForest": {
      "f1": 0.2043,
@@ -3190,6 +3202,7 @@
    "bestVerdict": "detected",
    "bestCategoryModel": "LogisticRegression",
    "label": "Aggressive Scan",
+   "tested": 4172,
    "f1": {
     "RandomForest": {
      "f1": 0.1453,
@@ -3429,6 +3442,7 @@
    "bestVerdict": "detected",
    "bestCategoryModel": "LogisticRegression",
    "label": "Service Version Detection",
+   "tested": 4500,
    "f1": {
     "RandomForest": {
      "f1": 0.1561,
@@ -3641,6 +3655,7 @@
    "bestVerdict": "clean",
    "bestCategoryModel": "XGBoost",
    "label": "Benign",
+   "tested": 12,
    "f1": {
     "RandomForest": {
      "f1": 0.9855,

@@ -43,14 +43,48 @@ export const FAMILY = {
 export type Family = keyof typeof FAMILY;
 
 /**
- * Never let rounding turn a near-perfect score into a perfect one: 0.99993
- * would print as "1.000", which reads as a claim the data does not support.
- * Values in [0.995, 1) are floored at one more digit of precision instead.
+ * Round to `digits`, except never up to 1: a value below 1 that would print
+ * as 1 is floored instead (0.99996 -> 0.9999), because "1.000" reads as a
+ * claim the data does not support.
  */
+const nearOne = (v: number, digits: number) => {
+  const k = 10 ** digits;
+  const r = Math.round(v * k) / k;
+  return v < 1 && r >= 1 ? Math.floor(v * k) / k : r;
+};
+/** Values in [0.995, 1) get one more digit, so 0.99988 reads 0.9999, not 1.000. */
 export const fmtScore = (v: number) =>
-  v >= 0.995 && v < 1 ? (Math.floor(v * 1e4) / 1e4).toFixed(4) : v.toFixed(3);
+  v >= 0.995 && v < 1 ? nearOne(v, 4).toFixed(4) : nearOne(v, 3).toFixed(3);
+/** Digits fmtScore shows for this value, so a spread can be printed to match. */
+const scoreDigits = (v: number) => (v >= 0.995 && v < 1 ? 4 : 3);
+/**
+ * A spread is rounded UP at the score's precision, never down: a seed-to-seed
+ * std of 0.00002 prints as "0.0001", not "0.0000", which would claim no spread
+ * at all. Rounding an uncertainty up is the conservative convention.
+ */
+export const fmtStd = (std: number, score: number, digits?: number) => {
+  const d = digits ?? scoreDigits(score);
+  return std <= 0 ? (0).toFixed(d) : (Math.ceil(std * 10 ** d - 1e-9) / 10 ** d).toFixed(d);
+};
+export const fmtScoreStd = (v: number, std: number, digits?: number) =>
+  digits ? `${nearOne(v, digits).toFixed(digits)} ± ${fmtStd(std, v, digits)}` : `${fmtScore(v)} ± ${fmtStd(std, v)}`;
+/**
+ * A model's confidence is an estimate, not a certainty, even when every tree
+ * votes the same way (exactly 1.0): at the top it reads "≥ 99.99%".
+ */
+export const fmtConfidence = (v: number) => (v >= 0.9999 ? "≥ 99.99%" : fmtPct(v));
+/**
+ * A test pass rate. When every one of n tested flows passed, "100%" would read
+ * as "never fails"; the honest statement is the 95% lower bound, 1 − 3/n
+ * (the rule of three): 4,500 of 4,500 reads "≥ 99.93%".
+ */
+export const fmtRate = (v: number, n?: number) => (v >= 1 && n ? `≥ ${fmtPct(Math.max(0, 1 - 3 / n))}` : fmtPct(v));
+export const rateNote = (v: number, n?: number) =>
+  v >= 1 && n ? `all ${n.toLocaleString()} tested flows passed; 95% lower bound` : undefined;
+/** Percentages follow the same rule: 99.996% prints as 99.99%, never 100%. */
 export const fmtPct = (v: number) =>
-  v >= 0.995 && v < 1 ? `${(Math.floor(v * 1000) / 10).toFixed(1)}%` : `${Math.round(v * 100)}%`;
+  v >= 0.999 && v < 1 ? `${(nearOne(v, 4) * 100).toFixed(2)}%`
+  : v >= 0.995 && v < 1 ? `${(nearOne(v, 3) * 100).toFixed(1)}%` : `${Math.round(nearOne(v, 2) * 100)}%`;
 
 export const MODEL_COLOR: Record<string, string> = {
   RandomForest: "#22C55E",

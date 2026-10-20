@@ -21,6 +21,15 @@
         ],
         "createdAt": "2026-10-20T15:40:54.291Z",
         "reason": "Claude: flagged element is slate text on bg-white/[0.02], a 2% neutral tint over a dark panel, not a colored background"
+      },
+      {
+        "rule": "gray-on-color",
+        "value": "*",
+        "files": [
+          "frontend/components/dashboard/FindingsOverview.tsx"
+        ],
+        "createdAt": "2026-10-20T17:07:49.324Z",
+        "reason": "Claude: slate text is the inactive branch (no background) of a conditional; the emerald background only pairs with emerald text"
       }
     ]
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { MODEL_LABEL, prettyClass } from "../dashboard/theme";
+import { MODEL_LABEL, fmtPct, prettyClass } from "../dashboard/theme";
 
 export type Incident = {
   model: string;
@@ -35,7 +35,7 @@ function outcome(r: Incident): keyof typeof OUTCOME {
   return "missed";
 }
 
-const pct = (a: number, b: number) => (b ? `${Math.round((100 * a) / b)}%` : "—");
+const pct = (a: number, b: number) => (b ? fmtPct(a / b) : "—");
 
 /**
  * A running record of every attack the detector has judged in this session,

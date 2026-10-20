@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
-import { FAMILY, MODEL_COLOR, MODEL_LABEL, prettyClass, type Family } from "./theme";
+import { FAMILY, MODEL_COLOR, MODEL_LABEL, fmtConfidence, prettyClass, type Family } from "./theme";
 
 type Verdict = { label: string; correct: boolean; confidence: number | null };
 type Feature = { key: string; label: string; unit: string; value: number };
@@ -56,21 +56,13 @@ export default function InferenceReplay({
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const advance = useCallback(() => {
-    setCursor((current) => {
-      if (current >= flows.length) {
-        setPlaying(false);
-        return current;
-      }
-      return current + 1;
-    });
+    setCursor((current) => Math.min(flows.length, current + 1));
   }, [flows.length]);
 
+  // Playback stops by itself at the end: the effect simply stops scheduling, and
+  // the transport shows Replay because `finished` takes precedence over `playing`.
   useEffect(() => {
-    if (!playing) return;
-    if (cursor >= flows.length) {
-      setPlaying(false);
-      return;
-    }
+    if (!playing || cursor >= flows.length) return;
     timer.current = setTimeout(advance, SPEEDS[speed].ms);
     return () => {
       if (timer.current) clearTimeout(timer.current);
@@ -358,7 +350,7 @@ function FlowCard({ flow, model }: { flow: Flow; model: string }) {
           </p>
           {verdict?.confidence != null && (
             <p className="mt-1 font-mono text-[11px] tabular-nums text-slate-500">
-              confidence {(verdict.confidence * 100).toFixed(1)}%
+              confidence {fmtConfidence(verdict.confidence)}
             </p>
           )}
         </div>

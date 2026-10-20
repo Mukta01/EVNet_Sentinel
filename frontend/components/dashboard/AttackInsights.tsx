@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useMemo, useState } from "react";
-import { MODEL_COLOR, fmtPct } from "./theme";
+import { MODEL_COLOR, fmtPct, fmtRate, rateNote } from "./theme";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Insights = any;
@@ -43,7 +43,21 @@ const TONE: Record<string, string> = {
 
 const pct = fmtPct;
 
-export default function AttackInsights({ insights }: { insights: Insights }) {
+const ACTION: Record<string, { label: string; color: string }> = {
+  quarantine: { label: "Quarantine", color: "#FDA4AF" },
+  restrict: { label: "Restrict", color: "#FCD34D" },
+  "end-session": { label: "Stop session", color: "#7DD3FC" },
+};
+const SENDER: Record<string, string> = { kali: "laptop", rpi: "Pi", evcc: "car" };
+
+/** What the closed loop does about each attack, by the device that sent it (response replay). */
+function responsesFor(replay: any, cls: string): { sender: string; action: string; flows: number | null }[] {
+  return (replay?.scenarios ?? [])
+    .filter((r: any) => r.class === cls && r.actions.length)
+    .map((r: any) => ({ sender: r.sender, action: r.actions[0], flows: r.attackFlowsToRecommend }));
+}
+
+export default function AttackInsights({ insights, replay }: { insights: Insights; replay?: any }) {
   const models: string[] = insights.models;
   const labels: Record<string, string> = insights.modelLabels;
   const attacks: any[] = insights.attacks;
@@ -114,9 +128,13 @@ export default function AttackInsights({ insights }: { insights: Insights }) {
                       <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: MODEL_COLOR[m] }} />
                       {labels[m]}
                     </span>
+                    {m === insights.primary && (
+                      <span className="mt-1 block text-[9.5px] font-medium normal-case tracking-normal text-emerald-300">primary</span>
+                    )}
                   </th>
                 ))}
                 <th scope="col" className="px-4 py-3 text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Best</th>
+                <th scope="col" className="px-4 py-3 text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Response</th>
               </tr>
             </thead>
             <tbody>
@@ -127,7 +145,7 @@ export default function AttackInsights({ insights }: { insights: Insights }) {
                   <Fragment key={a.class}>
                     {newGroup && (
                       <tr className="border-b border-white/8 bg-white/[0.015]">
-                        <td colSpan={models.length + 2} className="px-4 pb-2 pt-4 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400">
+                        <td colSpan={models.length + 3} className="px-4 pb-2 pt-4 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400">
                           {CATEGORY_LABEL[a.category]}
                         </td>
                       </tr>
@@ -162,14 +180,14 @@ export default function AttackInsights({ insights }: { insights: Insights }) {
                                 background: VERDICT[r.verdict].bg,
                                 boxShadow: isBest ? `inset 0 0 0 1.5px ${VERDICT[r.verdict].fg}` : undefined,
                               }}
-                              title={`${labels[m]}: ${VERDICT[r.verdict].plain}`}
+                              title={`${labels[m]}: ${VERDICT[r.verdict].plain}${rateNote(r.exact, a.tested) ? ` (${rateNote(r.exact, a.tested)})` : ""}`}
                             >
                               <span className="block font-mono text-[13px] tabular-nums" style={{ color: VERDICT[r.verdict].fg }}>
-                                {pct(r.exact)}
+                                {fmtRate(r.exact, a.tested)}
                               </span>
                               {a.class !== "Benign" && (
                                 <span className="block font-mono text-[10px] tabular-nums text-slate-500">
-                                  category {pct(r.category)}
+                                  category {fmtRate(r.category, a.tested)}
                                 </span>
                               )}
                             </div>
@@ -180,6 +198,15 @@ export default function AttackInsights({ insights }: { insights: Insights }) {
                         {(a.bestTied ?? [a.bestModel]).length === models.length
                           ? `All ${models.length} tie`
                           : (a.bestTied ?? [a.bestModel]).map((m: string) => labels[m]).join(" = ")}
+                      </td>
+                      <td className="px-4 py-2.5 text-[12px]">
+                        {responsesFor(replay, a.class).map((r) => (
+                          <span key={r.sender} className="block whitespace-nowrap" title={`From the ${SENDER[r.sender] ?? r.sender}; recommended after ~${r.flows} attack flows in the replay`}>
+                            <span className="font-medium" style={{ color: ACTION[r.action]?.color }}>{ACTION[r.action]?.label ?? r.action}</span>
+                            {responsesFor(replay, a.class).length > 1 && <span className="text-slate-500"> · {SENDER[r.sender] ?? r.sender}</span>}
+                          </span>
+                        ))}
+                        {a.class === "Benign" && <span className="text-slate-500">none</span>}
                       </td>
                     </tr>
                   </Fragment>
@@ -195,7 +222,8 @@ export default function AttackInsights({ insights }: { insights: Insights }) {
       </section>
 
       {/* ── the selected attack, and what to do ──────────────────── */}
-      {current && <AttackDetail attack={current} models={models} labels={labels} roles={insights.roles} />}
+      {current && <AttackDetail attack={current} models={models} labels={labels} roles={insights.roles}
+        responses={responsesFor(replay, current.class)} guide={insights.containment ?? {}} />}
 
       {/* ── provenance ─────────────────────────────────────────────── */}
       <section aria-labelledby="provenance-heading" className="border-t border-white/8 pt-8">
@@ -225,9 +253,10 @@ export default function AttackInsights({ insights }: { insights: Insights }) {
 }
 
 function AttackDetail({
-  attack, models, labels, roles,
+  attack, models, labels, roles, responses, guide,
 }: {
   attack: any; models: string[]; labels: Record<string, string>; roles: Record<string, string>;
+  responses: { sender: string; action: string; flows: number | null }[]; guide: Record<string, any>;
 }) {
   const best: ModelResult = attack.models[attack.bestModel];
   const sev = SEVERITY[attack.response.severity] ?? SEVERITY.medium;
@@ -254,16 +283,16 @@ function AttackDetail({
             {isBenign ? (
               <>
                 The best model, <span className="text-slate-100">{labels[attack.bestModel]}</span>, leaves{" "}
-                <span className="font-mono tabular-nums">{pct(best.exact)}</span> of normal flows alone.
+                <span className="font-mono tabular-nums" title={rateNote(best.exact, attack.tested)}>{fmtRate(best.exact, attack.tested)}</span> of normal flows alone.
               </>
             ) : (
               <>
                 {(attack.bestTied ?? []).length === models.length ? "Every model" : <>The best model, <span className="text-slate-100">{labels[attack.bestModel]}</span>,</>}{" "}flags it as
-                malicious <span className="font-mono tabular-nums">{pct(best.detected)}</span> of the time,
+                malicious <span className="font-mono tabular-nums" title={rateNote(best.detected, attack.tested)}>{fmtRate(best.detected, attack.tested)}</span> of the time,
                 recognises it as {CATEGORY_LABEL[attack.category].toLowerCase()}{" "}
-                <span className="font-mono tabular-nums">{pct(best.category)}</span>, and names it exactly{" "}
-                <span className="font-mono tabular-nums">{pct(best.exact)}</span>
-                <span className="text-slate-500"> (± {pct(best.exactCI)})</span>.
+                <span className="font-mono tabular-nums" title={rateNote(best.category, attack.tested)}>{fmtRate(best.category, attack.tested)}</span>, and names it exactly{" "}
+                <span className="font-mono tabular-nums" title={rateNote(best.exact, attack.tested)}>{fmtRate(best.exact, attack.tested)}</span>
+                {best.exact < 1 && <span className="text-slate-500"> (± {pct(best.exactCI)})</span>}.
               </>
             )}
           </p>
@@ -281,9 +310,9 @@ function AttackDetail({
                   </div>
                   <div className="relative mt-1 h-1.5 overflow-hidden rounded-full bg-white/[0.05]">
                     {!isBenign && (
-                      <div className="absolute inset-y-0 left-0 rounded-full bg-sky-400/35" style={{ width: pct(r.category) }} />
+                      <div className="absolute inset-y-0 left-0 rounded-full bg-sky-400/35" style={{ width: `${r.category * 100}%` }} />
                     )}
-                    <div className="absolute inset-y-0 left-0 rounded-full" style={{ width: pct(r.exact), background: VERDICT[r.verdict].fg }} />
+                    <div className="absolute inset-y-0 left-0 rounded-full" style={{ width: `${r.exact * 100}%`, background: VERDICT[r.verdict].fg }} />
                   </div>
                 </div>
               );
@@ -324,9 +353,36 @@ function AttackDetail({
         </div>
       </div>
 
+      {responses.length > 0 && (
+        <>
+          <h3 className="mt-8 text-[11px] uppercase tracking-[0.14em] text-slate-500">Contain · what Sentinel recommends</h3>
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            {responses.map((r) => {
+              const g = guide[r.action];
+              return (
+                <div key={r.sender} className="rounded-lg border border-white/8 bg-white/[0.02] p-4">
+                  <p className="text-sm">
+                    <span className="font-medium" style={{ color: ACTION[r.action]?.color }}>{g?.label ?? ACTION[r.action]?.label}</span>
+                    <span className="text-slate-500"> · sent from the {SENDER[r.sender] ?? r.sender}</span>
+                  </p>
+                  {g?.how && (
+                    <ul className="mt-2 space-y-1.5 text-[13px] leading-relaxed text-slate-400">
+                      {g.how.map((h: string) => <li key={h}>{h}</li>)}
+                    </ul>
+                  )}
+                  <p className="mt-2 text-[12px] text-slate-500">
+                    {roles[g?.who] ?? g?.who} approves and acts. Recommended after ~{r.flows} attack flows in the replay.
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+
       {roleKeys.length > 0 && (
         <>
-          <h3 className="mt-8 text-[11px] uppercase tracking-[0.14em] text-slate-500">What to do</h3>
+          <h3 className="mt-8 text-[11px] uppercase tracking-[0.14em] text-slate-500">Harden · what each role changes</h3>
           <div className="mt-3 grid gap-5 md:grid-cols-3">
             {roleKeys.map((role) => (
               <div key={role} className="border-t border-white/10 pt-3">
