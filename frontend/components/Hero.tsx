@@ -101,7 +101,7 @@ export default function Hero({ stats }: { stats: HeroStat[] }) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full h-[140px] sm:h-[190px] md:h-[240px] lg:h-[300px] mb-8"
+          className="relative left-1/2 w-[min(1500px,96vw)] -translate-x-1/2 h-[clamp(130px,17vw,330px)] mb-6"
         >
           <ParticleText
             text="Securing the Grid"
@@ -116,7 +116,7 @@ export default function Hero({ stats }: { stats: HeroStat[] }) {
             repelRadius={120}
             idleDrift={0.7}
             trigger="mount"
-            fontSize="clamp(3.5rem, 11vw, 10rem)"
+            fontSize="clamp(3.75rem, 12vw, 13rem)"
             fontWeight={900}
             fontFamily="inherit"
             glow
