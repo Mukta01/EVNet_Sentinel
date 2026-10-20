@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, Shield } from "lucide-react";
 import DotField from "./DotField";
+import HeroNetwork from "./HeroNetwork";
 import ParticleText from "./ParticleText";
 import { useTheme } from "./ThemeToggle";
 
@@ -74,6 +75,8 @@ export default function Hero({ stats }: { stats: HeroStat[] }) {
       </div>
       <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-transparent via-(--color-background)/50 to-(--color-background)" />
 
+      <HeroNetwork />
+
       {/* Decorative orbs */}
       <div className="orb-1 absolute top-[20%] left-[15%] w-[500px] h-[500px] rounded-full bg-blue-600/[0.07] blur-[120px] pointer-events-none" />
       <div className="orb-2 absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-emerald-500/[0.07] blur-[120px] pointer-events-none" />
@@ -97,7 +100,7 @@ export default function Hero({ stats }: { stats: HeroStat[] }) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full h-[120px] sm:h-[160px] md:h-[200px] lg:h-[250px] mb-8"
+          className="relative w-full h-[140px] sm:h-[190px] md:h-[240px] lg:h-[300px] mb-8"
         >
           <ParticleText
             text="Securing the Grid"
@@ -112,7 +115,7 @@ export default function Hero({ stats }: { stats: HeroStat[] }) {
             repelRadius={120}
             idleDrift={0.7}
             trigger="mount"
-            fontSize="clamp(3rem, 9vw, 8rem)"
+            fontSize="clamp(3.5rem, 11vw, 10rem)"
             fontWeight={900}
             fontFamily="inherit"
             glow
