@@ -3,6 +3,7 @@ import path from "path";
 import Navbar from "@/components/Navbar";
 import Hero, { type HeroStat } from "@/components/Hero";
 import Features from "@/components/Features";
+import VideoSection from "@/components/VideoSection";
 import ArchitectureStory from "@/components/story/ArchitectureStory";
 import TechStack from "@/components/TechStack";
 import Team from "@/components/Team";
@@ -49,6 +50,7 @@ export default async function Home() {
     <main className="min-h-screen bg-[#020617]">
       <Navbar />
       <Hero stats={stats} />
+      <VideoSection />
       <Features />
       <ArchitectureStory />
       <TechStack />

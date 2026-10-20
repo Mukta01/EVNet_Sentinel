@@ -29,6 +29,10 @@
 .arch-story .as-charge-ring { animation: arch-charge 1.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 @keyframes arch-charge { 50% { transform: scale(1.18); opacity: .6; } }
 #as-csms-node, #as-wifi, #as-evse, #as-charge { transition: none; }
+/* 9 lines x 7 units: one full copy scrolls past, then it repeats */
+.arch-story .as-term { animation: arch-term 6s linear infinite; }
+@keyframes arch-term { to { transform: translateY(-63px); } }
+.arch-story .as-socket { animation: arch-charge 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 
 /* chapter strip */
 .arch-story .rail { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 6; }
