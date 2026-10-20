@@ -10,8 +10,8 @@ export default function Features() {
   const light = useTheme() === "light";
   return (
     <>
-      <section id="threat" className="relative pt-32 pb-10 overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-40">
+      <section id="threat" className="relative pt-20 pb-10 overflow-hidden">
+        <div className="absolute inset-0 z-0 opacity-40 [mask-image:linear-gradient(to_bottom,transparent,black_22%,black_72%,transparent)]">
           <PixelBlast
             color="#ef4444"
             variant="square"
@@ -69,7 +69,7 @@ export default function Features() {
             whileInView="visible"
             viewport={{ once: true, margin: "0px" }}
           >
-            {"As the world electrifies transportation, charging infrastructure becomes critical — and a prime target. Scroll on to see how an attack unfolds across a real city — and where Sentinel catches it.".split(" ").map((word, i) => (
+            {"As the world electrifies transportation, charging infrastructure becomes critical — and a prime target. Most report home over a shared site network, and that link is what attackers go after.".split(" ").map((word, i) => (
               <motion.span
                 key={i}
                 variants={{

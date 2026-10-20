@@ -6,17 +6,16 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, Shield } from "lucide-react";
 import DotField from "./DotField";
+import HeroNetwork from "./HeroNetwork";
+import CountUp from "./CountUp";
 import ParticleText from "./ParticleText";
 import { useTheme } from "./ThemeToggle";
-import HeroPlayground from "./hero/HeroPlayground";
-import type { DemoAttack } from "./hero/BeatTheSentinel";
-import type { HeroTuning } from "./hero/TuneDetector";
 
 export type HeroStat = { value: string; label: string; sub: string };
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]; tuning: HeroTuning; stats: HeroStat[] }) {
+export default function Hero({ stats }: { stats: HeroStat[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const light = useTheme() === "light";
 
@@ -77,6 +76,8 @@ export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]
       </div>
       <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-transparent via-(--color-background)/50 to-(--color-background)" />
 
+      <HeroNetwork />
+
       {/* Decorative orbs */}
       <div className="orb-1 absolute top-[20%] left-[15%] w-[500px] h-[500px] rounded-full bg-blue-600/[0.07] blur-[120px] pointer-events-none" />
       <div className="orb-2 absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-emerald-500/[0.07] blur-[120px] pointer-events-none" />
@@ -100,7 +101,7 @@ export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full h-[120px] sm:h-[160px] md:h-[200px] lg:h-[250px] mb-8"
+          className="relative left-1/2 w-[min(1500px,96vw)] -translate-x-1/2 h-[clamp(130px,17vw,330px)] mb-6"
         >
           <ParticleText
             text="Securing the Grid"
@@ -115,7 +116,7 @@ export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]
             repelRadius={120}
             idleDrift={0.7}
             trigger="mount"
-            fontSize="clamp(3rem, 9vw, 8rem)"
+            fontSize="clamp(3.75rem, 12vw, 13rem)"
             fontWeight={900}
             fontFamily="inherit"
             glow
@@ -131,18 +132,9 @@ export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]
           className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light"
         >
           Machine-learning intrusion detection for EV charging networks — tested attack by
-          attack, with the data leak in the published results removed. Try to beat it.
+          attack, with the data leak in the published results removed.
         </motion.p>
 
-        {/* Hands-on: fire a real held-out flow at the detector */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.45 }}
-          className="mb-12"
-        >
-          <HeroPlayground attacks={attacks} tuning={tuning} />
-        </motion.div>
       </div>
 
       {/* Stats bar */}
@@ -160,7 +152,7 @@ export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]
               className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-xl p-5 text-center hover:border-white/10 transition-colors"
             >
               <div className="text-2xl md:text-3xl font-bold text-white mb-1 font-mono">
-                {stat.value}
+                <StatValue value={stat.value} />
               </div>
               <div className="text-xs text-gray-400 font-medium mb-0.5">{stat.label}</div>
               <div className="text-[10px] text-gray-600 font-mono">{stat.sub}</div>
@@ -185,4 +177,12 @@ export default function Hero({ attacks, tuning, stats }: { attacks: DemoAttack[]
       </motion.div>
     </section>
   );
+}
+
+/** Counts a stat like "96%" or "1.2M" up from zero; anything non-numeric is shown as is. */
+function StatValue({ value }: { value: string }) {
+  const m = /^(\d+(?:\.\d+)?)(.*)$/.exec(value);
+  if (!m) return <>{value}</>;
+  const decimals = m[1].includes(".") ? m[1].split(".")[1].length : 0;
+  return <CountUp to={Number(m[1])} decimals={decimals} suffix={m[2]} duration={1.6} delay={0.6} trigger="load" />;
 }

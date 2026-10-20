@@ -56,6 +56,9 @@ const SENTINEL_AT = { x: 700, y: 380 };
 
 /** How far into each chapter its narration appears: the scene builds first, then the words. */
 const TEXT_AT = [0, 0.62, 0.3, 0.3, 0, 0, 0];
+/** What scrolls on the attacker's laptop: the scan, then the flood. Drawn twice so the loop is seamless. */
+const TERMINAL = ["$ nmap -sS 10.0.0.12", "PORT     STATE", "22/tcp   open", "80/tcp   open", "8080/tcp open",
+  "$ hping3 -S --flood", "  -p 80 10.0.0.12", "HPING flood mode", "sent 120k pkts"];
 /** Car start offset: it drives in from off-screen left. */
 const CAR_FROM = -620;
 
@@ -124,6 +127,8 @@ function PinnedStory() {
 
     const bar = q(".progress i") as HTMLElement | null;
     if (bar) bar.style.width = `${p * 100}%`;
+    // Hand off to the next section: the stage fades out over the last few percent of the scroll.
+    if (stage.current) stage.current.style.opacity = String(1 - seg(p, 0.965, 1));
 
     // 1 → 2: zoom from the city map into the BKC hub
     const hub = HUBS[FOCUS];
@@ -336,6 +341,10 @@ function PinnedStory() {
             <radialGradient id="as-glow" r="50%"><stop offset="0" stopColor="#22C55E" stopOpacity=".55" /><stop offset="1" stopColor="#22C55E" stopOpacity="0" /></radialGradient>
             <radialGradient id="as-glowR" r="50%"><stop offset="0" stopColor="#F43F5E" stopOpacity=".5" /><stop offset="1" stopColor="#F43F5E" stopOpacity="0" /></radialGradient>
             <pattern id="as-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="rgba(148,163,184,0.05)" /></pattern>
+            <linearGradient id="as-carbody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F8FAFC" /><stop offset=".55" stopColor="#CBD5E1" /><stop offset="1" stopColor="#64748B" /></linearGradient>
+            <linearGradient id="as-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#334155" /><stop offset="1" stopColor="#0B1220" /></linearGradient>
+            <linearGradient id="as-pedestal" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#E2E8F0" /><stop offset="1" stopColor="#94A3B8" /></linearGradient>
+            <clipPath id="as-term-clip"><rect x="-40" y="-22" width="80" height="46" rx="2" /></clipPath>
           </defs>
 
           {/* ── 1: Mumbai ───────────────────────────── */}
@@ -385,23 +394,31 @@ function PinnedStory() {
               </g>
 
               <g id="as-car" opacity="0" transform={`translate(${300 + CAR_FROM} 690)`}>
-                <rect x="-110" y="-30" width="220" height="56" rx="22" fill="#0F172A" stroke="#38BDF8" strokeOpacity=".7" />
-                <path d="M-70 -30 L-40 -62 H40 L70 -30" fill="#0F172A" stroke="#38BDF8" strokeOpacity=".7" />
-                <path d="M-34 -56 H-4 V-32 H-58 Z M6 -56 H36 L58 -32 H6 Z" fill="rgba(56,189,248,0.12)" />
-                <rect x="-60" y="-8" width="120" height="8" rx="4" fill="rgba(255,255,255,0.06)" />
-                <rect id="as-battery" x="-60" y="-8" width="22" height="8" rx="4" fill="#22C55E" />
-                <text y="18" textAnchor="middle" fill="#BAE6FD" fontSize="11" fontWeight="600">EV</text>
-                <circle cx="104" cy="-8" r="4" fill="#FDE68A" opacity=".9" />
-                {[-62, 62].map((cx) => (
+                {/* A white sedan facing right, cyan light bars at the nose, charge port on the front fender. */}
+                <ellipse cx="0" cy="44" rx="128" ry="7" fill="rgba(0,0,0,0.45)" />
+                <path d="M-122 18 C-124 -2 -116 -16 -96 -22 L-64 -30 C-44 -58 -12 -66 20 -64 C54 -62 76 -46 92 -30 L112 -24 C124 -20 128 -4 126 18 C126 26 120 30 112 30 H-114 C-120 30 -122 26 -122 18 Z" fill="url(#as-carbody)" stroke="#F8FAFC" strokeOpacity=".5" />
+                <path d="M-54 -30 C-38 -52 -12 -58 18 -57 C46 -56 62 -44 76 -30 Z" fill="url(#as-glass)" />
+                <path d="M8 -57 L4 -30" stroke="#CBD5E1" strokeWidth="3" />
+                <path d="M-36 -48 C-20 -54 0 -55 14 -54" stroke="rgba(255,255,255,0.25)" strokeWidth="2" fill="none" />
+                <path d="M-114 22 H120" stroke="#334155" strokeWidth="5" strokeLinecap="round" />
+                {[-16, -11, -6].map((y) => <path key={y} d={`M98 ${y} H122`} stroke="#22D3EE" strokeWidth="2.2" strokeLinecap="round" />)}
+                <path d="M-122 -6 H-110" stroke="#F43F5E" strokeWidth="3" strokeLinecap="round" />
+                <circle cx="104" cy="2" r="4.5" fill="#0B1220" stroke="#38BDF8" strokeWidth="1.5" />
+                <rect x="-44" y="-12" width="120" height="6" rx="3" fill="rgba(15,23,42,0.35)" />
+                <rect id="as-battery" x="-44" y="-12" width="22" height="6" rx="3" fill="#22C55E" />
+                {[-66, 66].map((cx) => (
                   <g key={cx} transform={`translate(${cx} 28)`}>
+                    <circle r="23" fill="#0B1220" />
                     <g className="as-wheel">
-                      <circle r="16" fill="#020617" stroke="#64748B" strokeWidth="2" />
-                      <path d="M-11 0 H11 M0 -11 V11" stroke="#475569" strokeWidth="2" />
+                      <circle r="18" fill="#111827" stroke="#1F2937" strokeWidth="4" />
+                      <circle r="11" fill="#94A3B8" />
+                      {[0, 36, 72, 108, 144].map((a) => <path key={a} d="M0 -10 V10" stroke="#475569" strokeWidth="1.6" transform={`rotate(${a})`} />)}
+                      <circle r="3" fill="#334155" />
                     </g>
                   </g>
                 ))}
                 <g id="as-car-evil" opacity="0">
-                  <rect x="-122" y="-74" width="244" height="120" rx="26" fill="none" stroke="#F43F5E" strokeWidth="2" strokeDasharray="6 5" />
+                  <rect x="-134" y="-80" width="268" height="132" rx="26" fill="none" stroke="#F43F5E" strokeWidth="2" strokeDasharray="6 5" />
                   <text x="0" y="66" textAnchor="middle" fill="#FDA4AF" fontSize="12" fontWeight="600">compromised car · scanning the station</text>
                 </g>
                 <g id="as-charge" opacity="0">
@@ -413,14 +430,20 @@ function PinnedStory() {
 
               <g id="as-evse" opacity="0">
                 <g transform="translate(640 640)">
-                  <rect id="as-evse-body" x="-34" y="-90" width="68" height="150" rx="10" fill="#0F172A" stroke="#22C55E" strokeOpacity=".8" strokeWidth="1.5" />
-                  <rect x="-26" y="-74" width="52" height="30" rx="4" fill="#052E1A" />
-                  <text id="as-evse-screen" y="-54" textAnchor="middle" fill="#86EFAC" fontSize="10" className="mono">READY</text>
+                  {/* Pedestal charger: light housing, dark face, a screen and a glowing socket. */}
+                  <rect x="-22" y="40" width="44" height="22" fill="#94A3B8" />
+                  <rect x="-34" y="-90" width="68" height="134" rx="8" fill="url(#as-pedestal)" />
+                  <rect id="as-evse-body" x="-26" y="-82" width="52" height="112" rx="6" fill="#0F172A" stroke="#22C55E" strokeOpacity=".8" strokeWidth="1.5" />
+                  <rect x="-20" y="-74" width="40" height="30" rx="3" fill="#052E1A" />
+                  {[0, 1, 2, 3].map((i) => <rect key={i} x="-14" y={-70 + i * 4} width="28" height="2" fill="#22D3EE" opacity={0.25 + i * 0.12} />)}
+                  <text id="as-evse-screen" y="-50" textAnchor="middle" fill="#86EFAC" fontSize="9" className="mono">READY</text>
+                  <circle cy="2" r="11" fill="#020617" stroke="#38BDF8" strokeWidth="2" className="as-socket" />
+                  <circle cy="2" r="4" fill="#38BDF8" />
                   <text y="84" textAnchor="middle" fill="#F8FAFC" fontSize="13" fontWeight="600">Charging station</text>
                   <text y="101" textAnchor="middle" fill="#64748B" fontSize="11">EVSE</text>
                 </g>
               </g>
-              <path id="as-cable" d="M410 690 C 500 700, 560 700, 606 660" pathLength={1} strokeDasharray="1" strokeDashoffset="1" fill="none" stroke="#38BDF8" strokeOpacity=".7" strokeWidth="3" />
+              <path id="as-cable" d="M404 692 C 470 730, 560 720, 640 642" pathLength={1} strokeDasharray="1" strokeDashoffset="1" fill="none" stroke="#38BDF8" strokeOpacity=".7" strokeWidth="3" />
               <text id="as-iso-label" opacity="0" x="470" y="728" fill="#7DD3FC" fontSize="11" className="mono">ISO 15118</text>
 
               <g id="as-wifi" opacity="0"><g transform="translate(880 470)">
@@ -445,9 +468,16 @@ function PinnedStory() {
 
               <g id="as-attacker" opacity="0" transform="translate(1020 660)">
                 <circle r="80" fill="url(#as-glowR)" />
-                <rect x="-44" y="-26" width="88" height="54" rx="6" fill="#1A0A10" stroke="#F43F5E" strokeOpacity=".7" />
-                <rect x="-56" y="28" width="112" height="7" rx="3" fill="#1A0A10" stroke="#F43F5E" strokeOpacity=".7" />
-                <text y="6" textAnchor="middle" fill="#FDA4AF" fontSize="11" className="mono">nmap / hping</text>
+                {/* Laptop with a terminal that keeps scrolling: a scan, then a flood. */}
+                <rect x="-44" y="-26" width="88" height="54" rx="5" fill="#1A0A10" stroke="#F43F5E" strokeOpacity=".7" />
+                <g clipPath="url(#as-term-clip)">
+                  <g className="as-term">
+                    {[0, 1].flatMap((copy) => TERMINAL.map((line, i) => (
+                      <text key={`${copy}-${i}`} x="-36" y={-14 + (copy * TERMINAL.length + i) * 7} fontSize="5.6" className="mono" fill={line.startsWith("$") ? "#FDA4AF" : "#94A3B8"}>{line}</text>
+                    )))}
+                  </g>
+                </g>
+                <path d="M-58 28 H58 L52 36 H-52 Z" fill="#1A0A10" stroke="#F43F5E" strokeOpacity=".7" />
                 <text y="58" textAnchor="middle" fill="#F8FAFC" fontSize="13" fontWeight="600">Attacker on the wifi</text>
               </g>
               <path id="as-wireA" d="M990 630 C 960 580, 930 530, 900 492" fill="none" stroke="#F43F5E" strokeOpacity="0" strokeWidth="2" strokeDasharray="5 6" />

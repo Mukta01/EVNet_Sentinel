@@ -3,12 +3,13 @@ import path from "path";
 import Navbar from "@/components/Navbar";
 import Hero, { type HeroStat } from "@/components/Hero";
 import Features from "@/components/Features";
+import VideoSection from "@/components/VideoSection";
 import ArchitectureStory from "@/components/story/ArchitectureStory";
 import TechStack from "@/components/TechStack";
 import Team from "@/components/Team";
 import Roadmap from "@/components/Roadmap";
 import Footer from "@/components/Footer";
-import type { DemoAttack } from "@/components/hero/BeatTheSentinel";
+import SectionDots from "@/components/SectionDots";
 import { MODEL_LABEL } from "@/components/dashboard/theme";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -16,42 +17,18 @@ import { MODEL_LABEL } from "@/components/dashboard/theme";
 const read = async (name: string) =>
   JSON.parse(await fs.readFile(path.join(process.cwd(), "data", name), "utf8"));
 
-const DEMO: [string, string, DemoAttack["category"]][] = [
-  ["SYN_Flood", "SYN Flood", "dos"],
-  ["UDP_Flood", "UDP Flood", "dos"],
-  ["Slowloris_Scan", "Slowloris", "dos"],
-  ["TCP_Port_Scan", "Port Scan", "recon"],
-  ["SYN_Stealth_Scan", "Stealth Scan", "recon"],
-  ["Vulnerability_Scan", "Vulnerability Scan", "recon"],
-];
 const VOLUMETRIC = new Set(["SYN_Flood", "TCP_Flood", "UDP_Flood", "SynonymousIP_Flood", "PSHACK_Flood"]);
 
 /**
- * The hero's demo flows and headline numbers come from the committed exports,
+ * The hero's headline numbers come from the committed exports,
  * so the first screen shows measured results rather than hand-typed claims.
  */
 async function heroData() {
-  const sim = await read("network-sim.json");
   const insights = await read("insights.json");
   const findings = await read("findings.json");
-  const tuning = await read("hero.json");
-  const routes = await read("attack-routes.json");
 
   const primary: string = insights.primary ?? "RandomForest";
   const detector = MODEL_LABEL[primary] ?? primary;
-  const col = String(sim.models.indexOf(primary));
-  const byId = new Map<number, any>(sim.flows.map((f: any) => [f.id, f]));
-  const attacks: DemoAttack[] = DEMO.map(([cls, label, category]) => ({
-    cls, label, category, detector,
-    flows: (sim.byClass[cls] ?? []).slice(0, 120).map((id: number) => {
-      const f = byId.get(id);
-      const v = f.p[col];
-      return {
-        id, called: v[0], confidence: v[3] ?? null,
-        station: f.evse, sender: routes.captures[f.capture]?.sender ?? "kali",
-      };
-    }),
-  })).filter((a) => a.flows.length);
 
   const rows: any[] = insights.attacks;
   const floods = rows.filter((a) => VOLUMETRIC.has(a.class));
@@ -65,19 +42,22 @@ async function heroData() {
     { value: pct(1 - benign.models[primary].exact), label: "False alarms", sub: `${detector}, the primary detector` },
     { value: `${(findings.dataset.rows_after_dedup / 1e6).toFixed(1)}M`, label: "Flows analysed", sub: `${findings.dataset.n_classes} traffic classes` },
   ];
-  return { attacks, tuning, stats };
+  return { stats };
 }
 
 export default async function Home() {
-  const { attacks, tuning, stats } = await heroData();
+  const { stats } = await heroData();
   return (
     <main className="min-h-screen bg-[#020617]">
       <Navbar />
-      <Hero attacks={attacks} tuning={tuning} stats={stats} />
-      <Features />
+      <Hero stats={stats} />
       <ArchitectureStory />
-      <TechStack />
-      <Team />
+      <VideoSection />
+      <Features />
+      <SectionDots>
+        <TechStack />
+        <Team />
+      </SectionDots>
       <Roadmap />
       <Footer />
     </main>
