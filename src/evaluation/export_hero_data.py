@@ -43,8 +43,10 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from attack_test_harness import category  # noqa: E402
+from model_registry import MODEL_FILES  # noqa: E402
 
-MODELS = {"RandomForest": "rf", "DecisionTree": "dt"}
+# XGBoost first: it is the primary detector, so the control opens on it.
+MODELS = {name: MODEL_FILES[name] for name in ("XGBoost", "LightGBM", "RandomForest", "DecisionTree")}
 BINS = 100
 
 
@@ -62,12 +64,12 @@ def main():
     rng = np.random.RandomState(0)
     out = {"bins": BINS, "seeds": args.seeds, "models": {}}
     hist = lambda v: np.histogram(v, bins=BINS, range=(0, 1))[0].tolist()  # noqa: E731
-    for name, slug in MODELS.items():
+    for name, filename in MODELS.items():
         top, correct, cats, false_alarm, stream = [], [], [], [], []
         for seed in args.seeds:
             X = pd.read_csv(os.path.join(args.data_root, f"seed-{seed}", "X_test.csv"))
             y = pd.read_csv(os.path.join(args.data_root, f"seed-{seed}", "y_test.csv"))["Label_Multiclass"].to_numpy()
-            model = joblib.load(os.path.join(args.models_root, f"seed-{seed}", f"{slug}_model_multiclass.pkl"))
+            model = joblib.load(os.path.join(args.models_root, f"seed-{seed}", filename))
 
             rows = []
             for cls in np.unique(y):

@@ -30,6 +30,8 @@ graph TB
     subgraph BE ["PYTHON BACKEND · FastAPI :8000"]
         PP[Preprocessing<br/>PII Mask · RFE · Scaling]:::ml
         subgraph ML ["DETECTION ENGINE"]
+            S5[XGBoost<br/>primary]:::ml
+            S6[LightGBM]:::ml
             S1[Random Forest]:::ml
             S2[SVM]:::ml
             S3[Logistic Reg]:::ml
@@ -49,9 +51,9 @@ graph TB
 
     D1 --> PP
     D2 --> PP
-    PP --> S1 & S2 & S3 & S4
+    PP --> S5 & S6 & S1 & S2 & S3 & S4
     PP --> OL
-    S1 & S2 & S3 & S4 --> API
+    S5 & S6 & S1 & S2 & S3 & S4 --> API
     OL --> API
     OL -.->|alert event| WS
     API -->|REST| UI1
@@ -75,11 +77,11 @@ const layers = [
     id: "ml",
     icon: <Cpu className="w-5 h-5" />,
     title: "ML Detection Engine",
-    tech: "scikit-learn · River · ADWIN",
+    tech: "scikit-learn · XGBoost · LightGBM · River",
     color: "text-violet-400",
     activeBg: "bg-violet-500/20 border-violet-400/50 shadow-[0_0_15px_rgba(139,92,246,0.3)]",
     description:
-      "PII masking, Recursive Feature Elimination, four static classifiers (RF, SVM, LR, DT) with fixed seeds for reproducibility, and Adaptive Random Forest with ADWIN concept-drift detection for streaming data.",
+      "PII masking, Recursive Feature Elimination, six static classifiers (XGBoost as the primary detector, LightGBM, RF, DT, LR, SVM) with fixed seeds for reproducibility, and Adaptive Random Forest with ADWIN concept-drift detection for streaming data.",
   },
   {
     id: "api",

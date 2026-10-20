@@ -36,7 +36,7 @@ const CHAPTERS: Chapter[] = [
     body: "The site’s switch mirrors all traffic to Sentinel. It never sits in the way: it classifies each flow and raises an alert naming the attack and the station it hit — so people can act.",
     fact: "This is exactly how the dataset was recorded: <b>from a mirrored switch port</b>. An IDS detects; it does not block." },
   { k: "Inside Sentinel", title: "From packets to a verdict.",
-    body: "Packets become one flow of 60 statistics. Columns that only identify the recording are stripped. Four static models and an online learner judge it.",
+    body: "Packets become one flow of 60 statistics. Columns that only identify the recording are stripped. Six static models and an online learner judge it.",
     fact: "Removing those columns is our core correction: the published <b>98%</b> came from a single timestamp column." },
   { k: "The response", title: "An alert is only useful if someone knows what to do.",
     body: "Every detection maps to concrete steps for three people: the station owner, the CSMS operator and the network analyst.",
@@ -503,8 +503,8 @@ function PinnedStory() {
               </p>
             </div>
             <div className="card step">
-              <div className="k">04 · MODELS</div><h4>Four static + one online</h4>
-              {["RF", "DT", "LR", "SVM", "ARF · online"].map((m) => (
+              <div className="k">04 · MODELS</div><h4>Six static + one online</h4>
+              {["XGB", "LGBM", "RF", "DT", "LR", "SVM", "ARF · online"].map((m) => (
                 <div key={m} className="model"><span>{m}</span><b>SYN Flood</b></div>
               ))}
             </div>
@@ -527,7 +527,7 @@ function PinnedStory() {
               <span className="pulse" />
               <div>
                 <div style={{ fontSize: 15, fontWeight: 600, color: "#F8FAFC" }}>SYN Flood aimed at charging station EVSE-A</div>
-                <div className="mono" style={{ fontSize: 11.5, color: "#94A3B8", marginTop: 3 }}>from a device on the site wifi · severity high · Random Forest</div>
+                <div className="mono" style={{ fontSize: 11.5, color: "#94A3B8", marginTop: 3 }}>from a device on the site wifi · severity high · XGBoost</div>
               </div>
             </div>
             <div className="roles">
@@ -554,9 +554,9 @@ function PinnedStory() {
           <div className="results">
             <div className="stats">
               {[
-                { v: 100, color: "#22C55E", l: "Floods named exactly", s: "5 of 5 volumetric floods, every model, every seed." },
+                { v: 100, color: "#22C55E", l: "Floods named exactly", s: "5 of 5 volumetric floods, every tree and boosted model, every seed." },
                 { v: 96, color: "#F59E0B", l: "Scans recognised as scans", s: "But named only 34% — six nmap modes look alike at flow level." },
-                { v: 2, color: "#38BDF8", l: "False alarms · Random Forest", s: "The recommended primary detector. SVM: 59%." },
+                { v: 2, color: "#38BDF8", l: "False alarms · XGBoost", s: "The primary detector. Random Forest: 2.6%, SVM: 58%." },
               ].map((x) => (
                 <div key={x.l} className="card stat">
                   <div className="v" style={{ color: x.color }} data-count={x.v}>0%</div>
