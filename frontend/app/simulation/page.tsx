@@ -77,7 +77,7 @@ export default async function SimulationPage() {
           </p>
           <WhatsReal />
         </header>
-        <SimulationConsole sim={sim as never} responses={responses} roles={insights.roles} categorySeverity={categorySeverity} senders={senders} />
+        <SimulationConsole sim={sim as never} responses={responses} roles={insights.roles} containment={insights.containment} categorySeverity={categorySeverity} senders={senders} />
       </div>
       <Footer />
     </main>

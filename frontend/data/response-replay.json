@@ -1,0 +1,328 @@
+{
+ "generated_by": "src/evaluation/replay_response.py",
+ "about": "Recorded attacks replayed through the containment policy with the primary detector's verdicts. A simulated operator approves each recommendation after a short delay. A replay of recorded traffic, not live blocking.",
+ "model": "XGBoost",
+ "settings": {
+  "baselineFlows": 20,
+  "flowsPerScenario": 120,
+  "attackShare": 0.7,
+  "approvalDelayFlows": 5,
+  "runs": 20
+ },
+ "summary": {
+  "scenarios": 20,
+  "contained": 20,
+  "meanBlockedShare": 0.862,
+  "escalation": {
+   "coldFloodFlowsToQuarantine": 11,
+   "afterScanFlowsToQuarantine": 1,
+   "reason": "escalation"
+  },
+  "benignOnly": {
+   "flows": 2000,
+   "recommendations": 0
+  }
+ },
+ "scenarios": [
+  {
+   "class": "Aggressive_Scan",
+   "category": "recon",
+   "sender": "evcc",
+   "heldOutFlows": 13,
+   "smallSample": true,
+   "recommendedShare": 1,
+   "actions": [
+    "end-session"
+   ],
+   "attackFlowsToRecommend": 6,
+   "reachedMean": 9.2,
+   "blockedMean": 76.1,
+   "blockedShare": 0.892
+  },
+  {
+   "class": "Aggressive_Scan",
+   "category": "recon",
+   "sender": "kali",
+   "heldOutFlows": 167,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "restrict"
+   ],
+   "attackFlowsToRecommend": 5,
+   "reachedMean": 8.2,
+   "blockedMean": 77.0,
+   "blockedShare": 0.904
+  },
+  {
+   "class": "ICMP_Flood",
+   "category": "dos",
+   "sender": "kali",
+   "heldOutFlows": 5,
+   "smallSample": true,
+   "recommendedShare": 1,
+   "actions": [
+    "quarantine"
+   ],
+   "attackFlowsToRecommend": 12,
+   "reachedMean": 14.6,
+   "blockedMean": 70.7,
+   "blockedShare": 0.828
+  },
+  {
+   "class": "ICMP_Fragmentation",
+   "category": "dos",
+   "sender": "kali",
+   "heldOutFlows": 4,
+   "smallSample": true,
+   "recommendedShare": 1,
+   "actions": [
+    "quarantine"
+   ],
+   "attackFlowsToRecommend": 12,
+   "reachedMean": 14.6,
+   "blockedMean": 70.7,
+   "blockedShare": 0.828
+  },
+  {
+   "class": "OS_Fingerprinting",
+   "category": "recon",
+   "sender": "evcc",
+   "heldOutFlows": 11,
+   "smallSample": true,
+   "recommendedShare": 1,
+   "actions": [
+    "end-session"
+   ],
+   "attackFlowsToRecommend": 14.1,
+   "reachedMean": 16.7,
+   "blockedMean": 68.5,
+   "blockedShare": 0.802
+  },
+  {
+   "class": "OS_Fingerprinting",
+   "category": "recon",
+   "sender": "kali",
+   "heldOutFlows": 169,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "restrict"
+   ],
+   "attackFlowsToRecommend": 5,
+   "reachedMean": 8.2,
+   "blockedMean": 77.0,
+   "blockedShare": 0.904
+  },
+  {
+   "class": "PSHACK_Flood",
+   "category": "dos",
+   "sender": "kali",
+   "heldOutFlows": 180,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "quarantine"
+   ],
+   "attackFlowsToRecommend": 12,
+   "reachedMean": 14.6,
+   "blockedMean": 70.7,
+   "blockedShare": 0.828
+  },
+  {
+   "class": "SYN_Flood",
+   "category": "dos",
+   "sender": "kali",
+   "heldOutFlows": 180,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "quarantine"
+   ],
+   "attackFlowsToRecommend": 12,
+   "reachedMean": 14.6,
+   "blockedMean": 70.7,
+   "blockedShare": 0.828
+  },
+  {
+   "class": "SYN_Stealth_Scan",
+   "category": "recon",
+   "sender": "evcc",
+   "heldOutFlows": 26,
+   "smallSample": true,
+   "recommendedShare": 1,
+   "actions": [
+    "end-session"
+   ],
+   "attackFlowsToRecommend": 6,
+   "reachedMean": 9.2,
+   "blockedMean": 76.1,
+   "blockedShare": 0.892
+  },
+  {
+   "class": "SYN_Stealth_Scan",
+   "category": "recon",
+   "sender": "kali",
+   "heldOutFlows": 154,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "restrict"
+   ],
+   "attackFlowsToRecommend": 5,
+   "reachedMean": 8.2,
+   "blockedMean": 77.0,
+   "blockedShare": 0.904
+  },
+  {
+   "class": "Service_Version_Detection",
+   "category": "recon",
+   "sender": "evcc",
+   "heldOutFlows": 21,
+   "smallSample": true,
+   "recommendedShare": 1,
+   "actions": [
+    "end-session"
+   ],
+   "attackFlowsToRecommend": 8,
+   "reachedMean": 11.1,
+   "blockedMean": 74.2,
+   "blockedShare": 0.87
+  },
+  {
+   "class": "Service_Version_Detection",
+   "category": "recon",
+   "sender": "kali",
+   "heldOutFlows": 159,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "restrict"
+   ],
+   "attackFlowsToRecommend": 6,
+   "reachedMean": 9.2,
+   "blockedMean": 76.1,
+   "blockedShare": 0.892
+  },
+  {
+   "class": "Slowloris_Scan",
+   "category": "dos",
+   "sender": "kali",
+   "heldOutFlows": 180,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "quarantine"
+   ],
+   "attackFlowsToRecommend": 12,
+   "reachedMean": 14.6,
+   "blockedMean": 70.7,
+   "blockedShare": 0.828
+  },
+  {
+   "class": "SynonymousIP_Flood",
+   "category": "dos",
+   "sender": "kali",
+   "heldOutFlows": 180,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "quarantine"
+   ],
+   "attackFlowsToRecommend": 12,
+   "reachedMean": 14.6,
+   "blockedMean": 70.7,
+   "blockedShare": 0.828
+  },
+  {
+   "class": "TCP_Flood",
+   "category": "dos",
+   "sender": "kali",
+   "heldOutFlows": 180,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "quarantine"
+   ],
+   "attackFlowsToRecommend": 12,
+   "reachedMean": 14.6,
+   "blockedMean": 70.7,
+   "blockedShare": 0.828
+  },
+  {
+   "class": "TCP_Port_Scan",
+   "category": "recon",
+   "sender": "evcc",
+   "heldOutFlows": 23,
+   "smallSample": true,
+   "recommendedShare": 1,
+   "actions": [
+    "end-session"
+   ],
+   "attackFlowsToRecommend": 7,
+   "reachedMean": 9.9,
+   "blockedMean": 75.3,
+   "blockedShare": 0.883
+  },
+  {
+   "class": "TCP_Port_Scan",
+   "category": "recon",
+   "sender": "kali",
+   "heldOutFlows": 157,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "restrict"
+   ],
+   "attackFlowsToRecommend": 7,
+   "reachedMean": 10.8,
+   "blockedMean": 74.5,
+   "blockedShare": 0.873
+  },
+  {
+   "class": "UDP_Flood",
+   "category": "dos",
+   "sender": "rpi",
+   "heldOutFlows": 180,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "quarantine"
+   ],
+   "attackFlowsToRecommend": 12,
+   "reachedMean": 14.6,
+   "blockedMean": 70.7,
+   "blockedShare": 0.828
+  },
+  {
+   "class": "Vulnerability_Scan",
+   "category": "recon",
+   "sender": "evcc",
+   "heldOutFlows": 16,
+   "smallSample": true,
+   "recommendedShare": 1,
+   "actions": [
+    "end-session"
+   ],
+   "attackFlowsToRecommend": 5,
+   "reachedMean": 8.2,
+   "blockedMean": 77.0,
+   "blockedShare": 0.904
+  },
+  {
+   "class": "Vulnerability_Scan",
+   "category": "recon",
+   "sender": "kali",
+   "heldOutFlows": 164,
+   "smallSample": false,
+   "recommendedShare": 1,
+   "actions": [
+    "restrict"
+   ],
+   "attackFlowsToRecommend": 5,
+   "reachedMean": 8.2,
+   "blockedMean": 77.0,
+   "blockedShare": 0.904
+  }
+ ]
+}

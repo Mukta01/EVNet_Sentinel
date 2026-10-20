@@ -7,8 +7,8 @@ import { BLOCKED_PATHS, SENDERS, nodeById, routeFor, type NodeId, type Sender } 
 import { FAMILY, MODEL_LABEL, prettyClass } from "../dashboard/theme";
 import ResponsePanel, { type ResponseMap } from "./ResponsePanel";
 import IncidentLog, { type Incident } from "./IncidentLog";
-import ContainmentPanel, { type ContainmentEvent } from "./ContainmentPanel";
-import { approve, initialState, observe, release, type SiteState } from "@/lib/containment";
+import ContainmentPanel, { ACTION_LABEL, type ContainmentEvent, type ContainmentGuide } from "./ContainmentPanel";
+import { approve, containedSenders, initialState, observe, release, type Action, type SiteState } from "@/lib/containment";
 
 type Verdict = {
   label: string; group: string; correct: boolean;
@@ -78,9 +78,11 @@ const STAGE_FLOWS = 10;
 type Campaign = { id: string; steps: string[]; stage: number };
 
 export default function SimulationConsole({
-  sim, responses, roles, categorySeverity, senders,
+  sim, responses, roles, containment, categorySeverity, senders,
 }: {
   sim: Sim; responses: ResponseMap; roles: Record<string, string>;
+  /** how each containment action is carried out (response_playbook.json) */
+  containment: ContainmentGuide;
   categorySeverity: Record<string, string[]>;
   /** capture file -> the device that sent its attack traffic (attack_routes.py) */
   senders: Record<string, Sender | null>;
@@ -124,7 +126,7 @@ export default function SimulationConsole({
   const [campaignId, setCampaignId] = useState(CAMPAIGNS[0].id);
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [incidents, setIncidents] = useState<Incident[]>([]);
-  // Site threat level and simulated, operator-approved quarantine.
+  // Site threat level and simulated, operator-approved containment.
   const [site, setSite] = useState<SiteState>(initialState);
   const [blocked, setBlocked] = useState<Record<string, number>>({});
   const [siteEvents, setSiteEvents] = useState<ContainmentEvent[]>([]);
@@ -209,8 +211,8 @@ export default function SimulationConsole({
       const key = nextKey.current++;
       packetFlow.current.set(key, flow);
       const sender = activeIsAttack ? senders[flow.capture] ?? "kali" : null;
-      if (sender && siteRef.current.quarantined.includes(sender)) {
-        // Quarantined: the switch drops it before the tap. Normal traffic keeps
+      if (sender && sender in siteRef.current.contained) {
+        // Contained: the switch (or, for the car, the charger) drops it before the tap. Normal traffic keeps
         // flowing, so the site can cool down.
         packets.current.push({
           key: nextKey.current++, pathD: BLOCKED_PATHS[sender], target: null,
@@ -258,16 +260,19 @@ export default function SimulationConsole({
     const at = new Date().toLocaleTimeString([], { hour12: false });
     const add: ContainmentEvent[] = [...extra];
     if (next.level !== prev.level) add.push({ at, kind: "level", text: `Site ${prev.level} → ${next.level}` });
-    if (next.recommendation && next.recommendation !== prev.recommendation)
-      add.push({ at, kind: "recommend", text: `Quarantine recommended: ${SENDERS[next.recommendation as Sender]?.label ?? next.recommendation}` });
+    const rec = next.recommendation, was = prev.recommendation;
+    if (rec && (!was || was.sender !== rec.sender || was.action !== rec.action))
+      add.push({ at, kind: "recommend", text: `${ACTION_LABEL[rec.action]} recommended: ${SENDERS[rec.sender as Sender]?.label ?? rec.sender}${rec.reason === "escalation" ? " (scanned earlier, now attacking)" : ""}` });
+    if (next.watched.length > prev.watched.length)
+      add.push({ at, kind: "level", text: `Watching ${nameOf(next.watched[next.watched.length - 1])}: scanned the site` });
     siteRef.current = next;
     setSite(next);
     logSite(add);
   }, [logSite]);
 
-  const approveQuarantine = (sender: string) =>
-    updateSite(approve(siteRef.current, sender),
-      [{ at: stamp(), kind: "quarantine", text: `Operator approved quarantine: ${nameOf(sender)}` }]);
+  const approveAction = (sender: string, action: Action) =>
+    updateSite(approve(siteRef.current, sender, action),
+      [{ at: stamp(), kind: "quarantine", text: `Operator approved ${ACTION_LABEL[action].toLowerCase()}: ${nameOf(sender)}` }]);
   const releaseQuarantine = (sender: string) =>
     updateSite(release(siteRef.current, sender),
       [{ at: stamp(), kind: "release", text: `Released: ${nameOf(sender)}` }]);
@@ -491,12 +496,12 @@ export default function SimulationConsole({
             packets={packets} onTap={handleTap}
             selected={selectedNode} onSelect={setSelectedNode}
             tapPulse={tapPulse} running={streaming} sender={attacking ? liveSender : null}
-            quarantined={site.quarantined}
+            quarantined={containedSenders(site)}
           />
         </div>
 
         <ContainmentPanel state={site} blocked={blocked} events={siteEvents}
-          onApprove={approveQuarantine} onRelease={releaseQuarantine} />
+          guide={containment} onApprove={approveAction} onRelease={releaseQuarantine} />
 
         {selected && (
           <div className="rounded-lg border border-white/8 bg-white/[0.02] p-4">

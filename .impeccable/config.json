@@ -12,6 +12,15 @@
         ],
         "createdAt": "2026-09-29T09:54:28.392Z",
         "reason": "Claude triage: the flagged 'silent' badge uses text-slate-50 (near-white) on a 25% slate tint; the rule matches the slate class name, not low contrast"
+      },
+      {
+        "rule": "gray-on-color",
+        "value": "*",
+        "files": [
+          "frontend/components/simulation/ContainmentPanel.tsx"
+        ],
+        "createdAt": "2026-10-20T15:40:54.291Z",
+        "reason": "Claude: flagged element is slate text on bg-white/[0.02], a 2% neutral tint over a dark panel, not a colored background"
       }
     ]
   }

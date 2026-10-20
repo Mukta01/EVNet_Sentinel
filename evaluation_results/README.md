@@ -40,6 +40,14 @@ Written by `src/evaluation/attack_test_harness.py` (`make attack-test`).
 
 The dashboard's *Attack insights* tab (`frontend/data/insights.json`) is built from this file.
 
+### `response/`: the closed loop, replayed
+Written by `src/evaluation/replay_response.py` (`make response`). Every attack class, from each device that really sent it, is streamed through the containment policy (`src/response/containment.py`) using the primary detector's recorded verdicts, mixed with normal traffic. A simulated operator approves each recommendation 5 flows after it appears.
+- **Actions:** floods get a quarantine, scans from the wifi a restriction (no access to the chargers or the CSMS), and scans from the compromised car a stopped session with the vehicle blocked.
+- **Result:** 20 of 20 attacker-and-attack pairs contained. Floods after about 12 attack flows, scans after 5–7. A device that scanned first is quarantined on its first flood flow, versus 11 flows cold. 0 actions over 2,000 benign flows (only 12 distinct benign flows exist, so that is a small sample).
+- **Caveat:** a replay of recorded traffic through the policy, not live blocking. Rows with fewer than 30 held-out flows are flagged `smallSample`.
+
+The dashboard's Findings tab reads the same numbers from `frontend/data/response-replay.json`.
+
 ### `boosting/`: XGBoost and LightGBM
 Written by `src/evaluation/run_boosting.py` (`make boosting`) on the **same splits and seeds** as `multiseed/`. XGBoost 0.5511 ± 0.0110, LightGBM 0.5504 ± 0.0035 macro-F1: level with Random Forest within one standard deviation, with the same ceiling on the six scan types. `BOOSTING_RESULTS.md` has all six models side by side, including per-class F1.
 
@@ -85,6 +93,7 @@ These steps need the raw CICEVSE2024 captures, which are not in git.
 python3 src/evaluation/run_experiments.py --raw-dir <captures> --feature-set extended --seeds 42 1337 2024   # multiseed/
 make attack-test                                                                                         # attack_tests.json
 make insights && make figures                                                                            # frontend/data/*.json and docs/figures/
+make response                                                                                            # response/ and frontend/data/response-replay.json
 ```
 
 Pipeline diagram: [`docs/diagrams/ml-pipeline.html`](../docs/diagrams/ml-pipeline.html).

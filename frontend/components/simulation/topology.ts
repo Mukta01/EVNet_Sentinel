@@ -78,9 +78,10 @@ export function routeFor(evse: string, sender: Sender | null, attacking: boolean
 export const TAP_POINT = { x: 320, y: 238 };
 
 /**
- * Where a quarantined device's traffic stops: at the access point / switch
- * port, before it reaches the tap. Simulated containment only — Sentinel
- * itself is passive; an operator-approved switch ACL does the blocking.
+ * Where a contained device's traffic stops. Laptop and Pi: at the access
+ * point / switch port (quarantine or restriction ACL), before the tap. The car:
+ * at the charger, which stopped the session. Simulated containment only —
+ * Sentinel itself is passive; an operator approves every action.
  */
 export const BLOCKED_PATHS: Record<Sender, string> = {
   kali: "M525,170 Q525,224 488,234",

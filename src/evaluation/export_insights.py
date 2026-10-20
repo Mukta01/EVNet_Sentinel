@@ -204,6 +204,7 @@ def main():
         "models": tests["models"],
         "modelLabels": {m: LABEL.get(m, m) for m in tests["models"]},
         "roles": playbook["roles"],
+        "containment": {k: v for k, v in playbook.get("containment", {}).items() if not k.startswith("_")},
         "takeaways": takeaways(tests, attacks),
         "primary": choose_primary(tests["models"], attacks)[0],
         "campaign": tests["campaign"],

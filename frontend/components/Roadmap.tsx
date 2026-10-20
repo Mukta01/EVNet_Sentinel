@@ -58,7 +58,7 @@ const phases = [
     status: "done",
     date: "Oct 1 – 10",
     owner: "Frontend & API",
-    items: ["Beat the Sentinel hero", "Mumbai scroll story", "Simulation on real attack routes", "Threat level and quarantine", "Runbook and diagrams"],
+    items: ["Beat the Sentinel hero", "Mumbai scroll story", "Simulation on real attack routes", "Threat level and containment", "Runbook and diagrams"],
   },
   {
     id: 6,
@@ -66,7 +66,7 @@ const phases = [
     status: "done",
     date: "Oct 5 – 17",
     owner: "All",
-    items: ["XGBoost and LightGBM benchmarks", "Research paper v2 and v3", "40 test cases, 71 automated tests", "Demo scripts and walkthroughs", "Public demo link"],
+    items: ["XGBoost and LightGBM benchmarks", "Closed-loop response: contain, harden, verify", "Research paper v2 and v3", "40 test cases, 71 automated tests", "Demo scripts and walkthroughs", "Public demo link"],
   },
   {
     id: 7,

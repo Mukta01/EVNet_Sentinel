@@ -9,12 +9,12 @@ const REAL = [
   "Every flow is held out: no model was trained on it.",
   "Every verdict and confidence is that model's actual output, computed offline from the same files the API serves.",
   "Who attacked which station comes from the MAC addresses inside each flow, not from guesswork.",
-  "The threat-level and quarantine rules are tested on these same flows (tests/test_containment.py).",
+  "The threat-level and containment rules are tested on these same flows (tests/test_containment.py), and replayed over every recorded attack (src/evaluation/replay_response.py).",
 ];
 const VISUAL = [
   "Packet animation and wire speed: a display setting, not the attack's real timing.",
   "Normal traffic loops over the 12 held-out benign flows the dataset has.",
-  "The quarantine is a simulated switch block an operator approves. Sentinel itself is passive and blocks nothing.",
+  "Quarantine, restriction and stopping a vehicle's session are simulated actions an operator approves. Sentinel itself is passive and blocks nothing.",
 ];
 
 export default function WhatsReal() {
