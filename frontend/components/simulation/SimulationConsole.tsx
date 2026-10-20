@@ -77,6 +77,9 @@ const STAGE_FLOWS = 10;
 
 type Campaign = { id: string; steps: string[]; stage: number };
 
+/** The malicious-EV captures are labelled "maliciousev"; a car on the cable means the station is charging. */
+const stateOf = (f: { state: string }) => (f.state === "idle" ? "idle" : "charging");
+
 export default function SimulationConsole({
   sim, responses, roles, containment, categorySeverity, senders,
 }: {
@@ -150,29 +153,32 @@ export default function SimulationConsole({
   const activeIsAttack = attacking && activeClass !== "Benign";
 
   const benignPool = useMemo(() => sim.byClass["Benign"] ?? [], [sim.byClass]);
-  const attackPool = useMemo(() => {
-    let pool = sim.byClass[activeClass] ?? [];
-    // Only real recordings: filtering by sender never invents a route.
-    if (source !== "all") {
-      const bySender = pool.filter((id) => senders[byId.get(id)?.capture ?? ""] === source);
-      if (bySender.length) pool = bySender;
-    }
-    if (stationState === "idle") {
-      const filtered = pool.filter((id) => byId.get(id)?.state === "idle");
-      if (filtered.length) return filtered;
-    }
-    return pool;
-  }, [sim.byClass, activeClass, stationState, byId, source, senders]);
-
-  // Which devices actually sent this attack in the recordings, with flow counts.
+  // Senders that really sent this attack with the station in the chosen state.
+  // The malicious-EV captures need a car on the cable, so they only exist while charging.
+  const inState = useCallback((id: number) => {
+    const f = byId.get(id);
+    return !!f && stateOf(f) === stationState;
+  }, [byId, stationState]);
   const recordedSenders = useMemo(() => {
     const counts = new Map<Sender, number>();
-    for (const id of sim.byClass[attackClass] ?? []) {
+    for (const id of (sim.byClass[attackClass] ?? []).filter(inState)) {
       const s = senders[byId.get(id)?.capture ?? ""];
       if (s) counts.set(s, (counts.get(s) ?? 0) + 1);
     }
     return [...counts.entries()];
-  }, [sim.byClass, attackClass, senders, byId]);
+  }, [sim.byClass, attackClass, senders, byId, inState]);
+  // A sender that isn't available in this state falls back to every recorded sender.
+  const effectiveSource = recordedSenders.some(([k]) => k === source) ? source : "all";
+  const attackPool = useMemo(() => {
+    // Only real recordings: filtering never invents a route or borrows the other state's flows.
+    const pool = (sim.byClass[activeClass] ?? []).filter(inState);
+    if (effectiveSource === "all") return pool;
+    const bySender = pool.filter((id) => senders[byId.get(id)?.capture ?? ""] === effectiveSource);
+    // A campaign stage the chosen device never sent plays every recorded sender instead.
+    return bySender.length ? bySender : pool;
+  }, [sim.byClass, activeClass, inState, byId, effectiveSource, senders]);
+
+  // Which devices actually sent this attack in the recordings, with flow counts.
 
   const reset = useCallback(() => {
     packets.current = [];
@@ -335,7 +341,7 @@ export default function SimulationConsole({
   const stopAttack = () => { reset(); setCampaign(null); setAttacking(false); setStreaming(true); };
   const runCampaign = () => {
     const preset = CAMPAIGNS.find((c) => c.id === campaignId)!;
-    const steps = (preset.steps.length ? preset.steps : attackClasses).filter((c) => sim.byClass[c]?.length);
+    const steps = (preset.steps.length ? preset.steps : attackClasses).filter((c) => (sim.byClass[c] ?? []).some(inState));
     reset();
     stageSeen.current = 0;
     setCampaign({ id: preset.id, steps: ["Benign", ...steps], stage: 0 });
@@ -368,12 +374,12 @@ export default function SimulationConsole({
           </select>
           <GroupChip group={sim.groups[attackClass]} className="mt-2" />
           <p className="mt-1.5 font-mono text-[10px] tabular-nums text-slate-600">
-            {(sim.byClass[attackClass] ?? []).length} held-out flows available
+            {(sim.byClass[attackClass] ?? []).filter(inState).length} held-out flows recorded while {stationState}
           </p>
 
           <label className="mt-4 block text-[11px] text-slate-500" htmlFor="sent-from">Sent from (as recorded)</label>
           <select
-            id="sent-from" value={recordedSenders.some(([k]) => k === source) ? source : "all"}
+            id="sent-from" value={effectiveSource}
             onChange={(e) => { setSource(e.target.value as Sender | "all"); if (attacking) reset(); }}
             className="mt-1.5 w-full rounded-md border border-white/10 bg-[#0B1220] px-2.5 py-2 text-[13px] text-slate-100 focus-visible:outline-2 focus-visible:outline-emerald-400"
           >
@@ -388,7 +394,8 @@ export default function SimulationConsole({
 
           <button
             onClick={attacking && !campaign ? stopAttack : launchAttack}
-            className={`mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium ring-1 ring-inset transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 ${
+            disabled={!(attacking && !campaign) && attackPool.length === 0}
+            className={`mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium ring-1 ring-inset transition-colors disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 ${
               attacking && !campaign
                 ? "bg-rose-500/12 text-rose-300 ring-rose-500/25 hover:bg-rose-500/20"
                 : "bg-emerald-500/12 text-emerald-300 ring-emerald-500/25 hover:bg-emerald-500/20"
@@ -397,6 +404,11 @@ export default function SimulationConsole({
             {attacking && !campaign ? <><Square className="h-3.5 w-3.5" aria-hidden />Stop attack</>
                        : <><Radio className="h-4 w-4" aria-hidden />Launch attack</>}
           </button>
+          {attackPool.length === 0 && !(attacking && !campaign) && (
+            <p className="mt-1.5 text-[11px] leading-snug text-amber-300/80">
+              No {prettyClass(attackClass)} was recorded with the station {stationState}. Switch the station state to try it.
+            </p>
+          )}
         </Panel>
 
         <Panel title="Campaign">
@@ -453,7 +465,10 @@ export default function SimulationConsole({
             ))}
           </div>
           <p className="mt-2 text-[11px] leading-snug text-slate-500">
-            Filters the pool by the flow&rsquo;s real <code className="font-mono">state</code> metadata.
+            Uses only flows recorded in this state.{" "}
+            {stationState === "idle"
+              ? "Idle means no car is plugged in, so the malicious-EV scans (sent over the charging cable) aren’t available."
+              : "Charging means a car is on the cable: ISO 15118 traffic flows, and a compromised car can attack."}
           </p>
         </Panel>
 
