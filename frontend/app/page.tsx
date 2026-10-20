@@ -50,9 +50,9 @@ export default async function Home() {
     <main className="min-h-screen bg-[#020617]">
       <Navbar />
       <Hero stats={stats} />
+      <ArchitectureStory />
       <VideoSection />
       <Features />
-      <ArchitectureStory />
       <TechStack />
       <Team />
       <Roadmap />
