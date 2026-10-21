@@ -73,14 +73,29 @@ export const fmtScoreStd = (v: number, std: number, digits?: number) =>
  * votes the same way (exactly 1.0): at the top it reads "≥ 99.99%".
  */
 export const fmtConfidence = (v: number) => (v >= 0.9999 ? "≥ 99.99%" : fmtPct(v));
+/** Wilson score 95% lower bound for k successes out of n. Monotonic in k. */
+const wilsonLower = (k: number, n: number, z = 1.96) => {
+  const p = k / n, z2 = z * z;
+  return (p + z2 / (2 * n) - z * Math.sqrt((p * (1 - p) + z2 / (4 * n)) / n)) / (1 + z2 / n);
+};
 /**
- * A test pass rate. When every one of n tested flows passed, "100%" would read
- * as "never fails"; the honest statement is the 95% lower bound, 1 − 3/n
- * (the rule of three): 4,500 of 4,500 reads "≥ 99.93%".
+ * A test pass rate. Near the top a point estimate misleads: 4,500 of 4,500
+ * would read "100%" ("never fails"), and bounding only the perfect cells would
+ * rank them below a cell with one miss. So every rate of 99% or more shows its
+ * Wilson 95% lower bound, always at two decimals: 4,500/4,500 reads
+ * "≥ 99.91%", 4,499/4,500 a little lower. Classes tested on fewer than 100
+ * distinct flows show the count instead, because a bound that wide says little.
  */
-export const fmtRate = (v: number, n?: number) => (v >= 1 && n ? `≥ ${fmtPct(Math.max(0, 1 - 3 / n))}` : fmtPct(v));
+export const fmtRate = (v: number, n?: number) => {
+  if (!n || v < 0.99) return fmtPct(v);
+  const k = Math.round(v * n);
+  if (n < 100) return `${k}/${n}`;
+  return `≥ ${(Math.floor(wilsonLower(k, n) * 1e4) / 100).toFixed(2)}%`;
+};
 export const rateNote = (v: number, n?: number) =>
-  v >= 1 && n ? `all ${n.toLocaleString()} tested flows passed; 95% lower bound` : undefined;
+  n && v >= 0.99
+    ? `${Math.round(v * n).toLocaleString()} of ${n.toLocaleString()} tested flows passed${n >= 100 ? "; Wilson 95% lower bound" : ""}`
+    : undefined;
 /** Percentages follow the same rule: 99.996% prints as 99.99%, never 100%. */
 export const fmtPct = (v: number) =>
   v >= 0.999 && v < 1 ? `${(nearOne(v, 4) * 100).toFixed(2)}%`

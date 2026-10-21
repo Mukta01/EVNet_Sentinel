@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FAMILY, MODEL_LABEL, fmtPct, fmtScoreStd } from "./theme";
+import { MODEL_LABEL, fmtPct, fmtScoreStd } from "./theme";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -35,16 +35,16 @@ export function FindingsOverview({ findings, insights, replay }: { findings: any
   const cards = [
     { href: "#f-leak", kicker: "The leak", value: fmtPct(findings.singleColumnProbe[0].accuracy),
       note: `One timestamp column alone scores this. The published ${fmtPct(findings.paperReported.accuracy)} rests on it.`,
-      color: "#FDA4AF" },
+      cls: "text-rose-300" },
     { href: "#f-models", kicker: `Corrected · ${MODEL_LABEL[primary] ?? primary}`, value: fmtScoreStd(model.macro_f1, model.macro_f1_std, 4),
       note: `Macro-F1 with the leak removed, ${findings.seeds.length} seeds. The primary detector.`,
-      color: "#86EFAC" },
+      cls: "text-emerald-300" },
     { href: "#f-classes", kicker: "Floods vs scans", value: `${fmtScoreStd(floods.f1, floods.std)}`,
       note: `Mean F1 on the five floods (± the largest seed spread among them); the six scans average ${fmtScoreStd(scans.f1, scans.std)}.`,
-      color: FAMILY.volumetric.stroke },
+      cls: "text-sky-300" },
     { href: "#f-response", kicker: "After detection", value: `${replay.summary.contained}/${replay.summary.scenarios}`,
       note: `Attacks contained in the replay; a scanner that floods is quarantined after ${esc.afterScanFlowsToQuarantine} flow, not ${esc.coldFloodFlowsToQuarantine}.`,
-      color: "#FCD34D" },
+      cls: "text-amber-300" },
   ];
 
   return (
@@ -53,7 +53,7 @@ export function FindingsOverview({ findings, insights, replay }: { findings: any
         <a key={c.href} href={c.href}
           className="group rounded-lg border border-white/8 bg-white/[0.02] p-4 transition-colors hover:border-white/15 hover:bg-white/[0.04] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400">
           <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500">{c.kicker}</p>
-          <p className="mt-2 font-mono text-[22px] tabular-nums leading-tight" style={{ color: c.color }}>{c.value}</p>
+          <p className={`mt-2 font-mono text-[22px] tabular-nums leading-tight ${c.cls}`}>{c.value}</p>
           <p className="mt-2 text-[12.5px] leading-snug text-slate-400">{c.note}</p>
           <p className="mt-3 text-[11px] text-slate-500 transition-colors group-hover:text-slate-300">See the evidence →</p>
         </a>

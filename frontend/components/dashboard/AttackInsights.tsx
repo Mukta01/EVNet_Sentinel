@@ -17,20 +17,21 @@ type ModelResult = {
 type Verdict = "identified" | "category" | "detected" | "missed" | "clean" | "false-alarm";
 
 /** One vocabulary, used by the legend, the matrix and the detail panel alike. */
+/** Colours are theme variables, so the light theme can remap them (globals.css). */
 const VERDICT: Record<Verdict, { label: string; plain: string; fg: string; bg: string }> = {
-  identified:    { label: "Identified",     plain: "names the exact attack",               fg: "#6EE7B7", bg: "rgba(16,185,129,0.14)" },
-  category:      { label: "Right category", plain: "knows the kind of attack, not which one", fg: "#7DD3FC", bg: "rgba(56,189,248,0.14)" },
-  detected:      { label: "Flagged only",   plain: "knows something is wrong, not what",     fg: "#FCD34D", bg: "rgba(245,158,11,0.14)" },
-  missed:        { label: "Missed",         plain: "let the attack through as normal",       fg: "#FDA4AF", bg: "rgba(244,63,94,0.16)" },
-  clean:         { label: "No false alarms", plain: "leaves normal traffic alone",           fg: "#6EE7B7", bg: "rgba(16,185,129,0.14)" },
-  "false-alarm": { label: "False alarms",   plain: "flags normal traffic as an attack",      fg: "#FDA4AF", bg: "rgba(244,63,94,0.16)" },
+  identified:    { label: "Identified",     plain: "names the exact attack",               fg: "var(--color-emerald-300)", bg: "rgba(16,185,129,0.14)" },
+  category:      { label: "Right category", plain: "knows the kind of attack, not which one", fg: "var(--color-sky-300)", bg: "rgba(56,189,248,0.14)" },
+  detected:      { label: "Flagged only",   plain: "knows something is wrong, not what",     fg: "var(--color-amber-300)", bg: "rgba(245,158,11,0.14)" },
+  missed:        { label: "Missed",         plain: "let the attack through as normal",       fg: "var(--color-rose-300)", bg: "rgba(244,63,94,0.16)" },
+  clean:         { label: "No false alarms", plain: "leaves normal traffic alone",           fg: "var(--color-emerald-300)", bg: "rgba(16,185,129,0.14)" },
+  "false-alarm": { label: "False alarms",   plain: "flags normal traffic as an attack",      fg: "var(--color-rose-300)", bg: "rgba(244,63,94,0.16)" },
 };
 
 const SEVERITY: Record<string, { label: string; fg: string; bg: string }> = {
-  critical: { label: "Critical", fg: "#FECDD3", bg: "rgba(225,29,72,0.28)" },
-  high:     { label: "High",     fg: "#FED7AA", bg: "rgba(234,88,12,0.24)" },
-  medium:   { label: "Medium",   fg: "#FDE68A", bg: "rgba(217,119,6,0.20)" },
-  none:     { label: "None",     fg: "#CBD5E1", bg: "rgba(100,116,139,0.20)" },
+  critical: { label: "Critical", fg: "var(--color-rose-200)", bg: "rgba(225,29,72,0.28)" },
+  high:     { label: "High",     fg: "var(--color-orange-200)", bg: "rgba(234,88,12,0.24)" },
+  medium:   { label: "Medium",   fg: "var(--color-amber-200)", bg: "rgba(217,119,6,0.20)" },
+  none:     { label: "None",     fg: "var(--color-slate-300)", bg: "rgba(100,116,139,0.20)" },
 };
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -43,10 +44,10 @@ const TONE: Record<string, string> = {
 
 const pct = fmtPct;
 
-const ACTION: Record<string, { label: string; color: string }> = {
-  quarantine: { label: "Quarantine", color: "#FDA4AF" },
-  restrict: { label: "Restrict", color: "#FCD34D" },
-  "end-session": { label: "Stop session", color: "#7DD3FC" },
+const ACTION: Record<string, { label: string; cls: string }> = {
+  quarantine: { label: "Quarantine", cls: "text-rose-300" },
+  restrict: { label: "Restrict", cls: "text-amber-300" },
+  "end-session": { label: "Stop session", cls: "text-sky-300" },
 };
 const SENDER: Record<string, string> = { kali: "laptop", rpi: "Pi", evcc: "car" };
 
@@ -122,6 +123,7 @@ export default function AttackInsights({ insights, replay }: { insights: Insight
             <thead>
               <tr className="border-b border-white/10 bg-white/[0.02] text-left">
                 <th scope="col" className="px-4 py-3 text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Attack</th>
+                <th scope="col" className="px-3 py-3 text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Response</th>
                 {models.map((m) => (
                   <th key={m} scope="col" className="px-3 py-3 text-center text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">
                     <span className="inline-flex items-center gap-1.5">
@@ -134,7 +136,6 @@ export default function AttackInsights({ insights, replay }: { insights: Insight
                   </th>
                 ))}
                 <th scope="col" className="px-4 py-3 text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Best</th>
-                <th scope="col" className="px-4 py-3 text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">Response</th>
               </tr>
             </thead>
             <tbody>
@@ -168,6 +169,15 @@ export default function AttackInsights({ insights, replay }: { insights: Insight
                           )}
                         </button>
                       </th>
+                      <td className="px-3 py-2.5 text-[12px]">
+                        {responsesFor(replay, a.class).map((r) => (
+                          <span key={r.sender} className="block whitespace-nowrap" title={`From the ${SENDER[r.sender] ?? r.sender}; recommended after ~${r.flows} attack flows in the replay`}>
+                            <span className={`font-medium ${ACTION[r.action]?.cls ?? ""}`}>{ACTION[r.action]?.label ?? r.action}</span>
+                            {responsesFor(replay, a.class).length > 1 && <span className="text-slate-500"> · {SENDER[r.sender] ?? r.sender}</span>}
+                          </span>
+                        ))}
+                        {a.class === "Benign" && <span className="text-slate-500">none</span>}
+                      </td>
                       {models.map((m) => {
                         const r: ModelResult = a.models[m];
                         const tied: string[] = a.bestTied ?? [a.bestModel];
@@ -175,18 +185,18 @@ export default function AttackInsights({ insights, replay }: { insights: Insight
                         return (
                           <td key={m} className="px-2 py-1.5 text-center">
                             <div
-                              className="mx-auto w-full max-w-[7.5rem] rounded-md px-2 py-1.5"
+                              className="mx-auto w-full max-w-[8.75rem] rounded-md px-2 py-1.5"
                               style={{
                                 background: VERDICT[r.verdict].bg,
                                 boxShadow: isBest ? `inset 0 0 0 1.5px ${VERDICT[r.verdict].fg}` : undefined,
                               }}
                               title={`${labels[m]}: ${VERDICT[r.verdict].plain}${rateNote(r.exact, a.tested) ? ` (${rateNote(r.exact, a.tested)})` : ""}`}
                             >
-                              <span className="block font-mono text-[13px] tabular-nums" style={{ color: VERDICT[r.verdict].fg }}>
+                              <span className="block whitespace-nowrap font-mono text-[13px] tabular-nums" style={{ color: VERDICT[r.verdict].fg }}>
                                 {fmtRate(r.exact, a.tested)}
                               </span>
                               {a.class !== "Benign" && (
-                                <span className="block font-mono text-[10px] tabular-nums text-slate-500">
+                                <span className="block whitespace-nowrap font-mono text-[10px] tabular-nums text-slate-500">
                                   category {fmtRate(r.category, a.tested)}
                                 </span>
                               )}
@@ -199,15 +209,6 @@ export default function AttackInsights({ insights, replay }: { insights: Insight
                           ? `All ${models.length} tie`
                           : (a.bestTied ?? [a.bestModel]).map((m: string) => labels[m]).join(" = ")}
                       </td>
-                      <td className="px-4 py-2.5 text-[12px]">
-                        {responsesFor(replay, a.class).map((r) => (
-                          <span key={r.sender} className="block whitespace-nowrap" title={`From the ${SENDER[r.sender] ?? r.sender}; recommended after ~${r.flows} attack flows in the replay`}>
-                            <span className="font-medium" style={{ color: ACTION[r.action]?.color }}>{ACTION[r.action]?.label ?? r.action}</span>
-                            {responsesFor(replay, a.class).length > 1 && <span className="text-slate-500"> · {SENDER[r.sender] ?? r.sender}</span>}
-                          </span>
-                        ))}
-                        {a.class === "Benign" && <span className="text-slate-500">none</span>}
-                      </td>
                     </tr>
                   </Fragment>
                 );
@@ -217,7 +218,7 @@ export default function AttackInsights({ insights, replay }: { insights: Insight
         </div>
         <p className="mt-3 text-xs leading-relaxed text-slate-500">
           For normal traffic the cell shows how often it was correctly left alone — the failure there is a
-          false alarm, not a miss. Rows marked n= have under 100 unseen flows in the whole dataset.
+          false alarm, not a miss. Rows marked n= have under 100 unseen flows in the whole dataset. Rates of 99% and above show their Wilson 95% lower bound (≥), so a perfect run never reads as &ldquo;never fails&rdquo; and always ranks above one with a miss; classes tested on under 100 flows show the count instead.
         </p>
       </section>
 
@@ -362,7 +363,7 @@ function AttackDetail({
               return (
                 <div key={r.sender} className="rounded-lg border border-white/8 bg-white/[0.02] p-4">
                   <p className="text-sm">
-                    <span className="font-medium" style={{ color: ACTION[r.action]?.color }}>{g?.label ?? ACTION[r.action]?.label}</span>
+                    <span className={`font-medium ${ACTION[r.action]?.cls ?? ""}`}>{g?.label ?? ACTION[r.action]?.label}</span>
                     <span className="text-slate-500"> · sent from the {SENDER[r.sender] ?? r.sender}</span>
                   </p>
                   {g?.how && (
