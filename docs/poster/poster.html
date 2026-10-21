@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>EVNet Sentinel — research poster (A1)</title>
+<!--
+  A1 portrait research poster. Every number comes from the committed results:
+  frontend/data/findings.json, insights.json, response-replay.json and the
+  paper (docs/research paper/EVNet_Sentinel_Research_Paper_v3.tex).
+  Build the PDF: node docs/poster/build.mjs
+-->
+<style>
+  @page { size: 594mm 841mm; margin: 0; }
+  :root {
+    --ink: #0B1220; --muted: #475569; --faint: #94A3B8; --line: #E2E8F0; --paper: #FFFFFF; --wash: #F8FAFC;
+    --green: #059669; --green-l: #D1FAE5; --rose: #E11D48; --rose-l: #FFE4E6; --amber: #D97706; --amber-l: #FEF3C7;
+    --sky: #0284C7; --sky-l: #E0F2FE; --navy: #020617;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { width: 594mm; height: 841mm; background: var(--paper); color: var(--ink);
+    font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .mono { font-family: "SF Mono", Menlo, Consolas, monospace; }
+
+  /* header */
+  header { background: var(--navy); color: #F8FAFC; padding: 20mm 22mm 16mm; display: grid; grid-template-columns: 40mm 1fr auto; gap: 12mm; align-items: center; }
+  header .mark svg { width: 40mm; height: 40mm; }
+  header .kicker { color: #34D399; font-size: 19pt; letter-spacing: 0.22em; font-weight: 700; }
+  header h1 { margin: 4mm 0 5mm; font-size: 62pt; line-height: 1.02; font-weight: 800; letter-spacing: -0.02em; }
+  header h1 .sub { display: block; font-size: 27pt; font-weight: 500; color: #CBD5E1; letter-spacing: 0; margin-top: 4mm; line-height: 1.25; }
+  header .authors { font-size: 19pt; color: #E2E8F0; }
+  header .authors b { font-weight: 600; color: #fff; }
+  header .inst { font-size: 16pt; color: #94A3B8; margin-top: 2mm; }
+  .qrs { display: flex; gap: 8mm; }
+  .qr { background: #fff; border-radius: 4mm; padding: 4mm; text-align: center; width: 44mm; }
+  .qr img { width: 36mm; height: 36mm; display: block; }
+  .qr span { display: block; color: var(--ink); font-size: 12pt; font-weight: 700; margin-top: 2.5mm; }
+
+  /* headline strip */
+  .strip { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); background: var(--wash); }
+  .strip > div { padding: 8mm 10mm; border-right: 1px solid var(--line); display: flex; flex-direction: column; justify-content: center; }
+  .strip > div:last-child { border-right: 0; }
+  .strip .v { font-size: 44pt; font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+  .strip .l { font-size: 15pt; color: var(--muted); margin-top: 3mm; line-height: 1.3; }
+
+  /* body */
+  main { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11mm; padding: 11mm 22mm 0; zoom: var(--fit, 1.2); align-items: start; }
+  section { margin-bottom: 11mm; }
+  h2 { font-size: 26pt; margin: 0 0 4mm; font-weight: 800; letter-spacing: -0.01em; display: flex; align-items: baseline; gap: 4mm; }
+  h2 .n { font-size: 15pt; color: #fff; background: var(--green); border-radius: 2mm; padding: 1mm 3mm; font-weight: 700; }
+  p, li { font-size: 15.5pt; line-height: 1.42; color: #1E293B; margin: 0 0 3mm; }
+  ul { margin: 0; padding-left: 7mm; }
+  b { font-weight: 700; color: var(--ink); }
+  .note { font-size: 12.5pt; color: var(--muted); line-height: 1.4; }
+  .card { border: 1px solid var(--line); border-radius: 4mm; padding: 6mm; background: var(--paper); }
+  .callout { border-left: 2mm solid var(--rose); background: var(--rose-l); padding: 5mm 6mm; border-radius: 0; }
+  .callout.green { border-color: var(--green); background: var(--green-l); }
+  .callout p { margin: 0; }
+
+  /* bars */
+  .bar { margin: 3.5mm 0; }
+  .bar .row { display: flex; justify-content: space-between; font-size: 14pt; color: var(--muted); }
+  .bar .row b { font-family: "SF Mono", Menlo, monospace; }
+  .bar .track { height: 6mm; background: #EEF2F6; border-radius: 3mm; margin-top: 1.5mm; position: relative; }
+  .bar .fill { height: 6mm; border-radius: 3mm; }
+  .bar .err { position: absolute; top: 1.5mm; height: 3mm; border-left: 0.6mm solid var(--ink); border-right: 0.6mm solid var(--ink); }
+  .bar .err::after { content: ""; position: absolute; left: 0; right: 0; top: 1.2mm; border-top: 0.6mm solid var(--ink); }
+
+  /* per-class */
+  .cls { display: grid; grid-template-columns: 48mm 1fr 20mm; gap: 3mm; align-items: center; margin: 1.6mm 0; font-size: 13pt; }
+  .cls .t { height: 4.5mm; background: #EEF2F6; border-radius: 2mm; }
+  .cls .f { height: 4.5mm; border-radius: 2mm; }
+  .cls .v { text-align: right; font-family: "SF Mono", Menlo, monospace; color: var(--ink); }
+  .grp { font-size: 12pt; letter-spacing: 0.14em; color: var(--muted); font-weight: 700; margin: 4mm 0 1mm; }
+
+  /* pipeline + loop */
+  .steps { display: grid; gap: 2.5mm; }
+  .step { display: grid; grid-template-columns: 11mm 1fr; gap: 3.5mm; align-items: start; }
+  .step .k { width: 11mm; height: 11mm; border-radius: 50%; background: var(--navy); color: #34D399; font-weight: 800; font-size: 14pt; display: grid; place-items: center; }
+  .step p { margin: 0.5mm 0 0; font-size: 14.5pt; }
+  .loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5mm; margin: 2mm 0 4mm; }
+  .loop > div { background: var(--navy); color: #F8FAFC; border-radius: 3mm; padding: 4mm 2mm; text-align: center; font-weight: 700; font-size: 15pt; }
+  .loop div small { display: block; font-weight: 500; color: #94A3B8; font-size: 11pt; margin-top: 1mm; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5pt; }
+  th { text-align: left; font-size: 11.5pt; letter-spacing: 0.08em; color: var(--muted); border-bottom: 0.5mm solid var(--ink); padding: 0 2mm 2mm 0; font-weight: 700; }
+  td { border-bottom: 1px solid var(--line); padding: 2.4mm 2mm 2.4mm 0; vertical-align: top; line-height: 1.3; }
+  .tag { display: inline-block; border-radius: 1.5mm; padding: 0.6mm 2.2mm; font-weight: 700; font-size: 12.5pt; }
+  .q { background: var(--rose-l); color: #9F1239; } .r { background: var(--amber-l); color: #92400E; } .s { background: var(--sky-l); color: #075985; }
+  .big3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin-top: 3mm; }
+  .big3 > div { border: 1px solid var(--line); border-radius: 3mm; padding: 4mm 2mm; text-align: center; }
+  .big3 .v { font-size: 27pt; font-weight: 800; line-height: 1; white-space: nowrap; }
+  .big3 .l { font-size: 11.5pt; color: var(--muted); margin-top: 2mm; line-height: 1.3; }
+
+  footer { position: absolute; left: 0; right: 0; bottom: 0; background: var(--navy); color: #CBD5E1; padding: 7mm 22mm; display: flex; justify-content: space-between; align-items: center; font-size: 13.5pt; }
+  footer b { color: #fff; }
+  body { position: relative; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="mark">
+    <svg viewBox="0 0 32 32" aria-hidden="true">
+      <defs><linearGradient id="edge" x1="5" y1="3" x2="27" y2="29" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#34D399"/><stop offset="1" stop-color="#38BDF8"/></linearGradient></defs>
+      <path d="M16 2.75 27 6.6v8.3c0 6.9-4.6 12.1-11 14.35C9.6 27 5 21.8 5 14.9V6.6L16 2.75Z" fill="#22C55E" fill-opacity="0.12" stroke="url(#edge)" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M17.6 7.5 10.8 17.2h4.6l-1.5 7.3 7.3-10.2h-4.7l1.1-6.8Z" fill="#22C55E"/>
+    </svg>
+  </div>
+  <div>
+    <div class="kicker">EV CHARGING · NETWORK INTRUSION DETECTION</div>
+    <h1>EVNet Sentinel
+      <span class="sub">A leakage-corrected reproduction and comparative study of intrusion detection on EV charging networks — with a closed-loop response</span>
+    </h1>
+    <div class="authors"><b>Shardul Chogale</b> · <b>Mukta Varak</b> · <b>Shruti Chaurasiya</b> · <b>Neha Chavhan</b> &nbsp;|&nbsp; Guide: <b>Prof. Mahesh Khandke</b></div>
+    <div class="inst">Department of Computer Engineering, Vidyalankar Institute of Technology, Mumbai, India</div>
+  </div>
+  <div class="qrs">
+    <div class="qr"><img src="qr-video.svg" alt=""><span>Watch the video</span></div>
+    <div class="qr"><img src="qr-github.svg" alt=""><span>Code &amp; results</span></div>
+  </div>
+</header>
+
+<div class="strip">
+  <div><div class="v" style="color:var(--rose)">99.8%</div><div class="l">accuracy from <b>one timestamp column</b> alone — the published 98.4% rests on a leak</div></div>
+  <div><div class="v">0.558</div><div class="l">honest <b>macro-F1</b> with the leak removed (± 0.008, 3 seeds)</div></div>
+  <div><div class="v" style="color:var(--green)">≥ 99.8%</div><div class="l"><b>floods</b> named exactly (95% lower bound) — scans named only 34%</div></div>
+  <div><div class="v" style="color:var(--amber)">20 / 20</div><div class="l">recorded attacks <b>contained</b> in the response replay; 0 actions on normal traffic</div></div>
+</div>
+
+<main>
+  <!-- ── column 1 ─────────────────────────────────── -->
+  <div>
+    <section>
+      <h2><span class="n">1</span>Problem</h2>
+      <p>Every public EV charger (EVSE) is a networked computer. It reports to a <b>charging management system (CSMS)</b> over OCPP, usually across the site's shared wifi, and talks to the car over ISO 15118. Flooding a charger cuts its link to the CSMS: sessions cannot be authorised or billed.</p>
+      <p>Makhmudov et al. [1] reported <b>98.4% accuracy</b> with an adaptive random forest and drift detection. We set out to reproduce it, and to go beyond detection.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">2</span>Dataset</h2>
+      <p><b>CICEVSE2024</b> (Canadian Institute for Cybersecurity): traffic from two real charging stations, idle and charging, recorded from a mirrored switch port.</p>
+      <ul>
+        <li><b>1,198,151</b> flows after de-duplication, <b>15</b> classes, <b>60</b> flow features</li>
+        <li>Attacks: 5 volumetric floods, 6 nmap scan types, ICMP and Slowloris</li>
+        <li>Senders: a laptop and a Raspberry Pi on the wifi, and a <b>compromised car</b> scanning over the charging cable</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="n">3</span>The leak</h2>
+      <div class="bar"><div class="row"><span>Published model, accuracy</span><b>98.4%</b></div><div class="track"><div class="fill" style="width:98.4%;background:#94A3B8"></div></div></div>
+      <div class="bar"><div class="row"><span>One timestamp column alone</span><b style="color:var(--rose)">99.8%</b></div><div class="track"><div class="fill" style="width:99.76%;background:var(--rose)"></div></div></div>
+      <div class="bar"><div class="row"><span>Leak removed, macro-F1</span><b style="color:var(--green)">0.558</b></div><div class="track"><div class="fill" style="width:55.8%;background:var(--green)"></div></div></div>
+      <div class="callout" style="margin-top:5mm"><p>Six absolute capture timestamps identify the <b>recording</b>, not the traffic: a single column (<span class="mono">bidirectional_first_seen_ms</span>) out-scores the published model. The drift alarms also land on capture-file seams, not real concept drift.</p></div>
+    </section>
+
+    <section>
+      <h2><span class="n">4</span>Method</h2>
+      <div class="steps">
+        <div class="step"><div class="k">1</div><p><b>Remove leakage</b> — drop the timestamps and <span class="mono">src_port</span>; de-duplicate flows.</p></div>
+        <div class="step"><div class="k">2</div><p><b>Split</b> — stratified train / validation / test, repeated for seeds 42, 1337, 2024.</p></div>
+        <div class="step"><div class="k">3</div><p><b>Detect</b> — six static models (XGBoost, LightGBM, Random Forest, Decision Tree, Logistic Regression, SVM) and an online ARF + ADWIN.</p></div>
+        <div class="step"><div class="k">4</div><p><b>Test per attack</b> — every class, every model, 30 × 50 unseen flows per model set; graded detected / right category / named.</p></div>
+        <div class="step"><div class="k">5</div><p><b>Respond</b> — a containment policy, replayed over every recorded attack (section 8).</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Team</h2>
+      <table>
+        <tr><td><b>Shardul Chogale</b></td><td>ML pipeline &amp; evaluation</td></tr>
+        <tr><td><b>Mukta Varak</b></td><td>Cloud deployment &amp; DevOps</td></tr>
+        <tr><td><b>Neha Chavhan</b></td><td>Frontend &amp; API integration</td></tr>
+        <tr><td><b>Shruti Chaurasiya</b></td><td>Data visualisation &amp; testing</td></tr>
+      </table>
+    </section>
+
+  </div>
+
+  <!-- ── column 2 ─────────────────────────────────── -->
+  <div>
+    <section>
+      <h2><span class="n">5</span>Why macro-F1, not accuracy</h2>
+      <p>After de-duplication, floods are <b>over 80%</b> of the flows (99% on the published feature set). A model that names every flood and misses every scan still scores high accuracy.</p>
+      <div class="card">
+        <p style="font-weight:700;margin-bottom:1mm">Same model, published feature set</p>
+        <div class="bar"><div class="row"><span>Accuracy — dominated by floods</span><b style="color:var(--amber)">99.6%</b></div><div class="track"><div class="fill" style="width:99.6%;background:var(--amber)"></div></div></div>
+        <div class="bar"><div class="row"><span>Macro-F1 — every class counts equally</span><b style="color:var(--green)">0.70</b></div><div class="track"><div class="fill" style="width:70%;background:var(--green)"></div></div></div>
+      </div>
+      <p style="margin-top:3mm">Macro-F1 averages the F1 of each of the 15 classes, so a missed scan type weighs as much as a flood.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">6</span>Corrected results</h2>
+      <p class="note" style="margin-bottom:2mm">Macro-F1, mean ± std over 3 seeds (bar = mean, whisker = ± 1 std).</p>
+      <div class="bar"><div class="row"><span>Random Forest</span><b>0.558 ± 0.008</b></div><div class="track"><div class="fill" style="width:55.82%;background:#22C55E"></div><div class="err" style="left:55.02%;width:1.6%"></div></div></div>
+      <div class="bar"><div class="row"><span>Decision Tree</span><b>0.557 ± 0.010</b></div><div class="track"><div class="fill" style="width:55.68%;background:#38BDF8"></div><div class="err" style="left:54.73%;width:1.9%"></div></div></div>
+      <div class="bar"><div class="row"><span><b>XGBoost</b> — primary detector</span><b>0.551 ± 0.011</b></div><div class="track"><div class="fill" style="width:55.11%;background:#F59E0B"></div><div class="err" style="left:54.01%;width:2.2%"></div></div></div>
+      <div class="bar"><div class="row"><span>LightGBM</span><b>0.550 ± 0.004</b></div><div class="track"><div class="fill" style="width:55.04%;background:#2DD4BF"></div><div class="err" style="left:54.69%;width:0.7%"></div></div></div>
+      <div class="bar"><div class="row"><span>Logistic Regression</span><b>0.436 ± 0.017</b></div><div class="track"><div class="fill" style="width:43.55%;background:#A78BFA"></div><div class="err" style="left:41.83%;width:3.4%"></div></div></div>
+      <div class="bar"><div class="row"><span>SVM</span><b>0.411 ± 0.017</b></div><div class="track"><div class="fill" style="width:41.1%;background:#F472B6"></div><div class="err" style="left:39.45%;width:3.3%"></div></div></div>
+      <p style="margin-top:3mm">The four tree models tie within one standard deviation. <b>XGBoost</b> is the primary detector: the fewest false alarms on normal traffic, <b>1.8%</b> (Random Forest 2.6%).</p>
+    </section>
+
+    <section>
+      <h2><span class="n">7</span>Floods are solved. Scans are not.</h2>
+      <p class="note" style="margin-bottom:1mm">Per-class F1, XGBoost, mean over 3 seeds.</p>
+      <div class="grp">VOLUMETRIC FLOODS</div>
+      <div class="cls"><span>PSHACK Flood</span><div class="t"><div class="f" style="width:99.99%;background:var(--green)"></div></div><span class="v">0.9999</span></div>
+      <div class="cls"><span>SYN Flood</span><div class="t"><div class="f" style="width:99.99%;background:var(--green)"></div></div><span class="v">0.9999</span></div>
+      <div class="cls"><span>SynonymousIP Flood</span><div class="t"><div class="f" style="width:99.99%;background:var(--green)"></div></div><span class="v">0.9999</span></div>
+      <div class="cls"><span>TCP Flood</span><div class="t"><div class="f" style="width:99.99%;background:var(--green)"></div></div><span class="v">0.9999</span></div>
+      <div class="cls"><span>UDP Flood</span><div class="t"><div class="f" style="width:99.93%;background:var(--green)"></div></div><span class="v">0.9993</span></div>
+      <div class="grp">RECONNAISSANCE SCANS</div>
+      <div class="cls"><span>OS Fingerprinting</span><div class="t"><div class="f" style="width:23.4%;background:var(--sky)"></div></div><span class="v">0.234</span></div>
+      <div class="cls"><span>Vulnerability Scan</span><div class="t"><div class="f" style="width:21.7%;background:var(--sky)"></div></div><span class="v">0.217</span></div>
+      <div class="cls"><span>TCP Port Scan</span><div class="t"><div class="f" style="width:20.8%;background:var(--sky)"></div></div><span class="v">0.208</span></div>
+      <div class="cls"><span>SYN Stealth Scan</span><div class="t"><div class="f" style="width:19.1%;background:var(--sky)"></div></div><span class="v">0.191</span></div>
+      <div class="cls"><span>Aggressive Scan</span><div class="t"><div class="f" style="width:17.5%;background:var(--sky)"></div></div><span class="v">0.175</span></div>
+      <div class="cls"><span>Service Version Det.</span><div class="t"><div class="f" style="width:16.4%;background:var(--sky)"></div></div><span class="v">0.164</span></div>
+      <p style="margin-top:3mm">The six nmap modes look almost identical at flow level. Still, <b>96%</b> of scans are recognised <i>as scans</i> — the response acts on that.</p>
+    </section>
+  </div>
+
+  <!-- ── column 3 ─────────────────────────────────── -->
+  <div>
+    <section>
+      <h2><span class="n">8</span>Closing the loop</h2>
+      <p>Detection alone does not stop an attacker. Sentinel recommends an action matched to how reliable the detector is; <b>a person approves every action</b>, and the chargers and CSMS can never be cut off.</p>
+      <div class="loop">
+        <div>Detect<small>classify each flow</small></div>
+        <div>Contain<small>one action per device</small></div>
+        <div>Harden<small>fix it for next time</small></div>
+        <div>Verify<small>attack flows stop</small></div>
+      </div>
+      <table>
+        <tr><th>ATTACK</th><th>ACTION</th><th>WHO · HOW</th></tr>
+        <tr><td>Flood from the wifi</td><td><span class="tag q">Quarantine</span></td><td>Analyst · switch port / ACL</td></tr>
+        <tr><td>Scan from the wifi</td><td><span class="tag r">Restrict</span></td><td>Analyst · no access to chargers or CSMS; device watched</td></tr>
+        <tr><td>Scan from a compromised car</td><td><span class="tag s">Stop session</span></td><td>CSMS operator · RemoteStopTransaction, block the vehicle's ID token</td></tr>
+        <tr><td>Watched device starts flooding</td><td><span class="tag q">Quarantine</span></td><td>Escalation at a much lower bar</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2><span class="n">9</span>Response, replayed</h2>
+      <p>Every recorded attack, from the device that really sent it, streamed through the policy with XGBoost's real verdicts and an operator who approves after 5 flows.</p>
+      <div class="big3">
+        <div><div class="v" style="color:var(--green)">20/20</div><div class="l">attacker–attack pairs contained</div></div>
+        <div><div class="v" style="color:var(--amber)">11 → 1</div><div class="l">flood flows to quarantine, cold vs after a scan</div></div>
+        <div><div class="v">0</div><div class="l">actions over 2,000 benign flows</div></div>
+      </div>
+      <p class="note" style="margin-top:3mm">A replay of recorded traffic through the policy, not live blocking: Sentinel is a passive, mirror-port IDS. The dataset has only 12 distinct benign flows, so the zero is a small sample.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">10</span>Conclusions</h2>
+      <ul>
+        <li>The published 98.4% comes from <b>capture timestamps</b>; corrected macro-F1 is <b>≈ 0.55</b> for every tree model.</li>
+        <li><b>Floods are solved</b> (≥ 99.8% named); <b>scans are data-limited</b>, not model-limited — stronger models do not lift the ceiling.</li>
+        <li>A detector earns its keep in the <b>response</b>: category-level actions contain every recorded attack.</li>
+      </ul>
+      <div class="callout green" style="margin-top:4mm"><p><b>Next:</b> session-level features to separate the scan types, and validation on a live OCPP testbed.</p></div>
+    </section>
+
+    <section>
+      <h2><span class="n">11</span>References</h2>
+      <p class="note">[1] F. Makhmudov, D. Kilichev, U. Giyosov, F. Akhmedov, "Online machine learning for intrusion detection in electric vehicle charging systems," <i>Mathematics</i>, 13(5):712, 2025.<br>
+      [2] Canadian Institute for Cybersecurity, "CICEVSE2024 dataset," University of New Brunswick, 2024.<br>
+      [3] J. Montiel et al., "River: Machine learning for streaming data in Python," <i>JMLR</i> 22(110), 2021.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <span><b>EVNet Sentinel</b> · github.com/Mukta01/EVNet_Sentinel</span>
+  <span>Corresponding author: Shardul Chogale · shardulchogale1983@gmail.com</span>
+</footer>
+</body>
+</html>
