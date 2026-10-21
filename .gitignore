@@ -81,3 +81,9 @@ saved_models/multiseed/
 
 # Archify working folders (candidates, receipts); published diagrams live in docs/diagrams/
 .archify/
+
+# Project video (video/): keep the source, not the generated media
+video/node_modules/
+video/out/
+video/public/shots/
+video/public/voice/
