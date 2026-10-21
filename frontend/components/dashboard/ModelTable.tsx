@@ -31,7 +31,7 @@ export default function ModelTable({
 
   return (
     <section aria-labelledby="models-heading">
-      <h3 id="models-heading" className="text-lg font-semibold tracking-tight text-white">
+      <h3 id="models-heading" className="text-xl font-semibold tracking-tight text-white">
         Model comparison
       </h3>
       <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">

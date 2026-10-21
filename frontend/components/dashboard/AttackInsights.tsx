@@ -72,10 +72,11 @@ export default function AttackInsights({ insights, replay }: { insights: Insight
     <div className="space-y-16">
       {/* ── what a visitor should leave knowing ───────────────────── */}
       <section aria-labelledby="takeaways-heading">
-        <h2 id="takeaways-heading" className="text-2xl font-semibold tracking-tight text-white text-balance">
+        <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.16em] text-emerald-400/80">01 · Takeaways</p>
+        <h2 id="takeaways-heading" className="text-xl font-semibold tracking-tight text-white text-balance">
           What the attack tests show
         </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
+        <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">
           Every attack type was fed to every model in {cfg.trials} random batches of {cfg.batch} unseen
           flows, repeated for each of {cfg.modelSeeds.length} independently trained model sets. These
           conclusions are generated from those results, so they update when the tests are re-run.
@@ -95,10 +96,11 @@ export default function AttackInsights({ insights, replay }: { insights: Insight
 
       {/* ── which model wins which attack ─────────────────────────── */}
       <section aria-labelledby="matrix-heading">
-        <h2 id="matrix-heading" className="text-2xl font-semibold tracking-tight text-white text-balance">
+        <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.16em] text-emerald-400/80">02 · Model × attack</p>
+        <h2 id="matrix-heading" className="text-xl font-semibold tracking-tight text-white text-balance">
           Which model is best at which attack
         </h2>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-400">
+        <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">
           Each cell is how often that model <span className="text-slate-200">named the attack exactly</span>;
           the smaller figure is how often it at least put it in the <span className="text-slate-200">right
           category</span>. Outlined cells are the best model for that attack — more than one when they tie. Select a row for what it
@@ -228,7 +230,7 @@ export default function AttackInsights({ insights, replay }: { insights: Insight
 
       {/* ── provenance ─────────────────────────────────────────────── */}
       <section aria-labelledby="provenance-heading" className="border-t border-white/8 pt-8">
-        <h3 id="provenance-heading" className="text-lg font-semibold tracking-tight text-white">How these tests were run</h3>
+        <h3 id="provenance-heading" className="text-xl font-semibold tracking-tight text-white">How these tests were run</h3>
         <dl className="mt-4 grid gap-x-8 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
           {[
             ["Batches per attack", `${cfg.trials} per model set`],
@@ -267,6 +269,7 @@ function AttackDetail({
   return (
     <section aria-labelledby="detail-heading" className="rounded-lg border border-white/8 bg-white/[0.02] p-6">
       <div className="flex flex-wrap items-center gap-2.5">
+        <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.16em] text-emerald-400/80">03 · The selected attack</p>
         <h2 id="detail-heading" className="text-xl font-semibold tracking-tight text-white">{attack.label}</h2>
         <span className="rounded px-1.5 py-0.5 text-[11px] font-medium" style={{ color: sev.fg, background: sev.bg }}>
           {sev.label} severity
