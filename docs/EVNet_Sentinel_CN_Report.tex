@@ -12,6 +12,7 @@
 \usepackage{microtype}
 \usepackage[margin=0.75in]{geometry}
 \usepackage{graphicx}
+\graphicspath{{images/}{figures/}{./}}
 \usepackage{adjustbox}
 \usepackage{xcolor}
 \usepackage{booktabs}
@@ -209,7 +210,12 @@ An EVCS network operates over a layered protocol stack that extends the standard
     \item \textbf{MQTT / AMQP:} Some deployments use lightweight messaging for telemetry aggregation from station clusters to cloud backends.
 \end{itemize}
 
-\screenshotplaceholder{EVCS Network Topology Diagram}{High-level network topology showing chargers, CSMS, and the monitoring tap point where flow data is captured.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{images/evcs-network-topology.jpg}
+    \caption{EVCS technical network architecture showing chargers (EVSE), CSMS cloud server, power grid communication, and the passive network tap monitoring point where flow data is captured.}
+    \label{fig:network_topology}
+\end{figure}
 
 \subsection{Network Monitoring Point}
 
@@ -265,7 +271,12 @@ Each flow record contains 83 features extracted by CICFlowMeter. The most discri
 \end{tabular}
 \end{table}
 
-\screenshotplaceholder{Feature Importance Bar Chart}{Top-15 feature importances from the corrected Random Forest model, highlighting which network flow features drive detection.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/feature-importance.png}
+    \caption{Top discriminative network flow features from the corrected leak-free model after removing timestamp epoch identifiers.}
+    \label{fig:feature_importance}
+\end{figure}
 
 % ============================================================================
 % 4. NETWORK ATTACK TAXONOMY
@@ -300,7 +311,12 @@ The attacks present in CICEVSE2024 map directly to well-known network attack cat
 
 FTP Patator and SSH Patator attacks target authentication services on the EVCS management interface. These produce many failed-login flows with characteristic packet sizes and connection-reset patterns.
 
-\screenshotplaceholder{Attack Insights Dashboard}{The ``Attack Insights'' page from the EVNet Sentinel dashboard showing per-attack detection rates and response guidance.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{images/attack-insights.jpg}
+    \caption{The ``Attack Insights'' console in EVNet Sentinel showing per-attack empirical performance, false alarm rates, and operator response instructions.}
+    \label{fig:attack_insights}
+\end{figure}
 
 % ============================================================================
 % 5. DATA LEAKAGE: A NETWORK-LEVEL EXPLANATION
@@ -329,7 +345,12 @@ The central contribution of EVNet Sentinel is identifying that the published 98.
     Ephemeral source ports band per capture session. \texttt{src\_port} acts as a partial session identifier rather than a behavioral network feature. Removing it costs Decision Tree twice the performance it costs Random Forest.
 \end{findingbox}
 
-\screenshotplaceholder{Leakage Audit Dashboard}{The ``Findings'' section of the EVNet Sentinel dashboard showing the three key leakage numbers: timestamp-only accuracy, capture-order accuracy, and corrected macro-F1.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{images/dashboard.jpg}
+    \caption{The ``Findings'' dashboard highlighting the audit evidence: timestamp-only classification (99.76\%), capture-order autocorrelation (99.99\%), and true corrected macro-F1 (0.558).}
+    \label{fig:leakage_dashboard}
+\end{figure}
 
 % ============================================================================
 % 6. CORRECTED IDS METHODOLOGY
@@ -370,7 +391,12 @@ Six classifiers were evaluated on the corrected, leak-free dataset across 3 rand
 \noindent
 \textit{Key observation:} All four tree-based models are statistically tied at $\sim$0.55 macro-F1. The accuracy of $\sim$0.87 is driven by the dominant flood classes; \textbf{macro-F1} is the correct headline metric because it equally weights all 15 classes, including the poorly-detected scans.
 
-\screenshotplaceholder{Confusion Matrix Heatmap}{Interactive confusion matrix from the EVNet Sentinel dashboard showing floods on the diagonal and scans smeared across multiple predicted classes.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{images/confusion-matrix.jpg}
+    \caption{Interactive multi-class confusion matrix explorer showing sharp diagonal concentration for volumetric floods alongside horizontal dispersion across scan variants.}
+    \label{fig:confusion_matrix}
+\end{figure}
 
 % ============================================================================
 % 7. CLOSED-LOOP NETWORK RESPONSE
@@ -394,7 +420,12 @@ Beyond detection, EVNet Sentinel implements a closed-loop containment policy mod
 \noindent
 The response system was replayed over all 20 recorded attacker--attack pairs in the dataset. A scanner that later escalates to flooding is automatically quarantined on its first flood flow—demonstrating adaptive, stateful network defense.
 
-\screenshotplaceholder{Simulation Console — Quarantine Action}{The simulation page showing a site transitioning to ``Network Not Safe'' status with the recommended quarantine action for a detected flood attacker.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{images/simulation-quarantine.jpg}
+    \caption{Interactive simulation console demonstrating state transition to ``Network Not Safe'' with closed-loop operator containment quarantine triggered on malicious traffic.}
+    \label{fig:simulation_quarantine}
+\end{figure}
 
 % ============================================================================
 % 8. SYSTEM ARCHITECTURE (NETWORK VIEW)
@@ -412,7 +443,12 @@ The EVNet Sentinel deployment uses a decoupled client-server architecture:
 \end{itemize}
 \end{highlightbox}
 
-\screenshotplaceholder{Architecture / Data Flow Diagram}{System architecture diagram showing the data flow from CICEVSE2024 through preprocessing, model training, API serving, and the Next.js dashboard.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{figures/fig_pipeline.pdf}
+    \caption{Comprehensive end-to-end system and ML pipeline architecture spanning CICEVSE2024 ingestion, leak-free training, dynamic FastAPI model registry, and Next.js presentation.}
+    \label{fig:architecture_pipeline}
+\end{figure}
 
 % ============================================================================
 % 9. CONCLUSION
