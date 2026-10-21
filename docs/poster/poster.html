@@ -277,5 +277,24 @@
   <span><b>EVNet Sentinel</b> · github.com/Mukta01/EVNet_Sentinel</span>
   <span>Corresponding author: Shardul Chogale · shardulchogale1983@gmail.com</span>
 </footer>
+<script>
+  // Spread each column's sections down to the footer, so leftover space is shared
+  // between sections instead of pooling at the bottom. Runs before printing.
+  (function fill() {
+    const main = document.querySelector("main");
+    const zoom = parseFloat(getComputedStyle(main).zoom) || 1;
+    const floor = document.querySelector("footer").getBoundingClientRect().top - 12;
+    for (const col of main.children) {
+      const secs = [...col.children];
+      if (secs.length < 2) continue;
+      const spare = (floor - col.getBoundingClientRect().bottom) / zoom;
+      if (spare <= 0) continue;
+      const add = spare / (secs.length - 1);
+      secs.slice(0, -1).forEach((sec) => {
+        sec.style.marginBottom = `calc(${getComputedStyle(sec).marginBottom} + ${add}px)`;
+      });
+    }
+  })();
+</script>
 </body>
 </html>
