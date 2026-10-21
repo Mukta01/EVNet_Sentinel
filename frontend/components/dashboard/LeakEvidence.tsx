@@ -36,7 +36,7 @@ export default function LeakEvidence({
   return (
     <section aria-labelledby="leak-heading" className="grid gap-10 lg:grid-cols-2">
       <div>
-        <h3 id="leak-heading" className="text-lg font-semibold tracking-tight text-white">
+        <h3 id="leak-heading" className="text-xl font-semibold tracking-tight text-white">
           What one column knows on its own
         </h3>
         <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">

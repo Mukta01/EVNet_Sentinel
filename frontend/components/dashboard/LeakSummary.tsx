@@ -45,7 +45,7 @@ export default function LeakSummary({
 
   return (
     <section aria-labelledby="leak-summary-heading">
-      <h3 id="leak-summary-heading" className="text-lg font-semibold tracking-tight text-white">
+      <h3 id="leak-summary-heading" className="text-xl font-semibold tracking-tight text-white">
         Why the published 98% was too good
       </h3>
       <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">

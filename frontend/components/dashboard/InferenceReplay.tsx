@@ -110,7 +110,7 @@ export default function InferenceReplay({
         <div className="max-w-2xl">
           <h2
             id="replay-heading"
-            className="text-2xl font-semibold tracking-tight text-white text-balance"
+            className="text-xl font-semibold tracking-tight text-white text-balance"
           >
             Replay the traffic through each detector
           </h2>

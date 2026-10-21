@@ -42,7 +42,7 @@ export default function FeatureSeparability({ importance }: { importance: Import
     <section aria-labelledby="separability-heading">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h3 id="separability-heading" className="text-lg font-semibold tracking-tight text-white">
+          <h3 id="separability-heading" className="text-xl font-semibold tracking-tight text-white">
             One feature names a flood. No feature names a scan.
           </h3>
           <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">

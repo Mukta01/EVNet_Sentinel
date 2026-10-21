@@ -77,7 +77,7 @@ export default function DriftTimeline({
     <section aria-labelledby="drift-timeline-heading">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h3 id="drift-timeline-heading" className="text-lg font-semibold tracking-tight text-white">
+          <h3 id="drift-timeline-heading" className="text-xl font-semibold tracking-tight text-white">
             Drift alarms land on file seams
           </h3>
           <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">

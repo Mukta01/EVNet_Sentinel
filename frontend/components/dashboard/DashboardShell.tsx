@@ -234,7 +234,7 @@ function Environment({
 
   return (
     <section aria-labelledby="env-heading" className="border-t border-white/8 pt-10">
-      <h3 id="env-heading" className="text-lg font-semibold tracking-tight text-white">
+      <h3 id="env-heading" className="text-xl font-semibold tracking-tight text-white">
         Run environment
       </h3>
       <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">

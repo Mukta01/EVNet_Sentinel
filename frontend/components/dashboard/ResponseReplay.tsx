@@ -49,7 +49,7 @@ export default function ResponseReplay({ data }: { data: ReplayData }) {
 
   return (
     <section aria-labelledby="response-heading">
-      <h3 id="response-heading" className="text-lg font-semibold tracking-tight text-white">
+      <h3 id="response-heading" className="text-xl font-semibold tracking-tight text-white">
         After detection: the response, replayed
       </h3>
       <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">

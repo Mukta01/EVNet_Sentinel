@@ -94,7 +94,7 @@ export default function ConfusionExplorer({ confusion, seeds }: { confusion: Con
     <section aria-labelledby="confusion-heading">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h3 id="confusion-heading" className="text-lg font-semibold tracking-tight text-white">
+          <h3 id="confusion-heading" className="text-xl font-semibold tracking-tight text-white">
             Where each attack&rsquo;s flows end up
           </h3>
           <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">

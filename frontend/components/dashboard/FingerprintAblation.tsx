@@ -24,7 +24,7 @@ export default function FingerprintAblation({ rows }: { rows: Row[] }) {
 
   return (
     <section aria-labelledby="ablation-heading">
-      <h3 id="ablation-heading" className="text-lg font-semibold tracking-tight text-white">
+      <h3 id="ablation-heading" className="text-xl font-semibold tracking-tight text-white">
         Reconnaissance rests on two columns
       </h3>
       <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">

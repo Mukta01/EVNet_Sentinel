@@ -63,7 +63,7 @@ export default function ClassSeparation({
         <div className="max-w-2xl">
           <h2
             id="separation-heading"
-            className="text-2xl font-semibold tracking-tight text-white text-balance"
+            className="text-xl font-semibold tracking-tight text-white text-balance"
           >
             Floods are near-perfect. Reconnaissance is not.
           </h2>

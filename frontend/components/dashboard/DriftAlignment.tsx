@@ -39,7 +39,7 @@ export default function DriftAlignment({
   return (
     <section aria-labelledby="drift-heading" className="grid gap-10 lg:grid-cols-2">
       <div>
-        <h3 id="drift-heading" className="text-lg font-semibold tracking-tight text-white">
+        <h3 id="drift-heading" className="text-xl font-semibold tracking-tight text-white">
           The drift detector is finding file seams
         </h3>
         <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-400">
