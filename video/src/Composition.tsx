@@ -174,3 +174,26 @@ const Outro: React.FC = () => {
     </AbsoluteFill>
   );
 };
+
+/** YouTube thumbnail, 1280×720: rendered as a still. */
+export const ThumbnailComposition = () => (
+  <Composition id="Thumbnail" component={Thumbnail} durationInFrames={1} fps={FPS} width={1280} height={720} />
+);
+
+const Thumbnail: React.FC = () => (
+  <AbsoluteFill style={{ background: C.bg, fontFamily: font }}>
+    <Img src={staticFile("shots/story.png")}
+      style={{ position: "absolute", width: 1280, height: 720, objectFit: "cover", opacity: 0.6, transform: "scale(1.45)", transformOrigin: "88% 78%" }} />
+    <AbsoluteFill style={{ background: "linear-gradient(90deg, rgba(2,6,23,1) 0%, rgba(2,6,23,0.96) 48%, rgba(2,6,23,0.25) 100%)" }} />
+    <AbsoluteFill style={{ padding: "70px 72px", justifyContent: "center" }}>
+      <div style={{ color: C.green, fontSize: 26, letterSpacing: 5, fontWeight: 700 }}>EV CHARGING · INTRUSION DETECTION</div>
+      <div style={{ color: C.text, fontSize: 96, fontWeight: 800, lineHeight: 1.0, marginTop: 18 }}>
+        The 98% was<br />a <span style={{ color: C.rose }}>data leak.</span>
+      </div>
+      <div style={{ color: C.text, fontSize: 40, fontWeight: 600, marginTop: 28, lineHeight: 1.25 }}>
+        Then we closed the loop:<br /><span style={{ color: C.green }}>detect → contain → verify</span>
+      </div>
+      <div style={{ color: C.muted, fontSize: 26, marginTop: 30, fontWeight: 500 }}>EVNet Sentinel</div>
+    </AbsoluteFill>
+  </AbsoluteFill>
+);
