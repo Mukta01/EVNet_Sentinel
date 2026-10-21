@@ -14,6 +14,7 @@ import InferenceReplay, { type Flow } from "./InferenceReplay";
 import LeakEvidence from "./LeakEvidence";
 import ModelTable from "./ModelTable";
 import ResponseReplay, { type ReplayData } from "./ResponseReplay";
+import { FINDINGS_SECTIONS, FindingsOverview, SectionNav } from "./FindingsOverview";
 import type { Family } from "./theme";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -113,14 +114,17 @@ export default function DashboardShell({
             );
           })}
         </div>
+        {tab === "findings" && <div className="border-t border-white/5"><SectionNav /></div>}
       </nav>
 
       {tab === "insights" ? (
         <div className="pt-12">
-          <AttackInsights insights={insights} />
+          <AttackInsights insights={insights} replay={replay} />
         </div>
       ) : tab === "findings" ? (
-        <div className="space-y-20 pt-12">
+        <div className="space-y-20 pt-10">
+          <FindingsOverview findings={findings} insights={insights} replay={replay} />
+          <Section id="f-leak">
           <LeakSummary
             paperAccuracy={findings.paperReported.accuracy}
             probeAccuracy={findings.singleColumnProbe[0].accuracy}
@@ -130,15 +134,19 @@ export default function DashboardShell({
               macroF1: forest.macro_f1,
             }}
           />
+          </Section>
+          <Section id="f-classes">
           <ClassSeparation
             rows={findings.perClass as { class: string; group: Family; support: number; models: Record<string, { f1: number; std: number }> }[]}
             models={findings.models.map((m: { name: string }) => m.name)}
             control={findings.supportControl}
           />
-          <ConfusionExplorer confusion={paper.confusion} seeds={paper.seeds} />
-          <ModelTable models={findings.models} seeds={findings.seeds} />
-          <FeatureSeparability importance={paper.importance} />
-          <ResponseReplay data={replay} />
+          </Section>
+          <Section id="f-confusion"><ConfusionExplorer confusion={paper.confusion} seeds={paper.seeds} /></Section>
+          <Section id="f-models"><ModelTable models={findings.models} seeds={findings.seeds} /></Section>
+          <Section id="f-features"><FeatureSeparability importance={paper.importance} /></Section>
+          <Section id="f-response"><ResponseReplay data={replay} /></Section>
+          <Section id="f-audit">
           <details className="group rounded-lg border border-white/8 bg-white/[0.02] open:bg-transparent open:border-transparent">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-lg px-5 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 [&::-webkit-details-marker]:hidden">
               <span>
@@ -172,6 +180,7 @@ export default function DashboardShell({
           <Environment environment={environment} generated={findings.generated} />
             </div>
           </details>
+          </Section>
         </div>
       ) : (
         <div className="pt-12">
@@ -182,6 +191,19 @@ export default function DashboardShell({
           />
         </div>
       )}
+    </div>
+  );
+}
+
+/** A Findings section: an anchor for the section nav, and the same numbered kicker on every one. */
+function Section({ id, children }: { id: (typeof FINDINGS_SECTIONS)[number]["id"]; children: React.ReactNode }) {
+  const i = FINDINGS_SECTIONS.findIndex((s) => s.id === id);
+  return (
+    <div id={id} className="scroll-mt-40">
+      <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.16em] text-emerald-400/80">
+        {String(i + 1).padStart(2, "0")} · {FINDINGS_SECTIONS[i].label}
+      </p>
+      {children}
     </div>
   );
 }

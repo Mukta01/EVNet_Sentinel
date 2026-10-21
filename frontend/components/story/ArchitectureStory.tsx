@@ -87,13 +87,14 @@ const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const ease = (t: number) => 1 - Math.pow(1 - t, 3);
 const seg = (p: number, a: number, b: number) => ease(clamp((p - a) / (b - a)));
 
-export default function ArchitectureStory() {
+/** floodsNamed: how the "Floods named exactly" result reads, e.g. "≥ 99.91%" (computed by the page). */
+export default function ArchitectureStory({ floodsNamed = "≥ 99.9%" }: { floodsNamed?: string }) {
   const reduceMotion = useReducedMotion();
   if (reduceMotion) return <StaticStory />;
-  return <PinnedStory />;
+  return <PinnedStory floodsNamed={floodsNamed} />;
 }
 
-function PinnedStory() {
+function PinnedStory({ floodsNamed }: { floodsNamed: string }) {
   const section = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const [chapter, setChapter] = useState(0);
@@ -193,7 +194,9 @@ function PinnedStory() {
     q("#as-res")?.classList.toggle("on", ch === 6);
     qa("[data-count]").forEach((e) => {
       const target = Number(e.dataset.count);
-      e.textContent = `${Math.round(target * (ch === 6 ? seg(local, 0.05, 0.45) : ch > 6 ? 1 : 0))}%`;
+      const t = ch === 6 ? seg(local, 0.05, 0.45) : ch > 6 ? 1 : 0;
+      // Counts up, then settles on the exact wording (e.g. a "≥" lower bound) once done.
+      e.textContent = t >= 1 && e.dataset.final ? e.dataset.final : `${Math.round(target * t)}%`;
     });
   };
 
@@ -602,12 +605,12 @@ function PinnedStory() {
           <div className="results">
             <div className="stats">
               {[
-                { v: 100, color: "#22C55E", l: "Floods named exactly", s: "5 of 5 volumetric floods, every tree and boosted model, every seed." },
+                { v: parseFloat(floodsNamed.replace(/[^\d.]/g, "")) || 100, final: floodsNamed, color: "#22C55E", l: "Floods named exactly", s: "All 5 volumetric floods, by their best model: the weakest one’s 95% lower bound over 4,500 test flows." },
                 { v: 96, color: "#F59E0B", l: "Scans recognised as scans", s: "But named only 34% — six nmap modes look alike at flow level." },
                 { v: 2, color: "#38BDF8", l: "False alarms · XGBoost", s: "The primary detector. Random Forest: 2.6%, SVM: 58%." },
               ].map((x) => (
                 <div key={x.l} className="card stat">
-                  <div className="v" style={{ color: x.color }} data-count={x.v}>0%</div>
+                  <div className="v" style={{ color: x.color }} data-count={x.v} data-final={"final" in x ? x.final : undefined}>0%</div>
                   <div className="l">{x.l}</div>
                   <div className="s">{x.s}</div>
                 </div>

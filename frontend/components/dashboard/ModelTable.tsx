@@ -1,6 +1,6 @@
 "use client";
 
-import { MODEL_COLOR, MODEL_LABEL } from "./theme";
+import { MODEL_COLOR, MODEL_LABEL, fmtStd } from "./theme";
 
 type ModelRow = {
   name: string;
@@ -97,7 +97,7 @@ export default function ModelTable({
                     </div>
                     <span className="font-mono text-xs tabular-nums text-slate-100">
                       {model.macro_f1.toFixed(4)}
-                      <span className="text-slate-500"> ± {model.macro_f1_std.toFixed(4)}</span>
+                      <span className="text-slate-500"> ± {fmtStd(model.macro_f1_std, model.macro_f1, 4)}</span>
                     </span>
                   </div>
                 </td>

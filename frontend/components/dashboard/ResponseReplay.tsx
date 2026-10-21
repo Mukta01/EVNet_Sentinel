@@ -30,10 +30,10 @@ export type ReplayData = {
 };
 
 const SENDER: Record<string, string> = { kali: "Laptop on the wifi", rpi: "Raspberry Pi on the wifi", evcc: "Compromised car (cable)" };
-const ACTION: Record<string, { label: string; color: string }> = {
-  quarantine: { label: "Quarantine", color: "#FDA4AF" },
-  restrict: { label: "Restrict", color: "#FCD34D" },
-  "end-session": { label: "Stop session", color: "#7DD3FC" },
+const ACTION: Record<string, { label: string; cls: string }> = {
+  quarantine: { label: "Quarantine", cls: "text-rose-300" },
+  restrict: { label: "Restrict", cls: "text-amber-300" },
+  "end-session": { label: "Stop session", cls: "text-sky-300" },
 };
 
 /**
@@ -101,7 +101,7 @@ export default function ResponseReplay({ data }: { data: ReplayData }) {
                 <td className="py-2.5 pr-4 text-slate-400">{SENDER[r.sender] ?? r.sender}</td>
                 <td className="py-2.5 pr-4">
                   {r.actions.map((a) => (
-                    <span key={a} className="font-medium" style={{ color: ACTION[a]?.color }}>{ACTION[a]?.label ?? a}</span>
+                    <span key={a} className={`font-medium ${ACTION[a]?.cls ?? ""}`}>{ACTION[a]?.label ?? a}</span>
                   ))}
                   {r.recommendedShare < 1 && <span className="ml-1 text-[11px] text-slate-500">in {Math.round(r.recommendedShare * 100)}% of runs</span>}
                 </td>

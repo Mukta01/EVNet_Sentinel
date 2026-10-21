@@ -181,8 +181,8 @@ export default function Hero({ stats }: { stats: HeroStat[] }) {
 
 /** Counts a stat like "96%" or "1.2M" up from zero; anything non-numeric is shown as is. */
 function StatValue({ value }: { value: string }) {
-  const m = /^(\d+(?:\.\d+)?)(.*)$/.exec(value);
+  const m = /^(≥ )?(\d+(?:\.\d+)?)(.*)$/.exec(value);
   if (!m) return <>{value}</>;
-  const decimals = m[1].includes(".") ? m[1].split(".")[1].length : 0;
-  return <CountUp to={Number(m[1])} decimals={decimals} suffix={m[2]} duration={1.6} delay={0.6} trigger="load" />;
+  const decimals = m[2].includes(".") ? m[2].split(".")[1].length : 0;
+  return <CountUp to={Number(m[2])} decimals={decimals} prefix={m[1] ?? ""} suffix={m[3]} duration={1.6} delay={0.6} trigger="load" />;
 }

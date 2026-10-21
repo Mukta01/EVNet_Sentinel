@@ -166,6 +166,10 @@ def main():
         cls, cat = row["class"], row["category"]
         entry = dict(row)
         entry["label"] = pretty(cls)
+        # Distinct flows behind each rate: a low-support class is drawn with
+        # replacement, so it was tested on at most its own support. Used for the
+        # lower bound shown when every tested flow passed (rule of three).
+        entry["tested"] = int(min(row["batch"] * row["trials"], row["support"]))
 
         # Multi-seed per-class F1 for the same models, for readers who want the
         # standard metric alongside the three-level test.
