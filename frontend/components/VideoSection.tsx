@@ -9,7 +9,8 @@ import DecryptedText from "./DecryptedText";
  * The project video under the hero (YouTube JkRQUmMl6m8, rendered from video/).
  * It shows our own poster (public/video-poster.jpg) and only loads the player
  * (from youtube-nocookie.com) when someone presses play, so the page stays
- * light and sets no YouTube cookies until then. With VIDEO_ID empty it falls
+ * light and sets no YouTube cookies until then. YouTube's auto-captions are off
+ * (cc_load_policy=0): the captions are burned into the video. With VIDEO_ID empty it falls
  * back to a "coming soon" card.
  */
 const VIDEO_ID = "JkRQUmMl6m8";
@@ -32,7 +33,7 @@ export default function VideoSection() {
           {VIDEO_ID && playing ? (
             <iframe
               className="absolute inset-0 h-full w-full"
-              src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0`}
+              src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0&cc_load_policy=0`}
               title={VIDEO_TITLE}
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
