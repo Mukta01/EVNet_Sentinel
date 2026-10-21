@@ -6,13 +6,16 @@ import { Play, Clapperboard } from "lucide-react";
 import DecryptedText from "./DecryptedText";
 
 /**
- * A short project video under the hero. Until VIDEO_ID is set it shows a
- * placeholder card. Once set, it shows the video's thumbnail and only loads the
- * player (from youtube-nocookie.com) when someone presses play, so the page
- * stays light and sets no YouTube cookies until then.
+ * The project video under the hero (YouTube JkRQUmMl6m8, rendered from video/).
+ * It shows our own poster (public/video-poster.jpg) and only loads the player
+ * (from youtube-nocookie.com) when someone presses play, so the page stays
+ * light and sets no YouTube cookies until then. YouTube's auto-captions are off
+ * (cc_load_policy=0): the captions are burned into the video. With VIDEO_ID empty it falls
+ * back to a "coming soon" card.
  */
-const VIDEO_ID = "";
-const VIDEO_TITLE = "EVNet Sentinel in two minutes";
+const VIDEO_ID = "JkRQUmMl6m8";
+const VIDEO_TITLE = "The 98% was a data leak: EVNet Sentinel";
+const VIDEO_LENGTH = "2:39";
 
 export default function VideoSection() {
   const [playing, setPlaying] = useState(false);
@@ -30,7 +33,7 @@ export default function VideoSection() {
           {VIDEO_ID && playing ? (
             <iframe
               className="absolute inset-0 h-full w-full"
-              src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0`}
+              src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0&cc_load_policy=0`}
               title={VIDEO_TITLE}
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
@@ -43,9 +46,9 @@ export default function VideoSection() {
               aria-label={`Play video: ${VIDEO_TITLE}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`https://i.ytimg.com/vi/${VIDEO_ID}/hqdefault.jpg`} alt="" className="h-full w-full object-cover opacity-80" />
-              <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-emerald-500 text-white transition-transform group-hover:scale-105">
-                <Play className="ml-1 h-7 w-7" aria-hidden />
+              <img src="/video-poster.jpg" alt="" className="h-full w-full object-cover transition-opacity group-hover:opacity-90" />
+              <span className="absolute left-[76%] top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-emerald-500 text-white shadow-[0_0_40px_rgba(16,185,129,0.45)] transition-transform group-hover:scale-105">
+                <Play className="ml-1 h-8 w-8" aria-hidden />
               </span>
             </button>
           ) : (
@@ -64,7 +67,7 @@ export default function VideoSection() {
         </div>
         <div className="flex items-center justify-between border-t border-white/[0.06] px-5 py-3 text-[12.5px] text-slate-400">
           <DecryptedText text={VIDEO_TITLE} animateOn="view" sequential speed={35} className="text-slate-200" encryptedClassName="text-emerald-400/70" />
-          <span className="font-mono">~2 min</span>
+          <span className="font-mono">{VIDEO_LENGTH}</span>
         </div>
       </motion.div>
     </section>
