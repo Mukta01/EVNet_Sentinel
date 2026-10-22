@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ListChecks, Pause, Play, Radio, Square } from "lucide-react";
+import TestbedGlossary from "./TestbedGlossary";
 import TopologyCanvas, { groupTone, type Packet } from "./TopologyCanvas";
 import { BLOCKED_PATHS, SENDERS, nodeById, routeFor, type NodeId, type Sender } from "./topology";
 import { FAMILY, MODEL_LABEL, fmtConfidence, prettyClass } from "../dashboard/theme";
@@ -152,13 +153,18 @@ export default function SimulationConsole({
   const activeClass = campaign ? campaign.steps[campaign.stage] : attackClass;
   const activeIsAttack = attacking && activeClass !== "Benign";
 
-  const benignPool = useMemo(() => sim.byClass["Benign"] ?? [], [sim.byClass]);
   // Senders that really sent this attack with the station in the chosen state.
   // The malicious-EV captures need a car on the cable, so they only exist while charging.
   const inState = useCallback((id: number) => {
     const f = byId.get(id);
     return !!f && stateOf(f) === stationState;
   }, [byId, stationState]);
+  // Normal traffic follows the station state too: idle is heartbeats with no car plugged in.
+  const benignPool = useMemo(() => {
+    const all = sim.byClass["Benign"] ?? [];
+    const pool = all.filter(inState);
+    return pool.length ? pool : all;
+  }, [sim.byClass, inState]);
   const recordedSenders = useMemo(() => {
     const counts = new Map<Sender, number>();
     for (const id of (sim.byClass[attackClass] ?? []).filter(inState)) {
@@ -504,7 +510,7 @@ export default function SimulationConsole({
               {campaign
                 ? `${campaignLabel} · stage ${campaign.stage + 1}/${campaign.steps.length} · ${activeClass === "Benign" ? "baseline" : prettyClass(activeClass)}`
                 : attacking ? `${prettyClass(attackClass)} · ${liveSender ? SENDERS[liveSender].label : "attacker"} → charging station`
-                : "benign heartbeat · looping 12 held-out flows"}
+                : `benign heartbeat · looping ${benignPool.length} held-out ${stationState} flows`}
             </span>
           </div>
           <TopologyCanvas
@@ -514,6 +520,8 @@ export default function SimulationConsole({
             quarantined={containedSenders(site)}
           />
         </div>
+
+        <TestbedGlossary />
 
         <ContainmentPanel state={site} blocked={blocked} events={siteEvents}
           guide={containment} onApprove={approveAction} onRelease={releaseQuarantine} />
