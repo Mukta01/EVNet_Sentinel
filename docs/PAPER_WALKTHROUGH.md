@@ -2,7 +2,7 @@
 
 A section-by-section guide to presenting
 **"EVNet Sentinel: A Leakage-Corrected Reproduction and Comparative Study of Intrusion Detection on Electric Vehicle Charging Networks"**
-([`EVNet_Sentinel_Research_Paper_v2.pdf`](research%20paper/EVNet_Sentinel_Research_Paper_v2.pdf)).
+([`EVNet_Sentinel_Research_Paper_v4_IEEE.pdf`](research%20paper/EVNet_Sentinel_Research_Paper_v4_IEEE.pdf)).
 
 Each section below gives:
 - **In one line:** what the section says.

@@ -43,7 +43,7 @@ Tab 4 stays free for the live commands.
 4. http://localhost:3100
 5. http://localhost:3100/simulation
 6. http://localhost:3100/dashboard
-7. `docs/research paper/EVNet_Sentinel_Research_Paper_v2.pdf`
+7. `docs/research paper/EVNet_Sentinel_Research_Paper_v4_IEEE.pdf`
 
 **Smoke test:**
 ```bash
