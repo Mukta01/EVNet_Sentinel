@@ -164,7 +164,7 @@ The four tree models are statistically tied: gradient boosting does not break th
 
 | | Topic | Read |
 |---|---|---|
-| 📄 | **Research paper** | [v3 · 7 pages](./docs/research%20paper/EVNet_Sentinel_Research_Paper_v3.pdf) · [v2 · full](./docs/research%20paper/EVNet_Sentinel_Research_Paper_v2.pdf) · [walkthrough](./docs/PAPER_WALKTHROUGH.md) |
+| 📄 | **Research paper** | [v4 IEEE · 8 pages](./docs/research%20paper/EVNet_Sentinel_Research_Paper_v4_IEEE.pdf) · [Conference · 6 pages](./docs/research%20paper/EVNet_Sentinel_Conference_Draft.pdf) · [Journal · Elsevier](./docs/research%20paper/EVNet_Sentinel_Journal_Elsevier.pdf) · [walkthrough](./docs/PAPER_WALKTHROUGH.md) |
 | ▶️ | **Running the project** | [RUNNING.md](./docs/RUNNING.md) · [Runbook PDF](./docs/EVNet_Sentinel_Runbook.pdf) |
 | 🔍 | **Leakage audit** | [Results](./docs/leakage_audit_results.md) · [Findings PDF](./docs/EVNet_Sentinel_Findings.pdf) |
 | 🎤 | **Demo scripts** | [General](./docs/DEMO_SCRIPT.md) · [Data Warehousing & Mining](./docs/DEMO_DWM.md) |
