@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
@@ -8,10 +9,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS (SEC-3: restrict to known local origin)
+# CORS (SEC-3: restrict to known origins, read from env for deploy flexibility)
+origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

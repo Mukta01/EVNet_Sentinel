@@ -1,0 +1,28 @@
+name: Keep Render Services Alive
+
+# Render free-tier spins down after 15 min of inactivity.
+# This cron pings both services every 14 min to keep them warm.
+
+on:
+  schedule:
+    # Every 14 minutes, 24/7
+    - cron: "*/14 * * * *"
+  workflow_dispatch: # Allow manual trigger for testing
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping ML API
+        run: |
+          curl -sf --max-time 120 \
+            "${{ vars.RENDER_API_URL || 'https://evnet-sentinel-api.onrender.com' }}/" \
+            && echo "✅ API is alive" \
+            || echo "⚠️ API cold-starting or unreachable"
+
+      - name: Ping Dashboard
+        run: |
+          curl -sf --max-time 120 \
+            "${{ vars.RENDER_DASHBOARD_URL || 'https://evnet-sentinel.onrender.com' }}/" \
+            && echo "✅ Dashboard is alive" \
+            || echo "⚠️ Dashboard cold-starting or unreachable"
