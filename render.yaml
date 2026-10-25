@@ -1,0 +1,37 @@
+# render.yaml — Infrastructure-as-Code for EVNet Sentinel
+# Docs: https://docs.render.com/blueprint-spec
+
+services:
+  # ── ML Prediction API (Docker) ──────────────────────────────────
+  - type: web
+    name: evnet-sentinel-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    region: oregon
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: MODELS_DIR
+        value: /app/saved_models
+      - key: SCALER_PATH
+        value: /app/saved_models/StandardScaler.pkl
+      - key: ALLOWED_ORIGINS
+        value: https://evnet-sentinel.onrender.com
+      - key: PYTHON_ENV
+        value: production
+
+  # ── Next.js Dashboard (Node) ────────────────────────────────────
+  - type: web
+    name: evnet-sentinel
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start -- -p $PORT
+    region: oregon
+    plan: free
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://evnet-sentinel-api.onrender.com
+      - key: NODE_ENV
+        value: production

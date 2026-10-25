@@ -1,10 +1,21 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import joblib
 import pandas as pd
 import os
 
 app = FastAPI(title="EVNet Sentinel ML API", version="1.0.0", description="API for predicting network attacks using Out-of-Core SVM Multiclass model")
+
+# CORS — read allowed origins from env; defaults to localhost for local dev
+origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Global variables
 models = {}
