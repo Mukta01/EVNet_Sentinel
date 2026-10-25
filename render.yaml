@@ -26,7 +26,7 @@ services:
     name: evnet-sentinel
     runtime: node
     rootDir: frontend
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm run start -- -p $PORT
     region: oregon
     plan: free
